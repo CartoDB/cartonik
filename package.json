@@ -1,0 +1,44 @@
+{
+  "name": "cartonik",
+  "version": "0.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "author": "Daniel García Aubert <dgaubert@carto.com>",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cartodb/cartonik.git"
+  },
+  "engines": {
+    "node": ">=7.6.0"
+  },
+  "scripts": {
+    "build": "babel src -d lib --source-maps inline",
+    "build:watch": "npm run build -- --watch",
+    "coverage": "nyc --reporter=lcov npm test",
+    "lint": "standard \"src/**/*.js\" \"test/**/*.js\"",
+    "postversion": "git push && git push --tags",
+    "prepublishOnly": "npm run build",
+    "pretest": "npm run lint",
+    "preversion": "npm test",
+    "test": "NODE_ENV=test mocha --recursive -r babel-register -r source-map-support/register test",
+    "test:watch": "npm run test -- -w"
+  },
+  "dependencies": {
+    "mapnik": "^3.6.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "mocha": "^3.4.2",
+    "nyc": "^10.3.2",
+    "sinon": "^2.3.5",
+    "source-map-support": "^0.4.15",
+    "standard": "^10.0.1"
+  },
+  "standard": {
+    "env": {
+      "mocha": true
+    }
+  }
+}
