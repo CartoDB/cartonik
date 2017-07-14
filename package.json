@@ -1,7 +1,7 @@
 {
   "name": "cartonik",
   "version": "0.0.0",
-  "description": "",
+  "description": "Render maps with mapnik",
   "main": "lib/index.js",
   "author": "Daniel García Aubert <dgaubert@carto.com>",
   "license": "BSD-3-Clause",
