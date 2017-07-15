@@ -1,6 +1,6 @@
 {
   "name": "cartonik",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Render maps with mapnik",
   "main": "lib/index.js",
   "author": "Daniel García Aubert <dgaubert@carto.com>",
