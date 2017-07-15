@@ -2,7 +2,9 @@ import path from 'path'
 import mapnik, { Map, Image } from 'mapnik'
 
 const TILE_SIZE = 256
-const TILE_ENCODING = 'png'
+const ALLOWED_ENCODINGS = {
+  png: true
+}
 
 const EARTH_RADIUS = 6378137
 const EARTH_DIAMETER = EARTH_RADIUS * 2
@@ -30,9 +32,13 @@ export default class Cartonik {
     })
   }
 
-  encode ({ image }) {
+  encode ({ image, encoding }) {
     return new Promise((resolve, reject) => {
-      image.encode(TILE_ENCODING, (err, tile) => err ? reject(err) : resolve(tile))
+      if (ALLOWED_ENCODINGS[encoding]) {
+        return reject(new Error(`Encoding "${encoding}" not allowed`))
+      }
+
+      image.encode(encoding, (err, tile) => err ? reject(err) : resolve(tile))
     })
   }
 

@@ -32,7 +32,7 @@ describe('cartonik', function () {
 
   it('.encode() should throw an error', async function () {
     try {
-      await this.cartonik.encode({ image: null })
+      await this.cartonik.encode({ image: null, encoding: null })
     } catch (error) {
       assert.ok(error instanceof Error)
     }
