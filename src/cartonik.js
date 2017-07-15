@@ -34,7 +34,7 @@ export default class Cartonik {
 
   encode ({ image, encoding }) {
     return new Promise((resolve, reject) => {
-      if (ALLOWED_ENCODINGS[encoding]) {
+      if (!ALLOWED_ENCODINGS[encoding]) {
         return reject(new Error(`Encoding "${encoding}" not allowed`))
       }
 
