@@ -25,7 +25,7 @@
     "test:watch": "npm run test -- -w"
   },
   "dependencies": {
-    "mapnik": "^3.6.2"
+    "mapnik": "~3.6.2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
