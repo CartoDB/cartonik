@@ -17,7 +17,7 @@ const shapeDatasource = path.join(mapnik.settings.paths.input_plugins, 'shape.in
 mapnik.register_datasource(shapeDatasource)
 
 export default class Cartonik {
-  async _load ({ xml } = {}) {
+  async load ({ xml } = {}) {
     if (typeof xml !== 'string' || xml.length === 0) {
       throw new TypeError(`Bad argument: 'xml' should be a non empty string`)
     }
@@ -28,14 +28,14 @@ export default class Cartonik {
     return promisify(fromString)(xml)
   }
 
-  async _render ({ map }) {
+  async render ({ map } = {}) {
     const image = new Image(TILE_SIZE, TILE_SIZE)
     const boundRender = map.render.bind(map)
 
     return promisify(boundRender)(image)
   }
 
-  async _encode ({ image, encoding }) {
+  async encode ({ image, encoding } = {}) {
     if (!ALLOWED_ENCODINGS[encoding]) {
       throw new TypeError(`Encoding '${encoding}' not allowed`)
     }
@@ -45,7 +45,7 @@ export default class Cartonik {
     return promisify(encode)(encoding)
   }
 
-  _extent ({ z, x, y }) {
+  extent ({ z, x, y } = {}) {
     const bbox = []
     const total = Math.pow(2, z)
     const resolution = MAX_RESOLUTION / total
@@ -60,11 +60,11 @@ export default class Cartonik {
     return bbox
   }
 
-  async tile ({ xml, coords, format }) {
-    const map = await this._load({ xml })
-    map.extent = this._extent(coords)
-    const image = await this._render({ map })
-    const tile = await this._encode({ image, encoding: format })
+  async tile ({ xml, coords, format } = {}) {
+    const map = await this.load({ xml })
+    map.extent = this.extent(coords)
+    const image = await this.render({ map })
+    const tile = await this.encode({ image, encoding: format })
 
     return tile
   }
