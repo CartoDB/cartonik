@@ -1,5 +1,6 @@
 import path from 'path'
 import mapnik, { Map, Image } from 'mapnik'
+import { promisify } from 'util'
 
 const TILE_SIZE = 256
 const ALLOWED_ENCODINGS = {
@@ -16,33 +17,35 @@ const shapeDatasource = path.join(mapnik.settings.paths.input_plugins, 'shape.in
 mapnik.register_datasource(shapeDatasource)
 
 export default class Cartonik {
-  load ({ path }) {
+  async _load ({ xml } = {}) {
+    if (typeof xml !== 'string' || xml.length === 0) {
+      throw new TypeError(`Bad argument: 'xml' should be a non empty string`)
+    }
+
     const map = new Map(TILE_SIZE, TILE_SIZE)
+    const fromString = map.fromString.bind(map)
 
-    return new Promise((resolve, reject) => {
-      map.load(path, (err, map) => err ? reject(err) : resolve(map))
-    })
+    return promisify(fromString)(xml)
   }
 
-  render ({ map }) {
+  async _render ({ map }) {
     const image = new Image(TILE_SIZE, TILE_SIZE)
+    const boundRender = map.render.bind(map)
 
-    return new Promise((resolve, reject) => {
-      map.render(image, (err, image) => err ? reject(err) : resolve(image))
-    })
+    return promisify(boundRender)(image)
   }
 
-  encode ({ image, encoding }) {
-    return new Promise((resolve, reject) => {
-      if (!ALLOWED_ENCODINGS[encoding]) {
-        return reject(new Error(`Encoding "${encoding}" not allowed`))
-      }
+  async _encode ({ image, encoding }) {
+    if (!ALLOWED_ENCODINGS[encoding]) {
+      throw new TypeError(`Encoding '${encoding}' not allowed`)
+    }
 
-      image.encode(encoding, (err, tile) => err ? reject(err) : resolve(tile))
-    })
+    const encode = image.encode.bind(image)
+
+    return promisify(encode)(encoding)
   }
 
-  extent ({ z, x, y }) {
+  _extent ({ z, x, y }) {
     const bbox = []
     const total = Math.pow(2, z)
     const resolution = MAX_RESOLUTION / total
@@ -55,5 +58,14 @@ export default class Cartonik {
     bbox.push(minx, miny, maxx, maxy)
 
     return bbox
+  }
+
+  async tile ({ xml, coords, format }) {
+    const map = await this._load({ xml })
+    map.extent = this._extent(coords)
+    const image = await this._render({ map })
+    const tile = await this._encode({ image, encoding: format })
+
+    return tile
   }
 }
