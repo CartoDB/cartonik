@@ -6,7 +6,7 @@ describe('cartonik metatile = 1', function () {
     this.cartonik = Cartonik.create()
   })
 
-  it('.tile(0/0/0) should return a valid tile', async function () {
+  it('.tile({ xml, coords: { z: 1, x: 1, y: 1 }, format: \'png\' })', async function () {
     const [ z, x, y ] = [ 0, 0, 0 ]
     const coords = { z, x, y }
     const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
@@ -18,7 +18,7 @@ describe('cartonik metatile = 1', function () {
     Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
   })
 
-  it('.tile(1/1/1) should return a valid tile', async function () {
+  it('.tile({ xml, coords: { z: 1, x: 1, y: 1 }, format: \'png\' })', async function () {
     const [ z, x, y ] = [ 1, 1, 1 ]
     const coords = { z, x, y }
     const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
@@ -30,7 +30,7 @@ describe('cartonik metatile = 1', function () {
     Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
   })
 
-  it('.tile() should throw an error', async function () {
+  it('.tile({ xml, coords: { z: 0, x: 0, y: 0 }, format: \'wadus\' })', async function () {
     const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
     try {
       await this.cartonik.tile({ xml, coords: { z: 0, x: 0, y: 0 }, format: 'wadus' })
