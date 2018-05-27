@@ -28,15 +28,18 @@ export default class Cartonik {
 
     const image = await this.mapRenderer.render({ map, coords })
 
-    const tiles = {}
+    const metatiles = this.metatile.tiles(coords)
 
-    for (let metatileCoords of this.metatile.tiles(coords)) {
-      const { z, x, y } = metatileCoords
-      const tile = await this.mapRenderer.encode({ image, coords: metatileCoords, encoding })
+    const tiles = await Promise.all(metatiles.map(({ z, x, y }) => {
+      return this.mapRenderer.encode({ image, coords: { z, x, y }, encoding })
+    }))
 
-      tiles[`${z}/${x}/${y}`] = tile
+    const result = {}
+
+    for (let [ index, { z, x, y } ] of metatiles.entries()) {
+      result[`${z}/${x}/${y}`] = tiles[index]
     }
 
-    return tiles
+    return result
   }
 }
