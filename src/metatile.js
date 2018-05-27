@@ -80,8 +80,8 @@ export default class Metatile {
     const resolution = this._resolution({ z })
     const tileLength = this._tileLength({ z })
 
-    const width = Math.min(this.size, tileLength)
-    const height = Math.min(this.size, tileLength)
+    const width = Math.min(this.size, tileLength, tileLength - x)
+    const height = Math.min(this.size, tileLength, tileLength - y)
 
     const minx = (x * TILE_SIZE) * resolution - ORIGIN_SHIFT
     const miny = -((y + height) * TILE_SIZE) * resolution + ORIGIN_SHIFT
