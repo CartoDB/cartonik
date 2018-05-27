@@ -18,7 +18,7 @@ export default class Cartonik {
     this.metatile = metatile
   }
 
-  async tile ({ xml, coords, format: encoding } = {}) {
+  async tiles ({ xml, coords, format: encoding } = {}) {
     if (!ALLOWED_ENCODINGS[encoding]) {
       throw new TypeError(`Format '${encoding}' not allowed`)
     }
