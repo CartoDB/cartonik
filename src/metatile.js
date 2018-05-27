@@ -6,12 +6,11 @@ const ORIGIN_SHIFT = EARTH_CIRCUMFERENCE / 2
 const MAX_RESOLUTION = EARTH_CIRCUMFERENCE / TILE_SIZE
 
 export default class Metatile {
-  //
   //       ◄─── dx ──►
-  //   ▲   ╬═════════╦═════════╬─────────┼─────────┼
-  //   |   ║         │         ║         │         │   ▲
-  //  dy   ║  x0,y0  │  x1,y0  ║   ...   │  xn,y0  │ shift
-  //   |   ║         │         ║         │         │   ▼
+  //   ▲   ╬═════════╦═════════╬─────────┼─────────┼─
+  //   |   ║         │         ║         │         │
+  //  dy   ║  x0,y0  │  x1,y0  ║   ...   │  xn,y0  │
+  //   |   ║         │         ║         │         │
   //   ▼  ─╠───── size = 4 ────╣─────────┼─────────┼─
   //       ║         │         ║         │         │
   //       ║  x0,y1  │  x1,y1  ║   ...   │   ...   │
@@ -32,8 +31,10 @@ export default class Metatile {
   }
 
   x0y0 ({ x, y }) {
-    const x0 = x - (x % this.size)
-    const y0 = y - (y % this.size)
+    const factor = Math.sqrt(this.size)
+
+    const x0 = (x % factor === 0) ? x : x - (x % factor)
+    const y0 = (y % factor === 0) ? y : y - (y % factor)
 
     return { x0, y0 }
   }
@@ -58,14 +59,15 @@ export default class Metatile {
 
   tiles ({ z, x, y }) {
     const tiles = []
+    const { x0, y0 } = this.x0y0({ x, y })
     const { dx: dX, dy: dY } = this.dimensions({ z, x, y })
 
     for (let dx = 0; dx < dX; dx++) {
       for (let dy = 0; dy < dY; dy++) {
         tiles.push({
           z,
-          x: x + dx,
-          y: y + dy
+          x: x0 + dx,
+          y: y0 + dy
         })
       }
     }
@@ -76,10 +78,14 @@ export default class Metatile {
   boundingBox ({ z, x, y } = {}) {
     const bbox = []
     const resolution = this._resolution({ z })
+    const tileLength = this._tileLength({ z })
+
+    const width = Math.min(this.size, tileLength)
+    const height = Math.min(this.size, tileLength)
 
     const minx = (x * TILE_SIZE) * resolution - ORIGIN_SHIFT
-    const miny = -((y + this.size) * TILE_SIZE) * resolution + ORIGIN_SHIFT
-    const maxx = ((x + this.size) * TILE_SIZE) * resolution - ORIGIN_SHIFT
+    const miny = -((y + height) * TILE_SIZE) * resolution + ORIGIN_SHIFT
+    const maxx = ((x + width) * TILE_SIZE) * resolution - ORIGIN_SHIFT
     const maxy = -((y * TILE_SIZE) * resolution - ORIGIN_SHIFT)
 
     bbox.push(minx, miny, maxx, maxy)
