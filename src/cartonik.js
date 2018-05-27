@@ -31,7 +31,7 @@ export default class Cartonik {
     const metatiles = this.metatile.tiles(coords)
 
     const tiles = await Promise.all(metatiles.map(({ z, x, y }) => {
-      return this.mapRenderer.encode({ image, coords: { z, x, y }, encoding })
+      return this.mapRenderer.slice({ image, coords: { z, x, y }, encoding })
     }))
 
     const result = {}

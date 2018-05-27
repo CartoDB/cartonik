@@ -31,7 +31,7 @@ export default class MapRenderer {
     return promisify(render)(image)
   }
 
-  async encode ({ image, coords, encoding } = {}) {
+  async slice ({ image, coords, encoding } = {}) {
     const { x, y } = coords
     const { x0, y0 } = this.metatile.x0y0({ x, y })
 
