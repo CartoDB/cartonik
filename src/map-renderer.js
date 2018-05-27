@@ -23,8 +23,8 @@ export default class MapRenderer {
     return promisify(fromString)(xml)
   }
 
-  async render ({ map, coords } = {}) {
-    const { width, height } = this.metatile.dimensionsInPixels(coords)
+  async render ({ map, z } = {}) {
+    const { width, height } = this.metatile.dimensionsInPixels({ z })
     const image = new Image(width, height)
     const render = map.render.bind(map)
 
@@ -32,8 +32,8 @@ export default class MapRenderer {
   }
 
   async slice ({ image, coords, encoding } = {}) {
-    const { x, y } = coords
-    const { x0, y0 } = this.metatile.x0y0({ x, y })
+    const { z, x, y } = coords
+    const { x0, y0 } = this.metatile.x0y0({ z, x, y })
 
     const xInPixels = (x - x0) * TILE_SIZE
     const yInPixels = (y - y0) * TILE_SIZE

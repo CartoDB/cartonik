@@ -26,7 +26,7 @@ export default class Cartonik {
     const map = await this.mapRenderer.load({ xml })
     map.extent = this.metatile.boundingBox(coords)
 
-    const image = await this.mapRenderer.render({ map, coords })
+    const image = await this.mapRenderer.render({ map, z: coords.z })
 
     const metatiles = this.metatile.tiles(coords)
 

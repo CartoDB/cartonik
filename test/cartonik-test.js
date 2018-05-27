@@ -164,5 +164,31 @@ describe('cartonik', function () {
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
     })
+
+    describe('zoom = 2', function () {
+      it('.tiles({ xml, coords: { z: 2, x: 0, y: 0 }, format: \'png\' })', async function () {
+        const [ z, x, y ] = [ 2, 0, 0 ]
+        const coords = { z, x, y }
+        const xml = EMPTY_POINT_MAP_XML
+        const format = 'png'
+
+        const tiles = await this.cartonik.tiles({ xml, coords, format })
+
+        assert.deepEqual(Object.keys(tiles), ['2/0/0', '2/0/1', '2/1/0', '2/1/1'])
+        Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 1, y: 0 }, format: \'png\' })', async function () {
+        const [ z, x, y ] = [ 2, 1, 0 ]
+        const coords = { z, x, y }
+        const xml = EMPTY_POINT_MAP_XML
+        const format = 'png'
+
+        const tiles = await this.cartonik.tiles({ xml, coords, format })
+
+        assert.deepEqual(Object.keys(tiles), ['2/0/0', '2/0/1', '2/1/0', '2/1/1'])
+        Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
+      })
+    })
   })
 })

@@ -30,26 +30,25 @@ export default class Metatile {
     this.size = size
   }
 
-  x0y0 ({ x, y }) {
-    const factor = Math.sqrt(this.size)
+  x0y0 ({ z, x, y }) {
+    const { dx, dy } = this.dimensions({ z })
 
-    const x0 = (x % factor === 0) ? x : x - (x % factor)
-    const y0 = (y % factor === 0) ? y : y - (y % factor)
+    const x0 = (x % dx === 0) ? x : x - (x % dx)
+    const y0 = (y % dy === 0) ? y : y - (y % dy)
 
     return { x0, y0 }
   }
 
-  dimensions ({ z, x, y }) {
-    const { x0, y0 } = this.x0y0({ x, y })
-    const tileLength = this._tileLength({ z })
-    const dx = Math.min(this.size, tileLength, tileLength - x0)
-    const dy = Math.min(this.size, tileLength, tileLength - y0)
+  dimensions ({ z }) {
+    let dimension = Math.sqrt(this.size)
 
-    return { dx, dy }
+    dimension = (this._tileLength({ z }) < dimension) ? 1 : dimension
+
+    return { dx: dimension, dy: dimension }
   }
 
-  dimensionsInPixels ({ z, x, y }) {
-    const { dx, dy } = this.dimensions({ z, x, y })
+  dimensionsInPixels ({ z }) {
+    const { dx, dy } = this.dimensions({ z })
 
     return {
       width: dx * TILE_SIZE,
@@ -59,8 +58,8 @@ export default class Metatile {
 
   tiles ({ z, x, y }) {
     const tiles = []
-    const { x0, y0 } = this.x0y0({ x, y })
-    const { dx: dX, dy: dY } = this.dimensions({ z, x, y })
+    const { x0, y0 } = this.x0y0({ z, x, y })
+    const { dx: dX, dy: dY } = this.dimensions({ z })
 
     for (let dx = 0; dx < dX; dx++) {
       for (let dy = 0; dy < dY; dy++) {
