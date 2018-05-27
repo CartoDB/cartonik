@@ -1,6 +1,8 @@
 import assert from 'assert'
 import Cartonik from '../src'
 
+const EMPTY_POINT_MAP_XML = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
+
 describe('cartonik metatile = 1', function () {
   beforeEach(function () {
     this.cartonik = Cartonik.create()
@@ -9,7 +11,7 @@ describe('cartonik metatile = 1', function () {
   it('.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: \'png\' })', async function () {
     const [ z, x, y ] = [ 0, 0, 0 ]
     const coords = { z, x, y }
-    const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
+    const xml = EMPTY_POINT_MAP_XML
     const format = 'png'
 
     const tiles = await this.cartonik.tiles({ xml, coords, format })
@@ -21,7 +23,7 @@ describe('cartonik metatile = 1', function () {
   it('.tiles({ xml, coords: { z: 1, x: 1, y: 1 }, format: \'png\' })', async function () {
     const [ z, x, y ] = [ 1, 1, 1 ]
     const coords = { z, x, y }
-    const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
+    const xml = EMPTY_POINT_MAP_XML
     const format = 'png'
 
     const tiles = await this.cartonik.tiles({ xml, coords, format })
@@ -31,7 +33,8 @@ describe('cartonik metatile = 1', function () {
   })
 
   it('.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: \'wadus\' })', async function () {
-    const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
+    const xml = EMPTY_POINT_MAP_XML
+
     try {
       await this.cartonik.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: 'wadus' })
     } catch (error) {
@@ -49,7 +52,7 @@ describe('cartonik metatile = 4', function () {
   it('.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: \'png\' })', async function () {
     const [ z, x, y ] = [ 0, 0, 0 ]
     const coords = { z, x, y }
-    const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
+    const xml = EMPTY_POINT_MAP_XML
     const format = 'png'
 
     const tiles = await this.cartonik.tiles({ xml, coords, format })
@@ -61,7 +64,7 @@ describe('cartonik metatile = 4', function () {
   it('.tiles({ xml, coords: { z: 1, x: 1, y: 0 }, format: \'png\' })', async function () {
     const [ z, x, y ] = [ 1, 1, 0 ]
     const coords = { z, x, y }
-    const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
+    const xml = EMPTY_POINT_MAP_XML
     const format = 'png'
 
     const tiles = await this.cartonik.tiles({ xml, coords, format })
@@ -73,7 +76,7 @@ describe('cartonik metatile = 4', function () {
   it('.tiles({ xml, coords: { z: 1, x: 0, y: 1 }, format: \'png\' })', async function () {
     const [ z, x, y ] = [ 1, 0, 1 ]
     const coords = { z, x, y }
-    const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
+    const xml = EMPTY_POINT_MAP_XML
     const format = 'png'
 
     const tiles = await this.cartonik.tiles({ xml, coords, format })
@@ -85,7 +88,7 @@ describe('cartonik metatile = 4', function () {
   it('.tiles({ xml, coords: { z: 1, x: 1, y: 1 }, format: \'png\' })', async function () {
     const [ z, x, y ] = [ 1, 1, 1 ]
     const coords = { z, x, y }
-    const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
+    const xml = EMPTY_POINT_MAP_XML
     const format = 'png'
 
     const tiles = await this.cartonik.tiles({ xml, coords, format })
@@ -95,7 +98,8 @@ describe('cartonik metatile = 4', function () {
   })
 
   it('.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: \'wadus\' })', async function () {
-    const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
+    const xml = EMPTY_POINT_MAP_XML
+
     try {
       await this.cartonik.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: 'wadus' })
     } catch (error) {
