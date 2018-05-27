@@ -6,7 +6,7 @@ describe('cartonik metatile = 1', function () {
     this.cartonik = Cartonik.create()
   })
 
-  it('.tile({ xml, coords: { z: 1, x: 1, y: 1 }, format: \'png\' })', async function () {
+  it('.tile({ xml, coords: { z: 0, x: 0, y: 0 }, format: \'png\' })', async function () {
     const [ z, x, y ] = [ 0, 0, 0 ]
     const coords = { z, x, y }
     const xml = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
