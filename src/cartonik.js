@@ -1,6 +1,7 @@
 import Metatile from './metatile'
 import MapRenderer from './map-renderer'
 
+const TILE_SIZE = 256
 const ALLOWED_ENCODINGS = {
   png: true
 }
@@ -8,7 +9,7 @@ const ALLOWED_ENCODINGS = {
 export default class Cartonik {
   static create ({ metatile: size } = {}) {
     const metatile = new Metatile({ size })
-    const mapRenderer = new MapRenderer({ metatile })
+    const mapRenderer = new MapRenderer()
 
     return new Cartonik({ mapRenderer, metatile })
   }
@@ -23,15 +24,23 @@ export default class Cartonik {
       throw new TypeError(`Format '${encoding}' not allowed`)
     }
 
+    const { z } = coords
     const map = await this.mapRenderer.load({ xml })
+
     map.extent = this.metatile.boundingBox(coords)
 
-    const image = await this.mapRenderer.render({ map, z: coords.z })
-
+    const dimensions = this.metatile.dimensions({ z })
+    const image = await this.mapRenderer.render({ map, dimensions })
     const metatiles = this.metatile.tiles(coords)
 
     const tiles = await Promise.all(metatiles.map(({ z, x, y }) => {
-      return this.mapRenderer.slice({ image, coords: { z, x, y }, encoding })
+      const { x: xFirst, y: yFirst } = this.metatile.first({ z, x, y })
+      const coords = {
+        x: (x - xFirst) * TILE_SIZE,
+        y: (y - yFirst) * TILE_SIZE
+      }
+
+      return this.mapRenderer.slice({ image, coords, encoding })
     }))
 
     const result = {}

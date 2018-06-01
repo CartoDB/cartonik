@@ -26,13 +26,4 @@ describe('map-renderer', function () {
     assert.equal(map.height, 256)
     assert.equal(map.width, 256)
   })
-
-  it('.render() should throw TypeError', async function () {
-    try {
-      await this.mapRenderer.render({ map: null, coords: { z: 0, x: 0, y: 0 } })
-    } catch (error) {
-      assert.ok(error instanceof TypeError)
-      assert.equal(error.message, 'Cannot read property \'render\' of null')
-    }
-  })
 })
