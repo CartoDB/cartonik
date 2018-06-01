@@ -28,6 +28,7 @@ export default class Metatile {
 
   constructor ({ size = 1 } = {}) {
     this.size = size
+    this.length = Math.sqrt(size)
   }
 
   x0y0 ({ z, x, y }) {
@@ -50,10 +51,9 @@ export default class Metatile {
   }
 
   _length ({ z }) {
-    const length = Math.sqrt(this.size)
     const tileLength = this._tileLength({ z })
 
-    return (tileLength < length) ? tileLength : length
+    return (tileLength < this.length) ? tileLength : this.length
   }
 
   dimensions ({ z }) {
