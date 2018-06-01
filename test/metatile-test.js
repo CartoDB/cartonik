@@ -12,13 +12,13 @@ describe('metatile (size = 1)', function () {
   })
 
   describe('zoom = 0', function () {
-    describe('.x0y0()', function () {
-      it('.x0y0({ x: 0, y: 0 }) => { x: 0, y: 0 }', function () {
+    describe('.first()', function () {
+      it('.first({ x: 0, y: 0 }) => { x: 0, y: 0 }', function () {
         const [ z, x, y ] = [ 0, 0, 0 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, { x0: 0, y0: 0 })
+        assert.deepEqual({ xFirst, yFirst }, { xFirst: 0, yFirst: 0 })
       })
     })
 
@@ -44,37 +44,37 @@ describe('metatile (size = 1)', function () {
   })
 
   describe('zoom = 1', function () {
-    describe('.x0y0()', function () {
-      it('.x0y0({ x: 0, y: 0 }) => { x: 0, y: 0 }', function () {
+    describe('.first()', function () {
+      it('.first({ x: 0, y: 0 }) => { x: 0, y: 0 }', function () {
         const [ z, x, y ] = [ 1, 0, 0 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, { x0: 0, y0: 0 })
+        assert.deepEqual({ xFirst, yFirst }, { xFirst: 0, yFirst: 0 })
       })
 
-      it('.x0y0({ x: 1, y: 0 }) => { x: 1, y: 0 }', function () {
+      it('.first({ x: 1, y: 0 }) => { x: 1, y: 0 }', function () {
         const [ z, x, y ] = [ 1, 1, 0 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, { x0: 1, y0: 0 })
+        assert.deepEqual({ xFirst, yFirst }, { xFirst: 1, yFirst: 0 })
       })
 
-      it('.x0y0({ x: 0, y: 1 }) => { x: 0, y: 1 }', function () {
+      it('.first({ x: 0, y: 1 }) => { x: 0, y: 1 }', function () {
         const [ z, x, y ] = [ 1, 0, 1 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, { x0: 0, y0: 1 })
+        assert.deepEqual({ xFirst, yFirst }, { xFirst: 0, yFirst: 1 })
       })
 
-      it('.x0y0({ x: 1, y: 1 }) => { x: 1, y: 1 }', function () {
+      it('.first({ x: 1, y: 1 }) => { x: 1, y: 1 }', function () {
         const [ z, x, y ] = [ 1, 1, 1 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, { x0: 1, y0: 1 })
+        assert.deepEqual({ xFirst, yFirst }, { xFirst: 1, yFirst: 1 })
       })
     })
 
@@ -154,15 +154,15 @@ describe('metatile (size = 4)', function () {
   })
 
   describe('zoom = 0', function () {
-    describe('.x0y0()', function () {
-      const quadrant0 = { x0: 0, y0: 0 }
+    describe('.first()', function () {
+      const quadrant0 = { xFirst: 0, yFirst: 0 }
 
-      it('.x0y0({ x: 0, y: 0 })', function () {
+      it('.first({ x: 0, y: 0 })', function () {
         const [ z, x, y ] = [ 0, 0, 0 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant0)
+        assert.deepEqual({ xFirst, yFirst }, quadrant0)
       })
     })
 
@@ -188,39 +188,39 @@ describe('metatile (size = 4)', function () {
   })
 
   describe('zoom = 1', function () {
-    describe('.x0y0()', function () {
-      const quadrant0 = { x0: 0, y0: 0 }
+    describe('.first()', function () {
+      const quadrant0 = { xFirst: 0, yFirst: 0 }
 
-      it('.x0y0({ x: 0, y: 0 })', function () {
+      it('.first({ x: 0, y: 0 })', function () {
         const [ z, x, y ] = [ 1, 0, 0 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant0)
+        assert.deepEqual({ xFirst, yFirst }, quadrant0)
       })
 
-      it('.x0y0({ x: 1, y: 0 })', function () {
+      it('.first({ x: 1, y: 0 })', function () {
         const [ z, x, y ] = [ 1, 1, 0 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant0)
+        assert.deepEqual({ xFirst, yFirst }, quadrant0)
       })
 
-      it('.x0y0({ x: 0, y: 1 })', function () {
+      it('.first({ x: 0, y: 1 })', function () {
         const [ z, x, y ] = [ 1, 0, 1 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant0)
+        assert.deepEqual({ xFirst, yFirst }, quadrant0)
       })
 
-      it('.x0y0({ x: 1, y: 1 })', function () {
+      it('.first({ x: 1, y: 1 })', function () {
         const [ z, x, y ] = [ 1, 1, 1 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant0)
+        assert.deepEqual({ xFirst, yFirst }, quadrant0)
       })
     })
 
@@ -314,107 +314,107 @@ describe('metatile (size = 4)', function () {
   })
 
   describe('zoom = 2', function () {
-    describe('.x0y0()', function () {
-      const quadrant1 = { x0: 2, y0: 0 }
+    describe('.first()', function () {
+      const quadrant1 = { xFirst: 2, yFirst: 0 }
 
-      it('.x0y0({ x: 2, y: 0 })', function () {
+      it('.first({ x: 2, y: 0 })', function () {
         const [ z, x, y ] = [ 2, 2, 0 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant1)
+        assert.deepEqual({ xFirst, yFirst }, quadrant1)
       })
 
-      it('.x0y0({ x: 3, y: 0 })', function () {
+      it('.first({ x: 3, y: 0 })', function () {
         const [ z, x, y ] = [ 2, 3, 0 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant1)
+        assert.deepEqual({ xFirst, yFirst }, quadrant1)
       })
 
-      it('.x0y0({ x: 2, y: 1 })', function () {
+      it('.first({ x: 2, y: 1 })', function () {
         const [ z, x, y ] = [ 2, 2, 1 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant1)
+        assert.deepEqual({ xFirst, yFirst }, quadrant1)
       })
 
-      it('.x0y0({ x: 3, y: 1 })', function () {
+      it('.first({ x: 3, y: 1 })', function () {
         const [ z, x, y ] = [ 2, 3, 1 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant1)
+        assert.deepEqual({ xFirst, yFirst }, quadrant1)
       })
 
-      const quadrant2 = { x0: 0, y0: 2 }
+      const quadrant2 = { xFirst: 0, yFirst: 2 }
 
-      it('.x0y0({ x: 0, y: 2 })', function () {
+      it('.first({ x: 0, y: 2 })', function () {
         const [ z, x, y ] = [ 2, 0, 2 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant2)
+        assert.deepEqual({ xFirst, yFirst }, quadrant2)
       })
 
-      it('.x0y0({ x: 1, y: 2 })', function () {
+      it('.first({ x: 1, y: 2 })', function () {
         const [ z, x, y ] = [ 2, 1, 2 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant2)
+        assert.deepEqual({ xFirst, yFirst }, quadrant2)
       })
 
-      it('.x0y0({ x: 0, y: 3 })', function () {
+      it('.first({ x: 0, y: 3 })', function () {
         const [ z, x, y ] = [ 2, 0, 3 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant2)
+        assert.deepEqual({ xFirst, yFirst }, quadrant2)
       })
 
-      it('.x0y0({ x: 1, y: 3 })', function () {
+      it('.first({ x: 1, y: 3 })', function () {
         const [ z, x, y ] = [ 2, 1, 3 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant2)
+        assert.deepEqual({ xFirst, yFirst }, quadrant2)
       })
 
-      const quadrant3 = { x0: 2, y0: 2 }
+      const quadrant3 = { xFirst: 2, yFirst: 2 }
 
-      it('.x0y0({ x: 2, y: 2 })', function () {
+      it('.first({ x: 2, y: 2 })', function () {
         const [ z, x, y ] = [ 2, 2, 2 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant3)
+        assert.deepEqual({ xFirst, yFirst }, quadrant3)
       })
 
-      it('.x0y0({ x: 3, y: 2 })', function () {
+      it('.first({ x: 3, y: 2 })', function () {
         const [ z, x, y ] = [ 2, 3, 2 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant3)
+        assert.deepEqual({ xFirst, yFirst }, quadrant3)
       })
 
-      it('.x0y0({ x: 2, y: 3 })', function () {
+      it('.first({ x: 2, y: 3 })', function () {
         const [ z, x, y ] = [ 2, 2, 3 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant3)
+        assert.deepEqual({ xFirst, yFirst }, quadrant3)
       })
 
-      it('.x0y0({ x: 3, y: 3 })', function () {
+      it('.first({ x: 3, y: 3 })', function () {
         const [ z, x, y ] = [ 2, 3, 3 ]
 
-        const { x0, y0 } = this.metatile.x0y0({ z, x, y })
+        const { xFirst, yFirst } = this.metatile.first({ z, x, y })
 
-        assert.deepEqual({ x0, y0 }, quadrant3)
+        assert.deepEqual({ xFirst, yFirst }, quadrant3)
       })
     })
 

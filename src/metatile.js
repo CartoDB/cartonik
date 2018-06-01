@@ -31,21 +31,21 @@ export default class Metatile {
     this.length = Math.sqrt(size)
   }
 
-  x0y0 ({ z, x, y }) {
+  first ({ z, x, y }) {
     const { dx, dy } = this._offset({ z })
 
-    const x0 = (x % dx === 0) ? x : x - (x % dx)
-    const y0 = (y % dy === 0) ? y : y - (y % dy)
+    const xFirst = (x % dx === 0) ? x : x - (x % dx)
+    const yFirst = (y % dy === 0) ? y : y - (y % dy)
 
-    return { x0, y0 }
+    return { xFirst, yFirst }
   }
 
   last ({ z, x, y }) {
-    const { x0, y0 } = this.x0y0({ z, x, y })
+    const { xFirst, yFirst } = this.first({ z, x, y })
     const { dx, dy } = this._offset({ z })
 
-    const xLast = (x0 + dx)
-    const yLast = (y0 + dy)
+    const xLast = (xFirst + dx)
+    const yLast = (yFirst + dy)
 
     return { xLast, yLast }
   }
@@ -69,15 +69,15 @@ export default class Metatile {
 
   tiles ({ z, x, y }) {
     const tiles = []
-    const { x0, y0 } = this.x0y0({ z, x, y })
+    const { xFirst, yFirst } = this.first({ z, x, y })
     const { dx: dX, dy: dY } = this._offset({ z })
 
     for (let dx = 0; dx < dX; dx++) {
       for (let dy = 0; dy < dY; dy++) {
         tiles.push({
           z,
-          x: x0 + dx,
-          y: y0 + dy
+          x: xFirst + dx,
+          y: yFirst + dy
         })
       }
     }
@@ -87,13 +87,13 @@ export default class Metatile {
 
   boundingBox ({ z, x, y } = {}) {
     const resolution = this._resolution({ z })
-    const { x0: xmin, y0: ymin } = this.x0y0({ z, x, y })
+    const { xFirst, yFirst } = this.first({ z, x, y })
     const { xLast, yLast } = this.last({ z, x, y })
 
-    const minx = (xmin * TILE_SIZE) * resolution - ORIGIN_SHIFT
+    const minx = (xFirst * TILE_SIZE) * resolution - ORIGIN_SHIFT
     const miny = -(yLast * TILE_SIZE) * resolution + ORIGIN_SHIFT
     const maxx = (xLast * TILE_SIZE) * resolution - ORIGIN_SHIFT
-    const maxy = -(ymin * TILE_SIZE) * resolution + ORIGIN_SHIFT
+    const maxy = -(yFirst * TILE_SIZE) * resolution + ORIGIN_SHIFT
 
     const bbox = [ minx, miny, maxx, maxy ]
 
