@@ -33,7 +33,7 @@ export default class MapRenderer {
 
   async slice ({ image, coords, encoding } = {}) {
     const { z, x, y } = coords
-    const { xFirst, yFirst } = this.metatile.first({ z, x, y })
+    const { x: xFirst, y: yFirst } = this.metatile.first({ z, x, y })
 
     const xInPixels = (x - xFirst) * TILE_SIZE
     const yInPixels = (y - yFirst) * TILE_SIZE

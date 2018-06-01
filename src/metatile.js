@@ -37,17 +37,17 @@ export default class Metatile {
     const xFirst = (x % dx === 0) ? x : x - (x % dx)
     const yFirst = (y % dy === 0) ? y : y - (y % dy)
 
-    return { xFirst, yFirst }
+    return { x: xFirst, y: yFirst }
   }
 
   last ({ z, x, y }) {
-    const { xFirst, yFirst } = this.first({ z, x, y })
+    const { x: xFirst, y: yFirst } = this.first({ z, x, y })
     const { dx, dy } = this._offset({ z })
 
-    const xLast = (xFirst + dx)
-    const yLast = (yFirst + dy)
+    const xLast = xFirst + dx
+    const yLast = yFirst + dy
 
-    return { xLast, yLast }
+    return { x: xLast, y: yLast }
   }
 
   _offset ({ z }) {
@@ -69,7 +69,7 @@ export default class Metatile {
 
   tiles ({ z, x, y }) {
     const tiles = []
-    const { xFirst, yFirst } = this.first({ z, x, y })
+    const { x: xFirst, y: yFirst } = this.first({ z, x, y })
     const { dx: dX, dy: dY } = this._offset({ z })
 
     for (let dx = 0; dx < dX; dx++) {
@@ -87,8 +87,8 @@ export default class Metatile {
 
   boundingBox ({ z, x, y } = {}) {
     const resolution = this._resolution({ z })
-    const { xFirst, yFirst } = this.first({ z, x, y })
-    const { xLast, yLast } = this.last({ z, x, y })
+    const { x: xFirst, y: yFirst } = this.first({ z, x, y })
+    const { x: xLast, y: yLast } = this.last({ z, x, y })
 
     const minx = (xFirst * TILE_SIZE) * resolution - ORIGIN_SHIFT
     const miny = -(yLast * TILE_SIZE) * resolution + ORIGIN_SHIFT
