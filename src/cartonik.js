@@ -46,7 +46,7 @@ export default class Cartonik {
     const result = {}
 
     for (let [ index, { z, x, y } ] of metatiles.entries()) {
-      result[`${z}/${x}/${y}`] = tiles[index]
+      result[`${z}/${x}/${y}.${encoding}`] = tiles[index]
     }
 
     return result
