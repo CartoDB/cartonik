@@ -50,14 +50,14 @@ export default class Metatile {
     return { xn, yn }
   }
 
-  _length ({ z }) {
+  _offset ({ z }) {
     const tileLength = this._tileLength({ z })
 
     return (tileLength < this.length) ? tileLength : this.length
   }
 
   dimensions ({ z }) {
-    const metatileLength = this._length({ z })
+    const metatileLength = this._offset({ z })
 
     return { dx: metatileLength, dy: metatileLength }
   }
