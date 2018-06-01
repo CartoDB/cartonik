@@ -24,7 +24,7 @@ export default class MapRenderer {
   }
 
   async render ({ map, z } = {}) {
-    const { width, height } = this.metatile.dimensionsInPixels({ z })
+    const { width, height } = this.metatile.dimensions({ z })
     const image = new Image(width, height)
     const render = map.render.bind(map)
 

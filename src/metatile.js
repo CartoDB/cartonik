@@ -32,7 +32,7 @@ export default class Metatile {
   }
 
   x0y0 ({ z, x, y }) {
-    const { dx, dy } = this.dimensions({ z })
+    const { dx, dy } = this._offset({ z })
 
     const x0 = (x % dx === 0) ? x : x - (x % dx)
     const y0 = (y % dy === 0) ? y : y - (y % dy)
@@ -42,7 +42,7 @@ export default class Metatile {
 
   xnyn ({ z, x, y }) {
     const { x0, y0 } = this.x0y0({ z, x, y })
-    const { dx, dy } = this.dimensions({ z })
+    const { dx, dy } = this._offset({ z })
 
     const xn = (x0 + dx)
     const yn = (y0 + dy)
@@ -51,19 +51,15 @@ export default class Metatile {
   }
 
   _offset ({ z }) {
-    const tileLength = this._tileLength({ z })
+    const tileLength = this._zoomTileLength({ z })
 
-    return (tileLength < this.length) ? tileLength : this.length
+    const offset = (tileLength < this.length) ? tileLength : this.length
+
+    return { dx: offset, dy: offset }
   }
 
   dimensions ({ z }) {
-    const metatileLength = this._offset({ z })
-
-    return { dx: metatileLength, dy: metatileLength }
-  }
-
-  dimensionsInPixels ({ z }) {
-    const { dx, dy } = this.dimensions({ z })
+    const { dx, dy } = this._offset({ z })
 
     return {
       width: dx * TILE_SIZE,
@@ -74,7 +70,7 @@ export default class Metatile {
   tiles ({ z, x, y }) {
     const tiles = []
     const { x0, y0 } = this.x0y0({ z, x, y })
-    const { dx: dX, dy: dY } = this.dimensions({ z })
+    const { dx: dX, dy: dY } = this._offset({ z })
 
     for (let dx = 0; dx < dX; dx++) {
       for (let dy = 0; dy < dY; dy++) {
@@ -105,10 +101,10 @@ export default class Metatile {
   }
 
   _resolution ({ z }) {
-    return MAX_RESOLUTION / this._tileLength({ z })
+    return MAX_RESOLUTION / this._zoomTileLength({ z })
   }
 
-  _tileLength ({ z }) {
+  _zoomTileLength ({ z }) {
     //  z = 0 => 2^0 = 1
     //  length = 1
     // ◄─────────►
