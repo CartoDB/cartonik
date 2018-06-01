@@ -49,12 +49,17 @@ export default class Metatile {
     return { xn, yn }
   }
 
+  _metatileLength ({ z }) {
+    const metatileLength = Math.sqrt(this.size)
+    const tileLength = this._tileLength({ z })
+
+    return (tileLength < metatileLength) ? tileLength : metatileLength
+  }
+
   dimensions ({ z }) {
-    let dimension = Math.sqrt(this.size)
+    const metatileLength = this._metatileLength({ z })
 
-    dimension = (this._tileLength({ z }) < dimension) ? 1 : dimension
-
-    return { dx: dimension, dy: dimension }
+    return { dx: metatileLength, dy: metatileLength }
   }
 
   dimensionsInPixels ({ z }) {
