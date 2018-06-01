@@ -40,24 +40,6 @@ export default class Metatile {
     return { x: xFirst, y: yFirst }
   }
 
-  last ({ z, x, y }) {
-    const { x: xFirst, y: yFirst } = this.first({ z, x, y })
-    const { dx, dy } = this._offset({ z })
-
-    const xLast = xFirst + dx
-    const yLast = yFirst + dy
-
-    return { x: xLast, y: yLast }
-  }
-
-  _offset ({ z }) {
-    const tileLength = this._zoomTileLength({ z })
-
-    const offset = (tileLength < this.length) ? tileLength : this.length
-
-    return { dx: offset, dy: offset }
-  }
-
   dimensions ({ z }) {
     const { dx, dy } = this._offset({ z })
 
@@ -88,16 +70,24 @@ export default class Metatile {
   boundingBox ({ z, x, y } = {}) {
     const resolution = this._resolution({ z })
     const { x: xFirst, y: yFirst } = this.first({ z, x, y })
-    const { x: xLast, y: yLast } = this.last({ z, x, y })
+    const { dx, dy } = this._offset({ z })
 
     const minx = (xFirst * TILE_SIZE) * resolution - ORIGIN_SHIFT
-    const miny = -(yLast * TILE_SIZE) * resolution + ORIGIN_SHIFT
-    const maxx = (xLast * TILE_SIZE) * resolution - ORIGIN_SHIFT
+    const miny = -((yFirst + dy) * TILE_SIZE) * resolution + ORIGIN_SHIFT
+    const maxx = ((xFirst + dx) * TILE_SIZE) * resolution - ORIGIN_SHIFT
     const maxy = -(yFirst * TILE_SIZE) * resolution + ORIGIN_SHIFT
 
     const bbox = [ minx, miny, maxx, maxy ]
 
     return bbox
+  }
+
+  _offset ({ z }) {
+    const tileLength = this._zoomTileLength({ z })
+
+    const offset = (tileLength < this.length) ? tileLength : this.length
+
+    return { dx: offset, dy: offset }
   }
 
   _resolution ({ z }) {
