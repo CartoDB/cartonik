@@ -28,7 +28,7 @@ describe('metatile (size = 1)', function () {
     })
 
     describe('.boundingBox()', function () {
-      it('.boundingBox({ z: 0, x: 0, y: 0 })  => [ -20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244 ]', function () {
+      it('.boundingBox({ z: 0, x: 0, y: 0 })', function () {
         const [ z, x, y ] = [ 0, 0, 0 ]
 
         const bbox = this.metatile.boundingBox({ z, x, y })
@@ -108,7 +108,7 @@ describe('metatile (size = 1)', function () {
     })
 
     describe('.boundingBox()', function () {
-      it('.boundingBox({ z: 1, x: 0, y: 0 }) => [ -20037508.342789244, 0, 0, 20037508.342789244 ]', function () {
+      it('.boundingBox({ z: 1, x: 0, y: 0 })', function () {
         const [ z, x, y ] = [ 1, 0, 0 ]
 
         const bbox = this.metatile.boundingBox({ z, x, y })
@@ -116,7 +116,7 @@ describe('metatile (size = 1)', function () {
         assert.deepEqual(bbox, [ -20037508.342789244, 0, 0, 20037508.342789244 ])
       })
 
-      it('.boundingBox({ z: 1, x: 1, y: 0 }) => [ 0, 0, 20037508.342789244, 20037508.342789244 ]', function () {
+      it('.boundingBox({ z: 1, x: 1, y: 0 })', function () {
         const [ z, x, y ] = [ 1, 1, 0 ]
 
         const bbox = this.metatile.boundingBox({ z, x, y })
@@ -124,7 +124,7 @@ describe('metatile (size = 1)', function () {
         assert.deepEqual(bbox, [ 0, 0, 20037508.342789244, 20037508.342789244 ])
       })
 
-      it('.boundingBox({ z: 1, x: 0, y: 1 }) => [ -20037508.342789244, -20037508.342789244, 0, 0 ]', function () {
+      it('.boundingBox({ z: 1, x: 0, y: 1 })', function () {
         const [ z, x, y ] = [ 1, 0, 1 ]
 
         const bbox = this.metatile.boundingBox({ z, x, y })
@@ -132,7 +132,7 @@ describe('metatile (size = 1)', function () {
         assert.deepEqual(bbox, [ -20037508.342789244, -20037508.342789244, 0, 0 ])
       })
 
-      it('.boundingBox({ z: 1, x: 1, y: 1 }) => [ 0, -20037508.342789244, 20037508.342789244, 0 ]', function () {
+      it('.boundingBox({ z: 1, x: 1, y: 1 })', function () {
         const [ z, x, y ] = [ 1, 1, 1 ]
 
         const bbox = this.metatile.boundingBox({ z, x, y })
