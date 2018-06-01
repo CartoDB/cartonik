@@ -39,6 +39,16 @@ export default class Metatile {
     return { x0, y0 }
   }
 
+  xnyn ({ z, x, y }) {
+    const { x0, y0 } = this.x0y0({ z, x, y })
+    const { dx, dy } = this.dimensions({ z })
+
+    const xn = (x0 + dx)
+    const yn = (y0 + dy)
+
+    return { xn, yn }
+  }
+
   dimensions ({ z }) {
     let dimension = Math.sqrt(this.size)
 
@@ -75,19 +85,16 @@ export default class Metatile {
   }
 
   boundingBox ({ z, x, y } = {}) {
-    const bbox = []
     const resolution = this._resolution({ z })
-    const tileLength = this._tileLength({ z })
+    const { x0: xmin, y0: ymin } = this.x0y0({ z, x, y })
+    const { xn: xmax, yn: ymax } = this.xnyn({ z, x, y })
 
-    const width = Math.min(this.size, tileLength, tileLength - x)
-    const height = Math.min(this.size, tileLength, tileLength - y)
+    const minx = (xmin * TILE_SIZE) * resolution - ORIGIN_SHIFT
+    const miny = -(ymax * TILE_SIZE) * resolution + ORIGIN_SHIFT
+    const maxx = (xmax * TILE_SIZE) * resolution - ORIGIN_SHIFT
+    const maxy = -(ymin * TILE_SIZE) * resolution + ORIGIN_SHIFT
 
-    const minx = (x * TILE_SIZE) * resolution - ORIGIN_SHIFT
-    const miny = -((y + height) * TILE_SIZE) * resolution + ORIGIN_SHIFT
-    const maxx = ((x + width) * TILE_SIZE) * resolution - ORIGIN_SHIFT
-    const maxy = -((y * TILE_SIZE) * resolution - ORIGIN_SHIFT)
-
-    bbox.push(minx, miny, maxx, maxy)
+    const bbox = [ minx, miny, maxx, maxy ]
 
     return bbox
   }

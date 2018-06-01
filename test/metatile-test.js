@@ -1,6 +1,11 @@
 import assert from 'assert'
 import Metatile from '../src/metatile'
 
+const FULL = 20037508.342789244
+const HALF = 0
+// const QUAD = 10018754.171394622
+// const QUADX = 10018754.17139462
+
 describe('metatile (size = 1)', function () {
   beforeEach(function () {
     this.metatile = new Metatile({ size: 1 })
@@ -33,7 +38,7 @@ describe('metatile (size = 1)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ -20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244 ])
+        assert.deepEqual(bbox, [ -FULL, -FULL, FULL, FULL ])
       })
     })
   })
@@ -113,7 +118,7 @@ describe('metatile (size = 1)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ -20037508.342789244, 0, 0, 20037508.342789244 ])
+        assert.deepEqual(bbox, [ -FULL, HALF, HALF, FULL ])
       })
 
       it('.boundingBox({ z: 1, x: 1, y: 0 })', function () {
@@ -121,7 +126,7 @@ describe('metatile (size = 1)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ 0, 0, 20037508.342789244, 20037508.342789244 ])
+        assert.deepEqual(bbox, [ HALF, HALF, FULL, FULL ])
       })
 
       it('.boundingBox({ z: 1, x: 0, y: 1 })', function () {
@@ -129,7 +134,7 @@ describe('metatile (size = 1)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ -20037508.342789244, -20037508.342789244, 0, 0 ])
+        assert.deepEqual(bbox, [ -FULL, -FULL, HALF, HALF ])
       })
 
       it('.boundingBox({ z: 1, x: 1, y: 1 })', function () {
@@ -137,7 +142,7 @@ describe('metatile (size = 1)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ 0, -20037508.342789244, 20037508.342789244, 0 ])
+        assert.deepEqual(bbox, [ HALF, -FULL, FULL, HALF ])
       })
     })
   })
@@ -177,7 +182,7 @@ describe('metatile (size = 4)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ -20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244 ])
+        assert.deepEqual(bbox, [ -FULL, -FULL, FULL, FULL ])
       })
     })
   })
@@ -279,7 +284,7 @@ describe('metatile (size = 4)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ -20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244 ])
+        assert.deepEqual(bbox, [ -FULL, -FULL, FULL, FULL ])
       })
 
       it('.boundingBox({ z: 1, x: 1, y: 0 })', function () {
@@ -287,7 +292,7 @@ describe('metatile (size = 4)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ 0, -20037508.342789244, 20037508.342789244, 20037508.342789244 ])
+        assert.deepEqual(bbox, [ -FULL, -FULL, FULL, FULL ])
       })
 
       it('.boundingBox({ z: 1, x: 0, y: 1 })', function () {
@@ -295,7 +300,7 @@ describe('metatile (size = 4)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ -20037508.342789244, -20037508.342789244, 20037508.342789244, 0 ])
+        assert.deepEqual(bbox, [ -FULL, -FULL, FULL, FULL ])
       })
 
       it('.boundingBox({ z: 1, x: 1, y: 1 })', function () {
@@ -303,7 +308,7 @@ describe('metatile (size = 4)', function () {
 
         const bbox = this.metatile.boundingBox({ z, x, y })
 
-        assert.deepEqual(bbox, [ 0, -20037508.342789244, 20037508.342789244, 0 ])
+        assert.deepEqual(bbox, [ -FULL, -FULL, FULL, FULL ])
       })
     })
   })
@@ -425,6 +430,331 @@ describe('metatile (size = 4)', function () {
           { z: 2, x: 1, y: 0 },
           { z: 2, x: 1, y: 1 }
         ])
+      })
+
+      it('.tiles({ z: 2, x: 1, y: 0 })', function () {
+        const [ z, x, y ] = [ 2, 1, 0 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 0, y: 0 },
+          { z: 2, x: 0, y: 1 },
+          { z: 2, x: 1, y: 0 },
+          { z: 2, x: 1, y: 1 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 0, y: 1 })', function () {
+        const [ z, x, y ] = [ 2, 0, 1 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 0, y: 0 },
+          { z: 2, x: 0, y: 1 },
+          { z: 2, x: 1, y: 0 },
+          { z: 2, x: 1, y: 1 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 1, y: 1 })', function () {
+        const [ z, x, y ] = [ 2, 1, 1 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 0, y: 0 },
+          { z: 2, x: 0, y: 1 },
+          { z: 2, x: 1, y: 0 },
+          { z: 2, x: 1, y: 1 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 2, y: 0 })', function () {
+        const [ z, x, y ] = [ 2, 2, 0 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 2, y: 0 },
+          { z: 2, x: 2, y: 1 },
+          { z: 2, x: 3, y: 0 },
+          { z: 2, x: 3, y: 1 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 2, y: 1 })', function () {
+        const [ z, x, y ] = [ 2, 2, 1 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 2, y: 0 },
+          { z: 2, x: 2, y: 1 },
+          { z: 2, x: 3, y: 0 },
+          { z: 2, x: 3, y: 1 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 3, y: 0 })', function () {
+        const [ z, x, y ] = [ 2, 3, 0 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 2, y: 0 },
+          { z: 2, x: 2, y: 1 },
+          { z: 2, x: 3, y: 0 },
+          { z: 2, x: 3, y: 1 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 3, y: 1 })', function () {
+        const [ z, x, y ] = [ 2, 3, 1 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 2, y: 0 },
+          { z: 2, x: 2, y: 1 },
+          { z: 2, x: 3, y: 0 },
+          { z: 2, x: 3, y: 1 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 0, y: 2 })', function () {
+        const [ z, x, y ] = [ 2, 0, 2 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 0, y: 2 },
+          { z: 2, x: 0, y: 3 },
+          { z: 2, x: 1, y: 2 },
+          { z: 2, x: 1, y: 3 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 1, y: 2 })', function () {
+        const [ z, x, y ] = [ 2, 1, 2 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 0, y: 2 },
+          { z: 2, x: 0, y: 3 },
+          { z: 2, x: 1, y: 2 },
+          { z: 2, x: 1, y: 3 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 0, y: 3 })', function () {
+        const [ z, x, y ] = [ 2, 0, 3 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 0, y: 2 },
+          { z: 2, x: 0, y: 3 },
+          { z: 2, x: 1, y: 2 },
+          { z: 2, x: 1, y: 3 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 1, y: 3 })', function () {
+        const [ z, x, y ] = [ 2, 1, 3 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 0, y: 2 },
+          { z: 2, x: 0, y: 3 },
+          { z: 2, x: 1, y: 2 },
+          { z: 2, x: 1, y: 3 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 2, y: 2 })', function () {
+        const [ z, x, y ] = [ 2, 2, 2 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 2, y: 2 },
+          { z: 2, x: 2, y: 3 },
+          { z: 2, x: 3, y: 2 },
+          { z: 2, x: 3, y: 3 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 2, y: 3 })', function () {
+        const [ z, x, y ] = [ 2, 2, 3 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 2, y: 2 },
+          { z: 2, x: 2, y: 3 },
+          { z: 2, x: 3, y: 2 },
+          { z: 2, x: 3, y: 3 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 3, y: 2 })', function () {
+        const [ z, x, y ] = [ 2, 3, 2 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 2, y: 2 },
+          { z: 2, x: 2, y: 3 },
+          { z: 2, x: 3, y: 2 },
+          { z: 2, x: 3, y: 3 }
+        ])
+      })
+
+      it('.tiles({ z: 2, x: 3, y: 3 })', function () {
+        const [ z, x, y ] = [ 2, 3, 3 ]
+
+        const tiles = this.metatile.tiles({ z, x, y })
+
+        assert.deepEqual(tiles, [
+          { z: 2, x: 2, y: 2 },
+          { z: 2, x: 2, y: 3 },
+          { z: 2, x: 3, y: 2 },
+          { z: 2, x: 3, y: 3 }
+        ])
+      })
+    })
+
+    describe('.boundingBox()', function () {
+      it('.boundingBox({ z: 2, x: 0, y: 0 })', function () {
+        const [ z, x, y ] = [ 2, 0, 0 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ -FULL, HALF, HALF, FULL ])
+      })
+
+      it('.boundingBox({ z: 2, x: 1, y: 0 })', function () {
+        const [ z, x, y ] = [ 2, 1, 0 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ -FULL, HALF, HALF, FULL ])
+      })
+
+      it('.boundingBox({ z: 2, x: 0, y: 1 })', function () {
+        const [ z, x, y ] = [ 2, 0, 1 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ -FULL, HALF, HALF, FULL ])
+      })
+
+      it('.boundingBox({ z: 2, x: 1, y: 1 })', function () {
+        const [ z, x, y ] = [ 2, 1, 1 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ -FULL, HALF, HALF, FULL ])
+      })
+
+      it('.boundingBox({ z: 2, x: 2, y: 0 })', function () {
+        const [ z, x, y ] = [ 2, 2, 0 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ HALF, HALF, FULL, FULL ])
+      })
+
+      it('.boundingBox({ z: 2, x: 3, y: 0 })', function () {
+        const [ z, x, y ] = [ 2, 3, 0 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ HALF, HALF, FULL, FULL ])
+      })
+
+      it('.boundingBox({ z: 2, x: 2, y: 1 })', function () {
+        const [ z, x, y ] = [ 2, 2, 1 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ HALF, HALF, FULL, FULL ])
+      })
+
+      it('.boundingBox({ z: 2, x: 3, y: 1 })', function () {
+        const [ z, x, y ] = [ 2, 3, 1 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ HALF, HALF, FULL, FULL ])
+      })
+
+      it('.boundingBox({ z: 2, x: 0, y: 2 })', function () {
+        const [ z, x, y ] = [ 2, 0, 2 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ -FULL, -FULL, HALF, HALF ])
+      })
+
+      it('.boundingBox({ z: 2, x: 1, y: 2 })', function () {
+        const [ z, x, y ] = [ 2, 1, 2 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ -FULL, -FULL, HALF, HALF ])
+      })
+
+      it('.boundingBox({ z: 2, x: 0, y: 3 })', function () {
+        const [ z, x, y ] = [ 2, 0, 3 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ -FULL, -FULL, HALF, HALF ])
+      })
+
+      it('.boundingBox({ z: 2, x: 1, y: 3 })', function () {
+        const [ z, x, y ] = [ 2, 1, 3 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ -FULL, -FULL, HALF, HALF ])
+      })
+
+      it('.boundingBox({ z: 2, x: 2, y: 2 })', function () {
+        const [ z, x, y ] = [ 2, 2, 2 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ HALF, -FULL, FULL, HALF ])
+      })
+
+      it('.boundingBox({ z: 2, x: 3, y: 2 })', function () {
+        const [ z, x, y ] = [ 2, 3, 2 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ HALF, -FULL, FULL, HALF ])
+      })
+
+      it('.boundingBox({ z: 2, x: 2, y: 3 })', function () {
+        const [ z, x, y ] = [ 2, 2, 3 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ HALF, -FULL, FULL, HALF ])
+      })
+
+      it('.boundingBox({ z: 2, x: 3, y: 3 })', function () {
+        const [ z, x, y ] = [ 2, 3, 3 ]
+
+        const bbox = this.metatile.boundingBox({ z, x, y })
+
+        assert.deepEqual(bbox, [ HALF, -FULL, FULL, HALF ])
       })
     })
   })
