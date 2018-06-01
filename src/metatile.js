@@ -40,14 +40,14 @@ export default class Metatile {
     return { x0, y0 }
   }
 
-  xnyn ({ z, x, y }) {
+  last ({ z, x, y }) {
     const { x0, y0 } = this.x0y0({ z, x, y })
     const { dx, dy } = this._offset({ z })
 
-    const xn = (x0 + dx)
-    const yn = (y0 + dy)
+    const xLast = (x0 + dx)
+    const yLast = (y0 + dy)
 
-    return { xn, yn }
+    return { xLast, yLast }
   }
 
   _offset ({ z }) {
@@ -88,11 +88,11 @@ export default class Metatile {
   boundingBox ({ z, x, y } = {}) {
     const resolution = this._resolution({ z })
     const { x0: xmin, y0: ymin } = this.x0y0({ z, x, y })
-    const { xn: xmax, yn: ymax } = this.xnyn({ z, x, y })
+    const { xLast, yLast } = this.last({ z, x, y })
 
     const minx = (xmin * TILE_SIZE) * resolution - ORIGIN_SHIFT
-    const miny = -(ymax * TILE_SIZE) * resolution + ORIGIN_SHIFT
-    const maxx = (xmax * TILE_SIZE) * resolution - ORIGIN_SHIFT
+    const miny = -(yLast * TILE_SIZE) * resolution + ORIGIN_SHIFT
+    const maxx = (xLast * TILE_SIZE) * resolution - ORIGIN_SHIFT
     const maxy = -(ymin * TILE_SIZE) * resolution + ORIGIN_SHIFT
 
     const bbox = [ minx, miny, maxx, maxy ]
