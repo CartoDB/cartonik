@@ -33,14 +33,13 @@ export default class Cartonik {
 
     const image = await this.mapRenderer.render({ map, dimensions })
 
-    const tiles = await Promise.all(this.metatile.tiles(coords).map((tile) => {
-      const { z, x, y } = tile
-      const { xOffsetInPixels, yOffsetInPixels } = tile
+    const tiles = await Promise.all(this.metatile.tiles(coords).map(({ z, x, y, xOffsetInPixels, yOffsetInPixels }) => {
       const coords = { x: xOffsetInPixels, y: yOffsetInPixels }
+      const options = { image, coords, encoding }
 
-      return this.mapRenderer.slice({ image, coords, encoding }).then(tile => ({ [`${z}/${x}/${y}.${encoding}`]: tile }))
+      return this.mapRenderer.slice(options).then(tile => ({ [`${z}/${x}/${y}.${encoding}`]: tile }))
     }))
 
-    return tiles.reduce((result, tile) => Object.assign(result, tile), {})
+    return tiles.reduce((tiles, tile) => Object.assign(tiles, tile), {})
   }
 }
