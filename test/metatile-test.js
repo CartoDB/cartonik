@@ -45,7 +45,7 @@ describe('metatile (size = 1)', function () {
 
   describe('zoom = 1', function () {
     describe('.first()', function () {
-      it('.first({ x: 0, y: 0 }) => { x: 0, y: 0 }', function () {
+      it('.first({ x: 0, y: 0 })', function () {
         const [ z, x, y ] = [ 1, 0, 0 ]
 
         const tile = this.metatile.first({ z, x, y })
@@ -53,7 +53,7 @@ describe('metatile (size = 1)', function () {
         assert.deepEqual(tile, { x: 0, y: 0 })
       })
 
-      it('.first({ x: 1, y: 0 }) => { x: 1, y: 0 }', function () {
+      it('.first({ x: 1, y: 0 })', function () {
         const [ z, x, y ] = [ 1, 1, 0 ]
 
         const tile = this.metatile.first({ z, x, y })
@@ -61,7 +61,7 @@ describe('metatile (size = 1)', function () {
         assert.deepEqual(tile, { x: 1, y: 0 })
       })
 
-      it('.first({ x: 0, y: 1 }) => { x: 0, y: 1 }', function () {
+      it('.first({ x: 0, y: 1 })', function () {
         const [ z, x, y ] = [ 1, 0, 1 ]
 
         const tile = this.metatile.first({ z, x, y })
@@ -69,7 +69,7 @@ describe('metatile (size = 1)', function () {
         assert.deepEqual(tile, { x: 0, y: 1 })
       })
 
-      it('.first({ x: 1, y: 1 }) => { x: 1, y: 1 }', function () {
+      it('.first({ x: 1, y: 1 })', function () {
         const [ z, x, y ] = [ 1, 1, 1 ]
 
         const tile = this.metatile.first({ z, x, y })
