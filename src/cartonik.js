@@ -1,7 +1,6 @@
 import Metatile from './metatile'
 import MapRenderer from './map-renderer'
 
-const TILE_SIZE = 256
 const ALLOWED_ENCODINGS = {
   png: true
 }
@@ -24,31 +23,24 @@ export default class Cartonik {
       throw new TypeError(`Format '${encoding}' not allowed`)
     }
 
-    const { z } = coords
     const map = await this.mapRenderer.load({ xml })
+    const { z } = coords
+    const dimensions = this.metatile.dimensions({ z })
+    const { width, height } = dimensions
 
+    map.resize(width, height)
     map.extent = this.metatile.boundingBox(coords)
 
-    const dimensions = this.metatile.dimensions({ z })
     const image = await this.mapRenderer.render({ map, dimensions })
-    const metatiles = this.metatile.tiles(coords)
 
-    const tiles = await Promise.all(metatiles.map(({ z, x, y }) => {
-      const { x: xFirst, y: yFirst } = this.metatile.first({ z, x, y })
-      const coords = {
-        x: (x - xFirst) * TILE_SIZE,
-        y: (y - yFirst) * TILE_SIZE
-      }
+    const tiles = await Promise.all(this.metatile.tiles(coords).map((tile) => {
+      const { z, x, y } = tile
+      const { xOffsetInPixels, yOffsetInPixels } = tile
+      const coords = { x: xOffsetInPixels, y: yOffsetInPixels }
 
-      return this.mapRenderer.slice({ image, coords, encoding })
+      return this.mapRenderer.slice({ image, coords, encoding }).then(tile => ({ [`${z}/${x}/${y}.${encoding}`]: tile }))
     }))
 
-    const result = {}
-
-    for (let [ index, { z, x, y } ] of metatiles.entries()) {
-      result[`${z}/${x}/${y}.${encoding}`] = tiles[index]
-    }
-
-    return result
+    return tiles.reduce((result, tile) => Object.assign(result, tile), {})
   }
 }

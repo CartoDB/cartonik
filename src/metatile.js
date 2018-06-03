@@ -56,11 +56,12 @@ export default class Metatile {
 
     for (let dx = 0; dx < dX; dx++) {
       for (let dy = 0; dy < dY; dy++) {
-        tiles.push({
-          z,
-          x: xFirst + dx,
-          y: yFirst + dy
-        })
+        const x = xFirst + dx
+        const y = yFirst + dy
+        const xOffsetInPixels = (x - xFirst) * TILE_SIZE
+        const yOffsetInPixels = (y - yFirst) * TILE_SIZE
+
+        tiles.push({ z, x, y, xOffsetInPixels, yOffsetInPixels })
       }
     }
 
