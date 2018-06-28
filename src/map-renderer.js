@@ -1,11 +1,7 @@
-import path from 'path'
-import mapnik, { Map, Image } from 'mapnik'
+import { Map, Image } from 'mapnik'
 import { promisify } from 'util'
 
 const TILE_SIZE = 256
-
-const shapeDatasource = path.join(mapnik.settings.paths.input_plugins, 'shape.input')
-mapnik.register_datasource(shapeDatasource)
 
 export default class MapRenderer {
   async load ({ xml } = {}) {
