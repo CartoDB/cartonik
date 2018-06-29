@@ -7,7 +7,7 @@ import match from './support/match'
 
 const WORLD_MAP_XML = fs.readFileSync('./test/fixtures/world-map.xml', { encoding: 'utf-8' })
 
-describe.only('world map', function () {
+describe('world map', function () {
   before(function () {
     const shapeDatasource = path.join(mapnik.settings.paths.input_plugins, 'shape.input')
     mapnik.register_datasource(shapeDatasource)
@@ -28,8 +28,6 @@ describe.only('world map', function () {
     assert.deepEqual(Object.keys(tiles), ['0/0/0.png'])
     Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
 
-    await Promise.all(Object.values(tiles).map(tile => match('world-map-0.0.0', tile, 0.05)))
-
-    // Object.entries(tiles).forEach(tile => fs.writeFileSync(`world-map-${tile[0].split('/').join('.')}`, tile[1]))
+    await Promise.all(Object.entries(tiles).map(([ key, tile ]) => match(`world-map-${key.split('/').join('.')}`, tile, 0.05)))
   })
 })
