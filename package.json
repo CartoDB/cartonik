@@ -32,6 +32,8 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
     "mocha": "^3.4.2",
     "nyc": "^10.3.2",
+    "pixelmatch": "^4.0.2",
+    "pngjs": "^3.3.3",
     "sinon": "^2.3.5",
     "source-map-support": "^0.4.15",
     "standard": "^10.0.1"
