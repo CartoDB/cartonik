@@ -4,11 +4,11 @@ import path from 'path'
 import pixelmatch from 'pixelmatch'
 import { PNG } from 'pngjs'
 
+const { sync: Image } = PNG
+
 export default async function match (fixtureName, buffer, threshold = 0.005) {
   const fixture = await getTileFixture(fixtureName)
-  // const tile = await getTile(body, fixtureName)
-
-  const tile = PNG.sync.read(buffer)
+  const tile = Image.read(buffer)
   const diff = new PNG({
     width: tile.width,
     height: tile.height
@@ -35,16 +35,8 @@ function getTileFixture (fixtureName) {
   })
 }
 
-// function getTile (body, fixtureName) {
-//   return new Promise((resolve, reject) => {
-//     const tile = body.pipe(new PNG())
-//       .on('parsed', () => resolve(tile))
-//       .on('error', err => reject(err))
-//   })
-// }
-
 function saveResult (tile, fixtureName) {
-  const buffer = PNG.sync.write(tile)
+  const buffer = Image.write(tile)
   const resultPath = path.join(process.cwd(), 'test/results', `${fixtureName}.png`)
 
   return new Promise((resolve, reject) => {
