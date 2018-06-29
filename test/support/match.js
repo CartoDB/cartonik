@@ -25,7 +25,7 @@ export default async function match (fixtureName, buffer, threshold = 0.005) {
 }
 
 function getTileFixture (fixtureName) {
-  const fixturePath = path.join(process.cwd(), 'test/fixtures', `${fixtureName}.png`)
+  const fixturePath = path.join(process.cwd(), 'test/fixtures', fixtureName)
 
   return new Promise((resolve, reject) => {
     const fixture = fs.createReadStream(fixturePath)
@@ -37,7 +37,7 @@ function getTileFixture (fixtureName) {
 
 function saveResult (tile, fixtureName) {
   const buffer = Image.write(tile)
-  const resultPath = path.join(process.cwd(), 'test/results', `${fixtureName}.png`)
+  const resultPath = path.join(process.cwd(), 'test/results', fixtureName)
 
   return new Promise((resolve, reject) => {
     fs.writeFile(resultPath, buffer, err => err ? reject(err) : resolve())
@@ -45,7 +45,7 @@ function saveResult (tile, fixtureName) {
 }
 
 function saveDiff (diff, fixtureName) {
-  const diffPath = path.join(process.cwd(), 'test/results', `${fixtureName}-diff.png`)
+  const diffPath = path.join(process.cwd(), 'test/results', `diff-${fixtureName}`)
   const diffStream = fs.createWriteStream(diffPath)
 
   return new Promise((resolve, reject) => {
