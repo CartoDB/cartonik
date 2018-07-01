@@ -1,11 +1,15 @@
 import fs from 'fs'
 import path from 'path'
-import assert from 'assert'
 import mapnik from 'mapnik'
 import Cartonik from '../src'
 import match from './support/match'
 
 const WORLD_MAP_XML = fs.readFileSync('./test/fixtures/world-map.xml', { encoding: 'utf-8' })
+const xml = WORLD_MAP_XML
+
+async function matchAll (tiles) {
+  return Promise.all(Object.entries(tiles).map(([ key, tile ]) => match(`world-map-${key.split('/').join('.')}`, tile, 0.05)))
+}
 
 describe('world map', function () {
   before(function () {
@@ -13,21 +17,279 @@ describe('world map', function () {
     mapnik.register_datasource(shapeDatasource)
   })
 
-  beforeEach(function () {
-    this.cartonik = Cartonik.create()
+  describe('metatile = 1', function () {
+    beforeEach(function () {
+      this.cartonik = Cartonik.create()
+    })
+
+    describe('zoom = 0', function () {
+      it('.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+    })
+
+    describe('zoom = 1', function () {
+      it('.tiles({ xml, coords: { z: 1, x: 0, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 1, x: 0, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 1, x: 1, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 1, x: 1, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 1, x: 0, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 1, x: 0, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 1, x: 1, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 1, x: 1, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+    })
+
+    describe('zoom = 2', function () {
+      it('.tiles({ xml, coords: { z: 2, x: 0, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 0, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 1, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 1, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 0, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 0, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 1, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 1, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 2, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 2, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 3, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 3, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 2, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 2, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 3, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 3, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 0, y: 2 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 0, y: 2 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 1, y: 2 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 1, y: 2 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 0, y: 3 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 0, y: 3 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 1, y: 3 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 1, y: 3 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 2, y: 2 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 2, y: 2 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 3, y: 2 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 3, y: 2 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 2, y: 3 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 2, y: 3 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 3, y: 3 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 3, y: 3 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+    })
   })
 
-  it('.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: \'png\' })', async function () {
-    const xml = WORLD_MAP_XML
-    const [ z, x, y ] = [ 0, 0, 0 ]
-    const coords = { z, x, y }
-    const format = 'png'
+  describe('metatile = 4', function () {
+    beforeEach(function () {
+      this.cartonik = Cartonik.create({ metatile: 4 })
+    })
 
-    const tiles = await this.cartonik.tiles({ xml, coords, format })
+    describe('zoom = 0', function () {
+      it('.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: 'png' })
 
-    assert.deepEqual(Object.keys(tiles), ['0/0/0.png'])
-    Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
+        await matchAll(tiles)
+      })
+    })
 
-    await Promise.all(Object.entries(tiles).map(([ key, tile ]) => match(`world-map-${key.split('/').join('.')}`, tile, 0.05)))
+    describe('zoom = 1', function () {
+      it('.tiles({ xml, coords: { z: 1, x: 0, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 1, x: 0, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 1, x: 1, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 1, x: 1, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 1, x: 0, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 1, x: 0, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 1, x: 1, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 1, x: 1, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+    })
+
+    describe('zoom = 2', function () {
+      it('.tiles({ xml, coords: { z: 2, x: 0, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 0, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 1, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 1, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 0, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 0, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 1, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 1, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 2, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 2, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 3, y: 0 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 3, y: 0 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 2, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 2, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 3, y: 1 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 3, y: 1 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 0, y: 2 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 0, y: 2 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 1, y: 2 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 1, y: 2 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 0, y: 3 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 0, y: 3 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 1, y: 3 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 1, y: 3 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 2, y: 2 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 2, y: 2 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 3, y: 2 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 3, y: 2 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 2, y: 3 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 2, y: 3 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+
+      it('.tiles({ xml, coords: { z: 2, x: 3, y: 3 }, format: \'png\' })', async function () {
+        const tiles = await this.cartonik.tiles({ xml, coords: { z: 2, x: 3, y: 3 }, format: 'png' })
+
+        await matchAll(tiles)
+      })
+    })
   })
 })

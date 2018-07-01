@@ -7,8 +7,12 @@ import { PNG } from 'pngjs'
 const { sync: Image } = PNG
 
 export default async function match (fixtureName, buffer, threshold = 0.005) {
-  const fixture = await getTileFixture(fixtureName)
+  assert.ok(buffer instanceof Buffer)
+
   const tile = Image.read(buffer)
+  await saveResult(tile, fixtureName)
+
+  const fixture = await getTileFixture(fixtureName)
   const diff = new PNG({
     width: tile.width,
     height: tile.height
@@ -17,7 +21,6 @@ export default async function match (fixtureName, buffer, threshold = 0.005) {
   const numDiffPixels = pixelmatch(tile.data, fixture.data, diff.data, tile.width, tile.height, { threshold })
 
   await saveDiff(diff, fixtureName)
-  await saveResult(tile, fixtureName)
 
   const difference = numDiffPixels / (fixture.width * fixture.height)
 
