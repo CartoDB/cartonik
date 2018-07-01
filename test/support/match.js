@@ -6,13 +6,21 @@ import { PNG } from 'pngjs'
 
 const { sync: Image } = PNG
 
-export default async function match (fixtureName, buffer, threshold = 0.005) {
+export default function matcher (fixturesPath, map, threshold = 0.05) {
+  return function match (tiles) {
+    return Promise.all(
+      Object.entries(tiles).map(([ key, tile ]) => matchTile(fixturesPath, `${map}-${key.split('/').join('.')}`, tile, threshold))
+    )
+  }
+}
+
+async function matchTile (fixturesPath, fixtureName, buffer, threshold = 0.005) {
   assert.ok(buffer instanceof Buffer)
 
   const tile = Image.read(buffer)
   await saveResult(tile, fixtureName)
 
-  const fixture = await getTileFixture(fixtureName)
+  const fixture = await getTileFixture(fixturesPath, fixtureName)
   const diff = new PNG({
     width: tile.width,
     height: tile.height
@@ -27,8 +35,8 @@ export default async function match (fixtureName, buffer, threshold = 0.005) {
   assert.ok(difference < threshold, `Tile ${fixtureName} does not match: difference(${difference}) < threshold(${threshold})`)
 }
 
-function getTileFixture (fixtureName) {
-  const fixturePath = path.join(process.cwd(), 'test/fixtures', fixtureName)
+function getTileFixture (fixturesPath, fixtureName) {
+  const fixturePath = path.join(process.cwd(), fixturesPath, fixtureName)
 
   return new Promise((resolve, reject) => {
     const fixture = fs.createReadStream(fixturePath)
