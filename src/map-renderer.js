@@ -6,6 +6,7 @@ export default class MapRenderer {
   constructor ({ tileSize = TILE_SIZE } = {}) {
     this.tileSize = tileSize
   }
+
   async load ({ xml } = {}) {
     if (typeof xml !== 'string' || xml.length === 0) {
       throw new TypeError(`Bad argument: 'xml' should be a non empty string`)
