@@ -1,9 +1,8 @@
-const TILE_SIZE = 256
+const DEFAULT_TILE_SIZE = 256
 const EARTH_RADIUS = 6378137
 const EARTH_DIAMETER = EARTH_RADIUS * 2
 const EARTH_CIRCUMFERENCE = EARTH_DIAMETER * Math.PI
 const ORIGIN_SHIFT = EARTH_CIRCUMFERENCE / 2
-const MAX_RESOLUTION = EARTH_CIRCUMFERENCE / TILE_SIZE
 
 export default class Metatile {
   //       ◄─── dx ──►
@@ -26,8 +25,10 @@ export default class Metatile {
   //      ─└─────────┼─────────┼─────────┼─────────┼─
   //       │         │         │         │         │
 
-  constructor ({ size = 1 } = {}) {
+  constructor ({ size = 1, tileSize = DEFAULT_TILE_SIZE } = {}) {
     this.size = size
+    this.tileSize = tileSize
+    this.maxResolution = EARTH_CIRCUMFERENCE / tileSize
     this.length = Math.sqrt(size)
   }
 
@@ -44,8 +45,8 @@ export default class Metatile {
     const { dx, dy } = this._offset({ z })
 
     return {
-      width: dx * TILE_SIZE,
-      height: dy * TILE_SIZE
+      width: dx * this.tileSize,
+      height: dy * this.tileSize
     }
   }
 
@@ -58,8 +59,8 @@ export default class Metatile {
       for (let dy = 0; dy < dY; dy++) {
         const x = xFirst + dx
         const y = yFirst + dy
-        const xOffsetInPixels = (x - xFirst) * TILE_SIZE
-        const yOffsetInPixels = (y - yFirst) * TILE_SIZE
+        const xOffsetInPixels = (x - xFirst) * this.tileSize
+        const yOffsetInPixels = (y - yFirst) * this.tileSize
 
         tiles.push({ z, x, y, xOffsetInPixels, yOffsetInPixels })
       }
@@ -73,10 +74,10 @@ export default class Metatile {
     const { x: xFirst, y: yFirst } = this.first({ z, x, y })
     const { dx, dy } = this._offset({ z })
 
-    const minx = (xFirst * TILE_SIZE) * resolution - ORIGIN_SHIFT
-    const miny = -((yFirst + dy) * TILE_SIZE) * resolution + ORIGIN_SHIFT
-    const maxx = ((xFirst + dx) * TILE_SIZE) * resolution - ORIGIN_SHIFT
-    const maxy = -(yFirst * TILE_SIZE) * resolution + ORIGIN_SHIFT
+    const minx = (xFirst * this.tileSize) * resolution - ORIGIN_SHIFT
+    const miny = -((yFirst + dy) * this.tileSize) * resolution + ORIGIN_SHIFT
+    const maxx = ((xFirst + dx) * this.tileSize) * resolution - ORIGIN_SHIFT
+    const maxy = -(yFirst * this.tileSize) * resolution + ORIGIN_SHIFT
 
     const bbox = [ minx, miny, maxx, maxy ]
 
@@ -92,7 +93,7 @@ export default class Metatile {
   }
 
   _resolution ({ z }) {
-    return MAX_RESOLUTION / this._zoomTileLength({ z })
+    return this.maxResolution / this._zoomTileLength({ z })
   }
 
   _zoomTileLength ({ z }) {
