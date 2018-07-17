@@ -1,8 +1,4 @@
-const DEFAULT_TILE_SIZE = 256
-const EARTH_RADIUS = 6378137
-const EARTH_DIAMETER = EARTH_RADIUS * 2
-const EARTH_CIRCUMFERENCE = EARTH_DIAMETER * Math.PI
-const ORIGIN_SHIFT = EARTH_CIRCUMFERENCE / 2
+import { TILE_SIZE, EARTH_CIRCUMFERENCE, ORIGIN_SHIFT } from './defaults'
 
 export default class Metatile {
   //       ◄─── dx ──►
@@ -25,7 +21,7 @@ export default class Metatile {
   //      ─└─────────┼─────────┼─────────┼─────────┼─
   //       │         │         │         │         │
 
-  constructor ({ size = 1, tileSize = DEFAULT_TILE_SIZE } = {}) {
+  constructor ({ size = 1, tileSize = TILE_SIZE } = {}) {
     this.size = size
     this.tileSize = tileSize
     this.maxResolution = EARTH_CIRCUMFERENCE / tileSize

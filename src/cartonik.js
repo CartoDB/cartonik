@@ -1,13 +1,13 @@
+import { TILE_SIZE } from './defaults'
 import Metatile from './metatile'
 import MapRenderer from './map-renderer'
 
-const DEFAULT_TILE_SIZE = 256
 const ALLOWED_ENCODINGS = {
   png: true
 }
 
 export default class Cartonik {
-  static create ({ tileSize = DEFAULT_TILE_SIZE, metatile: size } = {}) {
+  static create ({ tileSize = TILE_SIZE, metatile: size } = {}) {
     const metatile = new Metatile({ size, tileSize })
     const mapRenderer = new MapRenderer({ tileSize })
 

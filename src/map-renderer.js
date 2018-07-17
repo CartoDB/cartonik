@@ -1,10 +1,9 @@
+import { TILE_SIZE } from './defaults'
 import { Map, Image } from 'mapnik'
 import { promisify } from 'util'
 
-const DEFAULT_TILE_SIZE = 256
-
 export default class MapRenderer {
-  constructor ({ tileSize = DEFAULT_TILE_SIZE } = {}) {
+  constructor ({ tileSize = TILE_SIZE } = {}) {
     this.tileSize = tileSize
   }
   async load ({ xml } = {}) {
