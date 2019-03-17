@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import mapnik from 'mapnik'
+import mapnik from '@carto/mapnik'
 import Cartonik from '../src'
 import matcher from './support/match'
 

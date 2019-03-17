@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { Map } from 'mapnik'
+import { Map } from '@carto/mapnik'
 import MapRenderer from '../src/map-renderer'
 import Metatile from '../src/metatile'
 

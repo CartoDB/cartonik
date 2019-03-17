@@ -1,5 +1,5 @@
 import { TILE_SIZE } from './defaults'
-import { Map, Image } from 'mapnik'
+import { Map, Image } from '@carto/mapnik'
 import { promisify } from 'util'
 
 export default class MapRenderer {
