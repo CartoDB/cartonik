@@ -1,12 +1,12 @@
-import fs from 'fs'
-import assert from 'assert'
-import path from 'path'
-import pixelmatch from 'pixelmatch'
-import { PNG } from 'pngjs'
+const fs = require('fs')
+const assert = require('assert')
+const path = require('path')
+const pixelmatch = require('pixelmatch')
+const { PNG } = require('pngjs')
 
 const { sync: Image } = PNG
 
-export default function matcher (fixturesPath, map, threshold = 0.05) {
+module.exports = function matcher (fixturesPath, map, threshold = 0.05) {
   return function match (tiles) {
     return Promise.all(
       Object.entries(tiles).map(([ key, tile ]) => matchTile(fixturesPath, `${map}-${key.split('/').join('.')}`, tile, threshold))

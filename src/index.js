@@ -1,1 +1,1 @@
-export { default } from './cartonik'
+module.exports = require('./cartonik')

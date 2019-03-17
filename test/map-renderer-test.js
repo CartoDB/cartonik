@@ -1,7 +1,7 @@
-import assert from 'assert'
-import { Map } from '@carto/mapnik'
-import MapRenderer from '../src/map-renderer'
-import Metatile from '../src/metatile'
+const assert = require('assert')
+const { Map } = require('@carto/mapnik')
+const MapRenderer = require('../src/map-renderer')
+const Metatile = require('../src/metatile')
 
 describe('map-renderer', function () {
   beforeEach(function () {

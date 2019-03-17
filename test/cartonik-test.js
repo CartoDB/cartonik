@@ -1,5 +1,5 @@
-import assert from 'assert'
-import Cartonik from '../src'
+const assert = require('assert')
+const Cartonik = require('../src')
 
 const EMPTY_POINT_MAP_XML = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
 

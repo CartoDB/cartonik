@@ -1,8 +1,8 @@
-import fs from 'fs'
-import path from 'path'
-import mapnik from '@carto/mapnik'
-import Cartonik from '../src'
-import matcher from './support/match'
+const fs = require('fs')
+const path = require('path')
+const mapnik = require('@carto/mapnik')
+const Cartonik = require('../src')
+const matcher = require('./support/match')
 
 describe('world map', function () {
   const map = 'world-map'
