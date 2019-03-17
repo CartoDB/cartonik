@@ -1,5 +1,5 @@
 const assert = require('assert')
-const Metatile = require('../src/metatile')
+const Metatile = require('../lib/metatile')
 
 const FULL = 20037508.342789244
 const HALF = 0

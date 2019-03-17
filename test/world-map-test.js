@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const mapnik = require('@carto/mapnik')
-const Cartonik = require('../src')
+const Cartonik = require('../lib')
 const matcher = require('./support/match')
 
 describe('world map', function () {

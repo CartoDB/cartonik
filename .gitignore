@@ -36,8 +36,5 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
-# ES6 -> ES5 transpiled modules
-lib
-
 # Tests results
 test/results

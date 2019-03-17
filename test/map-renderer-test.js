@@ -1,7 +1,7 @@
 const assert = require('assert')
 const { Map } = require('@carto/mapnik')
-const MapRenderer = require('../src/map-renderer')
-const Metatile = require('../src/metatile')
+const MapRenderer = require('../lib/map-renderer')
+const Metatile = require('../lib/metatile')
 
 describe('map-renderer', function () {
   beforeEach(function () {
