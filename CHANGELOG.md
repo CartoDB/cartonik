@@ -1,6 +1,6 @@
 # Cartonik ChangeLog
 
-## v0.3.0 (2019-mm-dd)
+## v0.3.0 (2019-03-18)
 
 - Publish module under @carto scope
 - Stop using babel, use Node.js modules
