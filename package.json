@@ -3,7 +3,10 @@
   "version": "0.2.1",
   "description": "Render maps with mapnik",
   "main": "lib/index.js",
-  "author": "Daniel García Aubert <dgaubert@carto.com>",
+  "author": "CARTO (https://carto.com/)",
+  "contributors": [
+    "Daniel García Aubert <dgaubert@carto.com>"
+  ],
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
