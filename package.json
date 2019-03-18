@@ -13,7 +13,8 @@
     "url": "git+https://github.com/cartodb/cartonik.git"
   },
   "engines": {
-    "node": ">=7.6.0"
+    "node": "^10.15.1",
+    "npm": "^6.4.1"
   },
   "scripts": {
     "coverage": "nyc --reporter=lcov npm test",
