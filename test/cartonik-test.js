@@ -1,5 +1,5 @@
-import assert from 'assert'
-import Cartonik from '../src'
+const assert = require('assert')
+const Cartonik = require('../lib')
 
 const EMPTY_POINT_MAP_XML = `<Map><Style name="points"><Rule><PointSymbolizer/></Rule></Style></Map>`
 
@@ -16,7 +16,7 @@ describe('cartonik', function () {
         await this.cartonik.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: 'wadus' })
       } catch (error) {
         assert.ok(error instanceof TypeError)
-        assert.equal(error.message, 'Format \'wadus\' not allowed')
+        assert.strictEqual(error.message, 'Format \'wadus\' not allowed')
       }
     })
 
@@ -29,7 +29,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['0/0/0.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['0/0/0.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
     })
@@ -43,7 +43,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['1/0/0.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['1/0/0.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -55,7 +55,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['1/1/0.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['1/1/0.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -67,7 +67,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['1/0/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['1/0/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -79,7 +79,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['1/1/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['1/1/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
     })
@@ -97,7 +97,7 @@ describe('cartonik', function () {
         await this.cartonik.tiles({ xml, coords: { z: 0, x: 0, y: 0 }, format: 'wadus' })
       } catch (error) {
         assert.ok(error instanceof TypeError)
-        assert.equal(error.message, 'Format \'wadus\' not allowed')
+        assert.strictEqual(error.message, 'Format \'wadus\' not allowed')
       }
     })
 
@@ -110,7 +110,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['0/0/0.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['0/0/0.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
     })
@@ -124,7 +124,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['1/0/0.png', '1/0/1.png', '1/1/0.png', '1/1/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['1/0/0.png', '1/0/1.png', '1/1/0.png', '1/1/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -136,7 +136,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['1/0/0.png', '1/0/1.png', '1/1/0.png', '1/1/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['1/0/0.png', '1/0/1.png', '1/1/0.png', '1/1/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -148,7 +148,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['1/0/0.png', '1/0/1.png', '1/1/0.png', '1/1/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['1/0/0.png', '1/0/1.png', '1/1/0.png', '1/1/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -160,7 +160,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['1/0/0.png', '1/0/1.png', '1/1/0.png', '1/1/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['1/0/0.png', '1/0/1.png', '1/1/0.png', '1/1/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
     })
@@ -174,7 +174,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/0/0.png', '2/0/1.png', '2/1/0.png', '2/1/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/0/0.png', '2/0/1.png', '2/1/0.png', '2/1/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -186,7 +186,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/0/0.png', '2/0/1.png', '2/1/0.png', '2/1/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/0/0.png', '2/0/1.png', '2/1/0.png', '2/1/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -198,7 +198,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/0/0.png', '2/0/1.png', '2/1/0.png', '2/1/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/0/0.png', '2/0/1.png', '2/1/0.png', '2/1/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -210,7 +210,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/0/0.png', '2/0/1.png', '2/1/0.png', '2/1/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/0/0.png', '2/0/1.png', '2/1/0.png', '2/1/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -222,7 +222,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/2/0.png', '2/2/1.png', '2/3/0.png', '2/3/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/2/0.png', '2/2/1.png', '2/3/0.png', '2/3/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -234,7 +234,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/2/0.png', '2/2/1.png', '2/3/0.png', '2/3/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/2/0.png', '2/2/1.png', '2/3/0.png', '2/3/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -246,7 +246,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/0/2.png', '2/0/3.png', '2/1/2.png', '2/1/3.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/0/2.png', '2/0/3.png', '2/1/2.png', '2/1/3.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -258,7 +258,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/2/0.png', '2/2/1.png', '2/3/0.png', '2/3/1.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/2/0.png', '2/2/1.png', '2/3/0.png', '2/3/1.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -270,7 +270,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/0/2.png', '2/0/3.png', '2/1/2.png', '2/1/3.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/0/2.png', '2/0/3.png', '2/1/2.png', '2/1/3.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -282,7 +282,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/0/2.png', '2/0/3.png', '2/1/2.png', '2/1/3.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/0/2.png', '2/0/3.png', '2/1/2.png', '2/1/3.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -294,7 +294,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/2/2.png', '2/2/3.png', '2/3/2.png', '2/3/3.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/2/2.png', '2/2/3.png', '2/3/2.png', '2/3/3.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -306,7 +306,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/2/2.png', '2/2/3.png', '2/3/2.png', '2/3/3.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/2/2.png', '2/2/3.png', '2/3/2.png', '2/3/3.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -318,7 +318,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/2/2.png', '2/2/3.png', '2/3/2.png', '2/3/3.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/2/2.png', '2/2/3.png', '2/3/2.png', '2/3/3.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
 
@@ -330,7 +330,7 @@ describe('cartonik', function () {
 
         const tiles = await this.cartonik.tiles({ xml, coords, format })
 
-        assert.deepEqual(Object.keys(tiles), ['2/2/2.png', '2/2/3.png', '2/3/2.png', '2/3/3.png'])
+        assert.deepStrictEqual(Object.keys(tiles), ['2/2/2.png', '2/2/3.png', '2/3/2.png', '2/3/3.png'])
         Object.values(tiles).forEach(tile => assert.ok(tile instanceof Buffer))
       })
     })

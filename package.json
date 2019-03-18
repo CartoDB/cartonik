@@ -3,40 +3,38 @@
   "version": "0.2.1",
   "description": "Render maps with mapnik",
   "main": "lib/index.js",
-  "author": "Daniel García Aubert <dgaubert@carto.com>",
+  "author": "CARTO (https://carto.com/)",
+  "contributors": [
+    "Daniel García Aubert <dgaubert@carto.com>"
+  ],
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cartodb/cartonik.git"
   },
   "engines": {
-    "node": ">=7.6.0"
+    "node": "^10.15.1",
+    "npm": "^6.4.1"
   },
   "scripts": {
-    "build": "babel src -d lib --source-maps inline",
-    "build:watch": "npm run build -- --watch",
     "coverage": "nyc --reporter=lcov npm test",
     "lint": "standard \"src/**/*.js\" \"test/**/*.js\"",
     "postversion": "git push && git push --tags",
-    "prepublishOnly": "npm run build",
     "pretest": "npm run lint",
     "preversion": "npm test",
-    "test": "NODE_ENV=test mocha --recursive -r babel-register -r source-map-support/register test",
+    "test": "NODE_ENV=test mocha --recursive test",
     "test:watch": "npm run test -- -w"
   },
   "dependencies": {
-    "mapnik": "~3.6.2"
+    "@carto/mapnik": "^3.6.2-carto.11"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
-    "mocha": "^3.4.2",
-    "nyc": "^10.3.2",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
     "pixelmatch": "^4.0.2",
-    "pngjs": "^3.3.3",
-    "sinon": "^2.3.5",
-    "source-map-support": "^0.4.15",
-    "standard": "^10.0.1"
+    "pngjs": "^3.4.0",
+    "sinon": "^7.2.7",
+    "standard": "^12.0.1"
   },
   "standard": {
     "env": {
