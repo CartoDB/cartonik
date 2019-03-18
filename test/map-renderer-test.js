@@ -14,7 +14,7 @@ describe('map-renderer', function () {
       await this.mapRenderer.load({ xml: null })
     } catch (error) {
       assert.ok(error instanceof Error)
-      assert.equal(error.message, `Bad argument: 'xml' should be a non empty string`)
+      assert.strictEqual(error.message, `Bad argument: 'xml' should be a non empty string`)
     }
   })
 
@@ -23,7 +23,7 @@ describe('map-renderer', function () {
     const map = await this.mapRenderer.load({ xml })
 
     assert.ok(map instanceof Map)
-    assert.equal(map.height, 256)
-    assert.equal(map.width, 256)
+    assert.strictEqual(map.height, 256)
+    assert.strictEqual(map.width, 256)
   })
 })
