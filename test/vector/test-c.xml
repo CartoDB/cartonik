@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Map srs="+proj=merc +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs">
+
+<Parameters>
+  <Parameter name="bounds">-180,-85.0511,180,85.0511</Parameter>
+  <Parameter name="center">0,0,2</Parameter>
+  <Parameter name="minzoom">0</Parameter>
+  <Parameter name="maxzoom">8</Parameter>
+  <Parameter name="name"><![CDATA[NAME]]></Parameter>
+</Parameters>
+
+<Style name="world">
+ <Rule>
+   <TextSymbolizer face-name="DejaVu Sans Book" size="20" fill="#ffffff" label-position-tolerance="0" halo-radius="1" halo-fill="#6f808d" allow-overlap="true" placement="point" placement-type="dummy" ><![CDATA[[NAME]]]></TextSymbolizer>
+ </Rule>
+</Style>
+
+<Layer name="world" srs="+proj=merc +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs">
+    <StyleName>world</StyleName>
+    <Datasource>
+        <Parameter name="file">data/world_merc.shp</Parameter>
+        <Parameter name="type">shape</Parameter>
+    </Datasource>
+</Layer>
+
+</Map>

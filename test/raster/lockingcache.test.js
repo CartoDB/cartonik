@@ -1,0 +1,231 @@
+var assert = require('assert')
+var LockingCache = require('../../lib/raster/lockingcache')
+
+describe('locking cache', function () {
+  it('cache works', function (done) {
+    var cache = new LockingCache(function generate (key) {
+      process.nextTick(function () {
+        cache.put(key, null, '=' + key)
+      })
+      return [key]
+    }, 50)
+
+    cache.get(1, function (err, value) {
+      assert.ok(!err)
+      assert.strictEqual(value, '=1')
+      done()
+    })
+  })
+
+  it('multiple requests get same response', function (done) {
+    var n = 0
+    var cache = new LockingCache(function generate (key) {
+      process.nextTick(function () {
+        cache.put(key, null, '=' + n++)
+      })
+      return [key]
+    }, 50)
+
+    cache.get('key', function (err, value) {
+      assert.ok(!err)
+      assert.strictEqual(value, '=0')
+      cache.get('key', function (err, value) {
+        assert.ok(!err)
+        assert.strictEqual(value, '=0')
+        done()
+      })
+    })
+  })
+  it('errors get propagated', function (done) {
+    var cache = new LockingCache(function generate (key) {
+      process.nextTick(function () {
+        cache.put(key, new Error('hi2u'))
+      })
+      return [key]
+    }, 50)
+
+    cache.get('key', function (err, value) {
+      assert.ok(err)
+      assert.strictEqual(err.toString(), 'Error: hi2u')
+      done()
+    })
+  })
+
+  it('multiple error-ed requests get the same response', function (done) {
+    var n = 0
+    var cache = new LockingCache(function generate (key) {
+      process.nextTick(function () {
+        cache.put(key, new Error(`${n++}`))
+      })
+      return [key]
+    }, 50)
+
+    cache.get('key', function (err1, value) {
+      cache.get('key', function (err2, value) {
+        assert.strictEqual(err1.message, err2.message)
+        done()
+      })
+    })
+  })
+
+  it('derived keys get the same response', function (done) {
+    var n = 0
+    var cache = new LockingCache(function generate (key) {
+      process.nextTick(function () {
+        cache.put(key, null, '=' + n)
+        cache.put(key + 'a', null, '=' + n)
+        n++
+      })
+      return [key, key + 'a']
+    }, 50)
+
+    cache.get('1', function (err, value) {
+      assert.ok(!err)
+      assert.strictEqual(value, '=0')
+      cache.get('1a', function (err, value) {
+        assert.ok(!err)
+        assert.strictEqual(value, '=0')
+        done()
+      })
+    })
+  })
+
+  it('.clear()', function (done) {
+    var cache = new LockingCache(function generate (key) {
+      setTimeout(function () {
+        cache.put(key, null, '=' + key)
+      }, 5)
+      return [key]
+    }, 50)
+
+    cache.get('1', function (err, value) {
+      assert.ok(!err)
+      assert.strictEqual(value, '=1')
+      // cache.clear doesn't nuke outstanding callbacks, only timeouts
+      // which don't exist until we get a response, and then get deleted anyway
+      cache.clear()
+      done()
+    })
+  })
+
+  it('.del()', function (done) {
+    var cache = new LockingCache(function generate (key) {
+      setTimeout(function () {
+        cache.put(key, null, '=' + key)
+      }, 5)
+      return [key]
+    }, 50)
+
+    cache.get('1', function (err, value) {
+      assert.ifError(err)
+      assert.ok(false)
+    })
+    cache.del('1')
+    done()
+  })
+
+  it('later requests get a cached response', function (done) {
+    var n = 0
+    var cache = new LockingCache(function generate (key) {
+      process.nextTick(function () {
+        cache.put(key, null, '=' + n++)
+      })
+      return [key]
+    }, 50)
+
+    cache.get('key', function (err, value) {
+      assert.ok(!err)
+      assert.strictEqual(value, '=0')
+
+      cache.get('key', function (err, value) {
+        assert.ok(!err)
+        assert.strictEqual(value, '=0')
+      })
+
+      setTimeout(function () {
+        cache.get('key', function (err, value) {
+          assert.ok(!err)
+          assert.strictEqual(value, '=0')
+          done()
+        })
+      }, 10)
+    })
+  })
+
+  it('test cache with timeout=0', function (done) {
+    var n = 0
+    var cache = new LockingCache(function generate (key) {
+      process.nextTick(function () {
+        cache.put(key, null, '=' + n++)
+      })
+      return [key]
+    }, 0)
+
+    cache.get('key', function (err, value) {
+      // (A) should get the first result
+      assert.ok(!err)
+      assert.strictEqual(value, '=0')
+
+      cache.get('key', function (err, value) {
+        // (C) should get the second result. The first result should be
+        // timed-out already even though we're calling it in the same tick
+        // as our cached callbacks (ie. even before B below)
+        assert.ok(!err)
+        assert.strictEqual(value, '=1')
+        done()
+      })
+    })
+    cache.get('key', function (err, value) {
+      // (B) should get the first result, because it's queued
+      assert.ok(!err)
+      assert.strictEqual(value, '=0')
+    })
+  })
+
+  it('test deleteOnHit with timeout=20', function (done) {
+    var n = 0
+    var cache = new LockingCache(function generate (key) {
+      var extraKey = key + '_extra'
+      process.nextTick(function () {
+        cache.put(extraKey, null, '=' + n)
+        cache.put(key, null, '=' + n++)
+      })
+      return [key, extraKey]
+    }, { timeout: 20, deleteOnHit: true })
+
+    cache.get('key', function (err, value) {
+      // (A) should get the first result
+      assert.ok(!err)
+      assert.strictEqual(value, '=0')
+
+      cache.get('key', function (err, value) {
+        // (D) should get the second result. The first result should be
+        // timed-out already even though we're calling it in the same tick
+        // as our cached callbacks (ie. even before B below)
+        assert.ok(!err)
+        assert.strictEqual(value, '=1')
+
+        setTimeout(function () {
+          // (E) should get a third result. This first result was consumed
+          // already consumed in (C) and the second one was expired due timeout
+          // so a new result will be generated
+          cache.get('key_extra', function (err, value) {
+            assert.ok(!err)
+            assert.strictEqual(value, '=2')
+            done()
+          })
+        }, 25)
+      })
+    })
+    cache.get('key', function (err, value) {
+      // (B) should get the first result, because it's queued
+      assert.ok(!err)
+      assert.strictEqual(value, '=0')
+    })
+    cache.get('key_extra', function (err, value) {
+      // (C) should get the first result
+      assert.ok(!err)
+      assert.strictEqual(value, '=0')
+    })
+  })
+})
