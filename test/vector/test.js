@@ -7,7 +7,7 @@ const mapnik = require('@carto/mapnik')
 const zlib = require('zlib')
 const UPDATE = process.env.UPDATE
 const createMapPool = require('../../lib/map-pool')
-const normalizeURI = require('../../lib/vector/uri')
+const normalizeURI = require('../../lib/uri')
 const assert = require('assert')
 const { it } = require('mocha')
 

@@ -1,6 +1,6 @@
 const assert = require('assert')
 const { describe, it } = require('mocha')
-const normalizeURI = require('../../lib/raster/uri')
+const normalizeURI = require('../lib/uri')
 const fs = require('fs')
 
 describe('uri query options', function () {
