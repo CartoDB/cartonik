@@ -1,6 +1,6 @@
 'use strict'
 
-const vectorRendererFactory = require('../../lib/vector')
+const vectorRendererFactory = require('../../lib/vector/vector-renderer')
 const mapnik = require('@carto/mapnik')
 const path = require('path')
 const fs = require('fs')

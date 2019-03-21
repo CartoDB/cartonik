@@ -1,7 +1,7 @@
 var fs = require('fs')
 var assert = require('./support/assert')
 const { describe, it } = require('mocha')
-const rasterRendererFactory = require('../../lib/raster')
+const rasterRendererFactory = require('../../lib/raster/raster-renderer')
 
 describe('Timeout', function () {
   var baseUri = {

@@ -1,6 +1,6 @@
 'use strict'
 
-const vectorRendererFactory = require('../../lib/vector')
+const vectorRendererFactory = require('../../lib/vector/vector-renderer')
 const assert = require('assert')
 const { it } = require('mocha')
 const path = require('path')
