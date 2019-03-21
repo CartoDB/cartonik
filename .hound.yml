@@ -1,5 +1,3 @@
 eslint:
   enabled: true
-  env:
-    node": true
-  extends: standard
+  config_file: .eslintrc
