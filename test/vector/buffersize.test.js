@@ -69,7 +69,7 @@ Object.keys(tests).forEach(function (source) {
     var y = coords[2]
 
     it('should render ' + source + ' (' + test.coords + ') using buffer-size ' + bufferSize, function (done) {
-      sources[source].getTile(z, x, y, function (err, buffer, headers) {
+      sources[source].getTile('mvt', z, x, y, function (err, buffer, headers) {
         assert.ifError(err)
         assert.strictEqual(headers['Content-Type'], 'application/x-protobuf')
         assert.strictEqual(headers['Content-Encoding'], 'gzip')

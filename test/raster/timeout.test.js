@@ -22,7 +22,7 @@ describe('Timeout', function () {
   it('should fire timeout', function (done) {
     rasterRendererFactory(baseUri, function (err, source) {
       if (err) return done(err)
-      source.getTile(coords[0], coords[1], coords[2], function (err) {
+      source.getTile('png', coords[0], coords[1], coords[2], function (err) {
         assert.ok(err)
         assert.strictEqual('Render timed out', err.message)
         source.close(done)
@@ -35,7 +35,7 @@ describe('Timeout', function () {
     uri.query.limits.render = 0
     rasterRendererFactory(uri, function (err, source) {
       if (err) return done(err)
-      source.getTile(coords[0], coords[1], coords[2], function (err, tile, headers) {
+      source.getTile('png', coords[0], coords[1], coords[2], function (err, tile, headers) {
         assert.ifError(err)
         assert.ok(tile)
         assert.ok(headers)

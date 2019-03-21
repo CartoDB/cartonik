@@ -41,7 +41,7 @@ Object.keys(tests).forEach(function (source) {
     var x = coords[1]
     var y = coords[2]
     it('should timeout ' + source + ' (' + test.coords + ') using limits.render ' + timeout, function (done) {
-      sources[source].getTile(z, x, y, function (err, buffer, headers) {
+      sources[source].getTile('mvt', z, x, y, function (err, buffer, headers) {
         assert.ok(err)
         assert.strictEqual(err.message, 'Render timed out')
         done()

@@ -49,7 +49,7 @@ describe('Render ', function () {
     it('validates', function (done) {
       var count = 0
       tileCoords.forEach(function (coords, idx, array) {
-        source.getGrid(coords[0], coords[1], coords[2], function (err, info, headers, stats) {
+        source.getTile('utf', coords[0], coords[1], coords[2], function (err, info, headers, stats) {
           assert.ifError(err)
           assert.ok(stats)
           assert.ok(stats.hasOwnProperty('render'))
@@ -73,7 +73,7 @@ describe('Render ', function () {
     })
 
     it('renders for zoom>30', function (done) {
-      source.getGrid(31, 0, 0, function (err, info, headers) {
+      source.getTile('utf', 31, 0, 0, function (err, info, headers) {
         if (err) throw err
         assert.deepStrictEqual(info, JSON.parse(fs.readFileSync('test/raster/fixture/grids/empty.grid.json', 'utf8')))
         assert.strictEqual(headers['Content-Type'], 'application/json')
@@ -87,7 +87,7 @@ describe('Grid Render Errors ', function () {
   it('invalid layer', function (done) {
     rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/invalid_interactivity_1.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
       if (err) throw err
-      source.getGrid(0, 0, 0, function (err, info, headers) {
+      source.getTile('utf', 0, 0, 0, function (err, info, headers) {
         assert.ok(err)
         assert.strictEqual(err.message, "Layer name 'blah' not found")
         source.close(done)
@@ -109,7 +109,7 @@ describe('Grid metrics', function () {
 
     rasterRendererFactory(uri, function (err, source) {
       if (err) throw err
-      source.getGrid(0, 0, 0, function (err, info, headers, stats) {
+      source.getTile('utf', 0, 0, 0, function (err, info, headers, stats) {
         assert(!err)
         assert.ok(stats.hasOwnProperty('Mapnik'))
         source.close(done)

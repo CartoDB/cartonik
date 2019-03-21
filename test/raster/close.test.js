@@ -19,7 +19,7 @@ describe('Closing behavior ', function () {
   it('should close cleanly after getting one tile', function (done) {
     rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
       assert.ifError(err)
-      source.getTile(0, 0, 0, function (err) {
+      source.getTile('png', 0, 0, 0, function (err) {
         assert.ifError(err)
         source.close(function (err) {
           assert.ifError(err)
@@ -39,7 +39,7 @@ describe('Closing behavior ', function () {
         assert.ifError(err)
         // pool will be draining...
       })
-      source.getTile(0, 0, 0, function (err, info, headers) {
+      source.getTile('png', 0, 0, 0, function (err, info, headers) {
         assert.strictEqual(err.message, 'pool is draining and cannot accept work')
         done()
       })
@@ -49,7 +49,7 @@ describe('Closing behavior ', function () {
   it('should throw with invalid usage (close after getTile)', function (done) {
     rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
       if (err) throw err
-      source.getTile(0, 0, 0, function (err, info, headers) {
+      source.getTile('png', 0, 0, 0, function (err, info, headers) {
         assert.ifError(err)
         // now close the source
         source.close(function (err) {
@@ -58,7 +58,7 @@ describe('Closing behavior ', function () {
         })
         // now that the pool is draining further
         // access to the source is invalid and should throw
-        source.getTile(0, 0, 0, function (err, info, headers) {
+        source.getTile('png', 0, 0, 0, function (err, info, headers) {
           assert.strictEqual(err.message, 'pool is draining and cannot accept work')
           done()
         })

@@ -57,7 +57,7 @@ describe('Pool Render ', function () {
       let results = []
 
       tileCoords.forEach(([ z, x, y ]) => {
-        source.getTile(z, x, y, (err, tile) => {
+        source.getTile('png', z, x, y, (err, tile) => {
           results.push(err || tile)
 
           if (results.length === tileCoords.length) {

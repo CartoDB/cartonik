@@ -29,7 +29,7 @@ it('should fail without xml', function (done) {
 it('should fail with invalid xml', function (done) {
   vectorRendererFactory({ xml: 'bogus' }, function (err, source) {
     assert.ifError(err)
-    source.getTile(0, 0, 0, function (err) {
+    source.getTile('mvt', 0, 0, 0, function (err) {
       assert.strictEqual(err.message, 'expected < at line 1')
       done()
     })
@@ -44,7 +44,7 @@ it('should fail with invalid xml at map.acquire', function (done) {
     // cover this error case nevertheless
     const uri = normalizeURI({})
     source._mapPool = createMapPool(uri, 'bogus xml')
-    source.getTile(0, 0, 0, function (err, buffer, headers) {
+    source.getTile('mvt', 0, 0, 0, function (err, buffer, headers) {
       assert.strictEqual(err.message, 'expected < at line 1')
       source.close(done)
     })
@@ -54,7 +54,7 @@ it('should fail with out of bounds x or y', function (done) {
   vectorRendererFactory({ xml: xml.a, base: path.join(__dirname, '/') }, function (err, source) {
     assert.ifError(err)
     assert.ok(source)
-    source.getTile(0, 0, 1, function (err, buffer, headers) {
+    source.getTile('mvt', 0, 0, 1, function (err, buffer, headers) {
       assert.strictEqual(err.message, 'required parameter y is out of range of possible values based on z value')
       done()
     })
@@ -123,7 +123,7 @@ Object.keys(tests).forEach(function (source) {
     var x = key.split('.')[1] | 0
     var y = key.split('.')[2] | 0
     it('should render ' + source + ' (' + key + ')', function (done) {
-      sources[source].getTile(z, x, y, function (err, buffer, headers) {
+      sources[source].getTile('mvt', z, x, y, function (err, buffer, headers) {
         // Test that empty tiles are so.
         if (obj.empty) {
           assert.strictEqual(buffer.length, 0)

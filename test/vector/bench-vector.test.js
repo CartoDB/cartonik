@@ -45,7 +45,7 @@ suites.forEach(function ({ threadingMode, uri }) {
       vectorRendererFactory(uri, function (err, _source) {
         assert.ifError(err)
         source = _source
-        source.getTile(0, 0, 0, done)
+        source.getTile('mvt', 0, 0, 0, done)
       })
     })
 
@@ -63,7 +63,7 @@ suites.forEach(function ({ threadingMode, uri }) {
         }
       }
       function getTile (z, x, y, done) {
-        source.getTile(z, x, y, function (err, buffer) {
+        source.getTile('mvt', z, x, y, function (err, buffer) {
           assert.ok(!err, err)
           if (!buffer.length) {
             empty++

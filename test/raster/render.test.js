@@ -5,12 +5,11 @@ const rasterRendererFactory = require('../../lib/raster-renderer')
 const mapnik = require('@carto/mapnik')
 
 describe('Render ', function () {
-  it('getTile() override format', function (done) {
+  it('getTile() "jpeg:quality=20" format', function (done) {
     rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
       assert.ifError(err)
       assert.strictEqual(source._format, undefined) // so will default to png in getTile
-      source._format = 'jpeg:quality=20'
-      source.getTile(0, 0, 0, function (err, tile, headers, stats) {
+      source.getTile('jpeg:quality=20', 0, 0, 0, function (err, tile, headers, stats) {
         assert.ifError(err)
         assert.ok(stats)
         assert.ok(stats.hasOwnProperty('render'))
@@ -27,7 +26,7 @@ describe('Render ', function () {
   it('getTile() renders zoom>30', function (done) {
     rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
       if (err) throw err
-      source.getTile(31, 0, 0, function (err, tile, headers) {
+      source.getTile('png', 31, 0, 0, function (err, tile, headers) {
         assert.ifError(err)
         assert.imageEqualsFile(tile, './test/raster/fixture/tiles/zoom-31.png', function (err) {
           if (err) throw err
@@ -83,7 +82,7 @@ describe('Render ', function () {
       var count = 0
       tileCoords.forEach(function (coords, idx, array) {
         source._format = 'png32'
-        source.getTile(coords[0], coords[1], coords[2],
+        source.getTile('png', coords[0], coords[1], coords[2],
           function (err, tile, headers) {
             if (err) throw err
             if (tile.solid) {
@@ -124,7 +123,7 @@ describe('Render ', function () {
       var count = 0
       tileCoords.forEach(function (coords, idx, array) {
         source._format = 'png32'
-        source.getTile(coords[0], coords[1], coords[2],
+        source.getTile('png', coords[0], coords[1], coords[2],
           function (err, tile, headers) {
             if (err) throw err
             var key = coords[0] + '_' + coords[1] + '_' + coords[2]
@@ -170,7 +169,7 @@ describe('Render ', function () {
       var count = 0
       tiles.forEach(function (coords, idx, array) {
         source._format = 'png32'
-        source.getTile(coords[0], coords[1], coords[2],
+        source.getTile('png', coords[0], coords[1], coords[2],
           function (err, tile, headers) {
             if (err) throw err
             var key = coords[0] + '_' + coords[1] + '_' + coords[2]
@@ -209,7 +208,7 @@ describe('Render ', function () {
 
         rasterRendererFactory(uri, function (err, source) {
           if (err) throw err
-          source.getTile(2, 2, 2, function (err, tile, headers) {
+          source.getTile('png', 2, 2, 2, function (err, tile, headers) {
             if (err) throw err
             assert.imageEqualsFile(tile, './test/raster/fixture/tiles/transparent_2_2_2_' + customColor + '.png', function (err, similarity) {
               if (err) throw err
@@ -235,7 +234,7 @@ describe('Render ', function () {
 
     rasterRendererFactory(uri, function (err, source) {
       if (err) throw err
-      source.getTile(2, 2, 2, function (err, info, headers, stats) {
+      source.getTile('png', 2, 2, 2, function (err, info, headers, stats) {
         assert(!err)
         assert.ok(stats.hasOwnProperty('Mapnik'))
         source.close(done)
@@ -257,7 +256,7 @@ describe('getTile() metrics', function () {
 
     rasterRendererFactory(uri, function (err, source) {
       if (err) throw err
-      source.getTile(0, 0, 0, function (err, info, headers, stats) {
+      source.getTile('png', 0, 0, 0, function (err, info, headers, stats) {
         assert(!err)
         assert.ok(stats.hasOwnProperty('Mapnik'))
         source.close(done)

@@ -59,7 +59,7 @@ describe('Render Metatile Cache Headers ', function () {
     scenario.forEach(({ coords, metatileCacheHeader }) => {
       it(`Carto-Metatile-Cache for tile ${coords.join(',')} should be equal to ${metatileCacheHeader}`, function (done) {
         const [ z, x, y ] = coords
-        source.getTile(z, x, y, (err, tile, headers, stats) => {
+        source.getTile('png', z, x, y, (err, tile, headers, stats) => {
           if (err) {
             return done(err)
           }
