@@ -7,6 +7,7 @@ const mapnik = require('@carto/mapnik')
 const zlib = require('zlib')
 const UPDATE = process.env.UPDATE
 const assert = require('assert')
+const { it } = require('mocha')
 
 function compareVectorTiles (assert, filepath, vtile1, vtile2) {
   assert.strictEqual(vtile1.tileSize, vtile2.tileSize)

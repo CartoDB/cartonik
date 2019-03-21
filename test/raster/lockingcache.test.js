@@ -1,4 +1,5 @@
 var assert = require('assert')
+const { describe, it } = require('mocha')
 var LockingCache = require('../../lib/raster/lockingcache')
 
 describe('locking cache', function () {

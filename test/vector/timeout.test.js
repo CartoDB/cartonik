@@ -4,6 +4,7 @@ const vectorRendererFactory = require('../../lib/vector')
 const path = require('path')
 const fs = require('fs')
 const assert = require('assert')
+const { it } = require('mocha')
 
 const sources = {
   a: {

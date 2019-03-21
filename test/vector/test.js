@@ -9,6 +9,7 @@ const UPDATE = process.env.UPDATE
 const createMapPool = require('../../lib/vector/map-pool')
 const normalizeURI = require('../../lib/vector/uri')
 const assert = require('assert')
+const { it } = require('mocha')
 
 // Load fixture data.
 const xml = {

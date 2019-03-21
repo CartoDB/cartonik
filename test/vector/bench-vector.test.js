@@ -6,6 +6,7 @@ const path = require('path')
 const fs = require('fs')
 const queue = require('queue-async')
 const assert = require('assert')
+const { describe, it, before } = require('mocha')
 
 const suites = [
   {

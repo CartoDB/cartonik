@@ -1,5 +1,6 @@
 var fs = require('fs')
 var assert = require('assert')
+const { describe, it, before, after } = require('mocha')
 const rasterRendererFactory = require('../../lib/raster')
 
 describe('Render ', function () {

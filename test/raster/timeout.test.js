@@ -1,5 +1,6 @@
 var fs = require('fs')
 var assert = require('./support/assert')
+const { describe, it } = require('mocha')
 const rasterRendererFactory = require('../../lib/raster')
 
 describe('Timeout', function () {

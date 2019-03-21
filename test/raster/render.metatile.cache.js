@@ -1,6 +1,7 @@
 const fs = require('fs')
 const assert = require('./support/assert')
 const rasterRendererFactory = require('../../lib/raster')
+const { describe, it, before } = require('mocha')
 
 describe('Render Metatile Cache Headers ', function () {
   const scenario = [

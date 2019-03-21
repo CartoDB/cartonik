@@ -2,6 +2,7 @@
 
 const vectorRendererFactory = require('../../lib/vector')
 const assert = require('assert')
+const { it } = require('mocha')
 const path = require('path')
 const fs = require('fs')
 

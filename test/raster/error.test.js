@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const assert = require('./support/assert')
+const { describe, it } = require('mocha')
 const rasterRendererFactory = require('../../lib/raster')
 
 describe('Handling Errors ', function () {
