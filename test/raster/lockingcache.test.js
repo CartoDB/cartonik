@@ -1,6 +1,6 @@
 var assert = require('assert')
 const { describe, it } = require('mocha')
-var LockingCache = require('../../lib/raster/lockingcache')
+var LockingCache = require('../../lib/lockingcache')
 
 describe('locking cache', function () {
   it('cache works', function (done) {

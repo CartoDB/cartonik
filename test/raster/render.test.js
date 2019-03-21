@@ -1,7 +1,7 @@
 var fs = require('fs')
 var assert = require('./support/assert')
 const { describe, it, before } = require('mocha')
-const rasterRendererFactory = require('../../lib/raster/raster-renderer')
+const rasterRendererFactory = require('../../lib/raster-renderer')
 
 describe('Render ', function () {
   it('getTile() override format', function (done) {

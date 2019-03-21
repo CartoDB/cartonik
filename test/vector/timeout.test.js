@@ -1,6 +1,6 @@
 'use strict'
 
-const vectorRendererFactory = require('../../lib/vector/vector-renderer')
+const vectorRendererFactory = require('../../lib/vector-renderer')
 const path = require('path')
 const fs = require('fs')
 const assert = require('assert')

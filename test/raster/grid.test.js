@@ -1,7 +1,7 @@
 var fs = require('fs')
 var assert = require('assert')
 const { describe, it, before, after } = require('mocha')
-const rasterRendererFactory = require('../../lib/raster/raster-renderer')
+const rasterRendererFactory = require('../../lib/raster-renderer')
 
 describe('Render ', function () {
   var tileCoords = [

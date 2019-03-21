@@ -3,7 +3,7 @@
 const fs = require('fs')
 const assert = require('assert')
 const { describe, it } = require('mocha')
-const rasterRendererFactory = require('../../lib/raster/raster-renderer')
+const rasterRendererFactory = require('../../lib/raster-renderer')
 
 describe('Closing behavior ', function () {
   it('should close cleanly 1', function (done) {

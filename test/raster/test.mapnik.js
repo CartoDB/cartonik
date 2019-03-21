@@ -1,5 +1,5 @@
 var assert = require('assert')
-const rasterRendererFactory = require('../../lib/raster/raster-renderer')
+const rasterRendererFactory = require('../../lib/raster-renderer')
 var mapnik = require('@carto/mapnik')
 const { describe, it } = require('mocha')
 

@@ -3,7 +3,7 @@
 const fs = require('fs')
 const assert = require('./support/assert')
 const { describe, it } = require('mocha')
-const rasterRendererFactory = require('../../lib/raster/raster-renderer')
+const rasterRendererFactory = require('../../lib/raster-renderer')
 
 describe('Handling Errors ', function () {
   it('invalid style', function (done) {
