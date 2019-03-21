@@ -9,10 +9,10 @@ describe('Closing behavior ', function () {
   it('should close cleanly 1', function (done) {
     rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
       assert.ifError(err)
-      assert.strictEqual(source.open, true)
+      assert.strictEqual(source._open, true)
       source.close(function (err) {
         assert.ifError(err)
-        assert.strictEqual(source.open, false)
+        assert.strictEqual(source._open, false)
         done()
       })
     })
@@ -21,14 +21,14 @@ describe('Closing behavior ', function () {
   it('should close cleanly 2', function (done) {
     rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
       assert.ifError(err)
-      assert.strictEqual(source.open, true)
+      assert.strictEqual(source._open, true)
       source.getTile(0, 0, 0, function (err) {
         assert.ifError(err)
-        assert.strictEqual(source.open, true)
+        assert.strictEqual(source._open, true)
         // now close the source
         source.close(function (err) {
           assert.ifError(err)
-          assert.strictEqual(source.open, false)
+          assert.strictEqual(source._open, false)
           done()
         })
       })
