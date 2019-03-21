@@ -2,6 +2,7 @@ var fs = require('fs')
 var assert = require('./support/assert')
 const { describe, it, before } = require('mocha')
 const rasterRendererFactory = require('../../lib/raster-renderer')
+const mapnik = require('@carto/mapnik')
 
 describe('Render ', function () {
   it('getTile() override format', function (done) {
@@ -174,7 +175,7 @@ describe('Render ', function () {
             if (err) throw err
             var key = coords[0] + '_' + coords[1] + '_' + coords[2]
             var filepath = './test/raster/fixture/tiles/buffer_size_' + key + '.png'
-            var resultImage = rasterRendererFactory.mapnik.Image.fromBytesSync(tile)
+            var resultImage = mapnik.Image.fromBytesSync(tile)
             resultImage.save(filepath)
             assert.imageEqualsFile(tile, filepath, function (err, similarity) {
               completion['tile_buffer_size_' + key] = true
