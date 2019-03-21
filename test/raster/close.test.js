@@ -6,29 +6,23 @@ const { describe, it } = require('mocha')
 const rasterRendererFactory = require('../../lib/raster-renderer')
 
 describe('Closing behavior ', function () {
-  it('should close cleanly 1', function (done) {
+  it('should close cleanly after getting the renderer', function (done) {
     rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
       assert.ifError(err)
-      assert.strictEqual(source._open, true)
       source.close(function (err) {
         assert.ifError(err)
-        assert.strictEqual(source._open, false)
         done()
       })
     })
   })
 
-  it('should close cleanly 2', function (done) {
+  it('should close cleanly after getting one tile', function (done) {
     rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
       assert.ifError(err)
-      assert.strictEqual(source._open, true)
       source.getTile(0, 0, 0, function (err) {
         assert.ifError(err)
-        assert.strictEqual(source._open, true)
-        // now close the source
         source.close(function (err) {
           assert.ifError(err)
-          assert.strictEqual(source._open, false)
           done()
         })
       })
