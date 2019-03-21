@@ -22,7 +22,7 @@ const xml = {
 
 it('should fail without xml', function (done) {
   vectorRendererFactory({}, function (err) {
-    assert.strictEqual(err.message, 'No xml')
+    assert.strictEqual(err.message, 'No XML provided')
     done()
   })
 })
