@@ -1,5 +1,5 @@
 const { describe, it } = require('mocha')
-const rendererFactory = require('../lib/index')
+const rendererFactory = require('../lib/renderer-factory')
 const assert = require('assert')
 
 describe('Renderer factory', function () {

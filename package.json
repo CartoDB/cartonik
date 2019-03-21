@@ -5,7 +5,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "lib/index.js",
+  "main": "lib/renderer-factory.js",
   "author": "CARTO (https://carto.com/)",
   "contributors": [
     "Daniel García Aubert <dgaubert@carto.com>"
