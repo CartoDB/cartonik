@@ -7,7 +7,7 @@ const mapnik = require('@carto/mapnik')
 const zlib = require('zlib')
 const UPDATE = process.env.UPDATE
 const createMapPool = require('../../lib/map-pool')
-const normalizeURI = require('../../lib/uri')
+const defaults = require('../../lib/defaults')
 const assert = require('assert')
 const { it } = require('mocha')
 
@@ -36,7 +36,7 @@ it('should fail with invalid xml at map.acquire', function (done) {
   // manually break the map pool to deviously trigger later error
   // this should never happen in reality but allows us to
   // cover this error case nevertheless
-  const uri = normalizeURI({})
+  const uri = defaults({})
   renderer._mapPool = createMapPool(uri, 'bogus xml')
   renderer.getTile('mvt', 0, 0, 0, function (err, buffer, headers) {
     assert.strictEqual(err.message, 'expected < at line 1')

@@ -1,11 +1,11 @@
 const assert = require('assert')
 const { describe, it } = require('mocha')
-const normalizeURI = require('../lib/uri')
+const defaults = require('../lib/defaults')
 const fs = require('fs')
 
-describe('uri query options', function () {
+describe('default options', function () {
   describe('metatileCache config', function () {
-    function makeUri (metatileCache) {
+    function makeOptions (metatileCache) {
       return {
         metatileCache: metatileCache
       }
@@ -83,7 +83,7 @@ describe('uri query options', function () {
 
     scenarios.forEach(function (scenario) {
       it(scenario.desc, function () {
-        const uri = normalizeURI(makeUri(scenario.metatileCache))
+        const uri = defaults(makeOptions(scenario.metatileCache))
 
         assert.ok(uri.metatileCache)
         assert.strictEqual(uri.metatileCache.ttl, scenario.expected.ttl)
@@ -93,7 +93,7 @@ describe('uri query options', function () {
   })
 
   describe('metrics', function () {
-    function makeUri (metrics) {
+    function makeOptions (metrics) {
       const uri = {
         protocol: 'mapnik:',
         xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'),
@@ -108,17 +108,17 @@ describe('uri query options', function () {
     }
 
     it('Defaults to false', function () {
-      const uri = normalizeURI(makeUri())
+      const uri = defaults(makeOptions())
       assert(uri.metrics === false)
     })
 
     it('Set to false', function () {
-      const uri = normalizeURI(makeUri(false))
+      const uri = defaults(makeOptions(false))
       assert(uri.metrics === false)
     })
 
     it('Set to true', function () {
-      const uri = normalizeURI(makeUri(true))
+      const uri = defaults(makeOptions(true))
       assert(uri.metrics === true)
     })
   })
