@@ -41,9 +41,7 @@ describe('Render Metatile Cache Headers ', function () {
         protocol: 'mapnik:',
         xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
         base: './test/raster/data/',
-        query: {
-          metatile: 2
-        }
+        metatile: 2
       }
 
       rasterRendererFactory(uri, (err, _source) => {

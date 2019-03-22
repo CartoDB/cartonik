@@ -42,8 +42,8 @@ function compareVectorTiles (assert, filepath, vtile1, vtile2) {
 const xml = fs.readFileSync(path.resolve(path.join(__dirname, '/test-c.xml')), 'utf8')
 
 var sources = {
-  a: { xml, base: path.join(__dirname, '/'), query: { bufferSize: 0 } },
-  b: { xml, base: path.join(__dirname, '/'), query: { bufferSize: 64 } }
+  a: { xml, base: path.join(__dirname, '/'), bufferSize: 0 },
+  b: { xml, base: path.join(__dirname, '/'), bufferSize: 64 }
 }
 
 var tests = {

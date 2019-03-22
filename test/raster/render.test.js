@@ -157,9 +157,8 @@ describe('Render ', function () {
         search: '?' + Date.now(), // prevents caching
         xml: fs.readFileSync('./test/raster/data/world_labels.xml', 'utf8'),
         base: './test/raster/data/',
-        query: {
-          bufferSize: 0
-        } }, function (err, s) {
+        bufferSize: 0
+      }, function (err, s) {
         if (err) throw err
         source = s
         done()
@@ -201,9 +200,7 @@ describe('Render ', function () {
           protocol: 'mapnik:',
           xml: fs.readFileSync('./test/raster/data/world_variable.xml', 'utf8'),
           base: './test/raster/data/',
-          query: {
-            variables: { 'customColor': customColor }
-          }
+          variables: { customColor }
         }
 
         rasterRendererFactory(uri, function (err, source) {
@@ -227,9 +224,7 @@ describe('Render ', function () {
       xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
       base: './test/raster/data/',
       metatile: 4,
-      query: {
-        metrics: true
-      }
+      metrics: true
     }
 
     rasterRendererFactory(uri, function (err, source) {
@@ -249,9 +244,7 @@ describe('getTile() metrics', function () {
       protocol: 'mapnik:',
       xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
       base: './test/raster/data/',
-      query: {
-        metrics: true
-      }
+      metrics: true
     }
 
     rasterRendererFactory(uri, function (err, source) {

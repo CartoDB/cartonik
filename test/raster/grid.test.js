@@ -102,9 +102,7 @@ describe('Grid metrics', function () {
       protocol: 'mapnik:',
       xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'),
       base: './test/raster/data/',
-      query: {
-        metrics: true
-      }
+      metrics: true
     }
 
     rasterRendererFactory(uri, function (err, source) {

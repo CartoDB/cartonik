@@ -7,9 +7,7 @@ describe('uri query options', function () {
   describe('metatileCache config', function () {
     function makeUri (metatileCache) {
       return {
-        query: {
-          metatileCache: metatileCache
-        }
+        metatileCache: metatileCache
       }
     }
 
@@ -87,9 +85,9 @@ describe('uri query options', function () {
       it(scenario.desc, function () {
         const uri = normalizeURI(makeUri(scenario.metatileCache))
 
-        assert.ok(uri.query.metatileCache)
-        assert.strictEqual(uri.query.metatileCache.ttl, scenario.expected.ttl)
-        assert.strictEqual(uri.query.metatileCache.deleteOnHit, scenario.expected.deleteOnHit)
+        assert.ok(uri.metatileCache)
+        assert.strictEqual(uri.metatileCache.ttl, scenario.expected.ttl)
+        assert.strictEqual(uri.metatileCache.deleteOnHit, scenario.expected.deleteOnHit)
       })
     })
   })
@@ -99,12 +97,11 @@ describe('uri query options', function () {
       const uri = {
         protocol: 'mapnik:',
         xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'),
-        base: './test/raster/data/',
-        query: { }
+        base: './test/raster/data/'
       }
 
       if (metrics !== undefined) {
-        uri.query.metrics = metrics
+        uri.metrics = metrics
       }
 
       return uri
@@ -112,17 +109,17 @@ describe('uri query options', function () {
 
     it('Defaults to false', function () {
       const uri = normalizeURI(makeUri())
-      assert(uri.query.metrics === false)
+      assert(uri.metrics === false)
     })
 
     it('Set to false', function () {
       const uri = normalizeURI(makeUri(false))
-      assert(uri.query.metrics === false)
+      assert(uri.metrics === false)
     })
 
     it('Set to true', function () {
       const uri = normalizeURI(makeUri(true))
-      assert(uri.query.metrics === true)
+      assert(uri.metrics === true)
     })
   })
 })

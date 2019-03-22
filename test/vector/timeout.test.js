@@ -10,11 +10,9 @@ const sources = {
   a: {
     xml: fs.readFileSync(path.resolve(path.join(__dirname, '/test-c.xml')), 'utf8'),
     base: path.join(__dirname, '/'),
-    query: {
-      bufferSize: 64,
-      limits: {
-        render: 1
-      }
+    bufferSize: 64,
+    limits: {
+      render: 1
     }
   }
 }

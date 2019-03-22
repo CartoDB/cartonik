@@ -37,10 +37,8 @@ describe('Pool Render ', function () {
         metatile: 4,
         xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
         base: './test/raster/data/',
-        query: {
-          poolSize: 1,
-          poolMaxWaitingClients: 1
-        }
+        poolSize: 1,
+        poolMaxWaitingClients: 1
       }
 
       rasterRendererFactory(uri, (err, _source) => {

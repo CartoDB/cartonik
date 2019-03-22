@@ -7,11 +7,9 @@ describe('Timeout', function () {
   var baseUri = {
     xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
     base: './test/raster/data/',
-    query: {
-      limits: {
-        render: 1,
-        cacheOnTimeout: true
-      }
+    limits: {
+      render: 1,
+      cacheOnTimeout: true
     },
     protocol: 'mapnik:',
     strict: false
@@ -32,7 +30,7 @@ describe('Timeout', function () {
 
   it('should not fire timeout', function (done) {
     var uri = Object.assign({}, baseUri)
-    uri.query.limits.render = 0
+    uri.limits.render = 0
     rasterRendererFactory(uri, function (err, source) {
       if (err) return done(err)
       source.getTile('png', coords[0], coords[1], coords[2], function (err, tile, headers) {
