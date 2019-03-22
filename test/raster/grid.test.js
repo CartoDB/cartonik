@@ -34,22 +34,18 @@ describe('Render ', function () {
   })
 
   describe('getGrid() ', function () {
-    var source
+    var renderer
     var completion = {}
-    before(function (done) {
-      rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' }, function (err, s) {
-        if (err) throw err
-        source = s
-        done()
-      })
+    before(function () {
+      renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' })
     })
     after(function (done) {
-      source.close(done)
+      renderer.close(done)
     })
     it('validates', function (done) {
       var count = 0
       tileCoords.forEach(function (coords, idx, array) {
-        source.getTile('utf', coords[0], coords[1], coords[2], function (err, info, headers, stats) {
+        renderer.getTile('utf', coords[0], coords[1], coords[2], function (err, info, headers, stats) {
           assert.ifError(err)
           assert.ok(stats)
           assert.ok(stats.hasOwnProperty('render'))
@@ -73,7 +69,7 @@ describe('Render ', function () {
     })
 
     it('renders for zoom>30', function (done) {
-      source.getTile('utf', 31, 0, 0, function (err, info, headers) {
+      renderer.getTile('utf', 31, 0, 0, function (err, info, headers) {
         if (err) throw err
         assert.deepStrictEqual(info, JSON.parse(fs.readFileSync('test/raster/fixture/grids/empty.grid.json', 'utf8')))
         assert.strictEqual(headers['Content-Type'], 'application/json')
@@ -85,13 +81,11 @@ describe('Render ', function () {
 
 describe('Grid Render Errors ', function () {
   it('invalid layer', function (done) {
-    rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/invalid_interactivity_1.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
-      if (err) throw err
-      source.getTile('utf', 0, 0, 0, function (err, info, headers) {
-        assert.ok(err)
-        assert.strictEqual(err.message, "Layer name 'blah' not found")
-        source.close(done)
-      })
+    const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/invalid_interactivity_1.xml', 'utf8'), base: './test/raster/data/' })
+    renderer.getTile('utf', 0, 0, 0, function (err, info, headers) {
+      assert.ok(err)
+      assert.strictEqual(err.message, "Layer name 'blah' not found")
+      renderer.close(done)
     })
   })
 })
@@ -105,13 +99,11 @@ describe('Grid metrics', function () {
       metrics: true
     }
 
-    rasterRendererFactory(uri, function (err, source) {
-      if (err) throw err
-      source.getTile('utf', 0, 0, 0, function (err, info, headers, stats) {
-        assert(!err)
-        assert.ok(stats.hasOwnProperty('Mapnik'))
-        source.close(done)
-      })
+    const renderer = rasterRendererFactory(uri)
+    renderer.getTile('utf', 0, 0, 0, function (err, info, headers, stats) {
+      assert(!err)
+      assert.ok(stats.hasOwnProperty('Mapnik'))
+      renderer.close(done)
     })
   })
 })

@@ -38,15 +38,12 @@ const suites = [
 suites.forEach(function ({ threadingMode, uri }) {
   describe(`vector benchmark`, function () {
     this.timeout(5000)
-    let source
+    let renderer
     let rateDeferred
 
     before('setup', function (done) {
-      vectorRendererFactory(uri, function (err, _source) {
-        assert.ifError(err)
-        source = _source
-        source.getTile('mvt', 0, 0, 0, done)
-      })
+      renderer = vectorRendererFactory(uri)
+      renderer.getTile('mvt', 0, 0, 0, done)
     })
 
     it(`theading mode: ${threadingMode}`, function (done) {
@@ -63,7 +60,7 @@ suites.forEach(function ({ threadingMode, uri }) {
         }
       }
       function getTile (z, x, y, done) {
-        source.getTile('mvt', z, x, y, function (err, buffer) {
+        renderer.getTile('mvt', z, x, y, function (err, buffer) {
           assert.ok(!err, err)
           if (!buffer.length) {
             empty++
@@ -79,7 +76,7 @@ suites.forEach(function ({ threadingMode, uri }) {
       }
       q.awaitAll(function (err, res) {
         assert.ifError(err)
-        source.close(function () {
+        renderer.close(function () {
           time = +(new Date()) - time
           rateDeferred = total / (time / 1000)
           // only assert on rate for release builds

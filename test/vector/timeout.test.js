@@ -22,12 +22,8 @@ const tests = {
 }
 
 Object.keys(tests).forEach(function (source) {
-  it('setup', function (done) {
-    vectorRendererFactory(sources[source], function (err, renderer) {
-      assert.ifError(err)
-      sources[source] = renderer
-      done()
-    })
+  it('setup', function () {
+    sources[source] = vectorRendererFactory(sources[source])
   })
 })
 

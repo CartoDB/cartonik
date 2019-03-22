@@ -34,30 +34,21 @@ describe('Render Metatile Cache Headers ', function () {
   ]
 
   describe('getTile()', function () {
-    let source
+    let renderer
 
-    before(function (done) {
-      const uri = {
+    before(function () {
+      renderer = rasterRendererFactory({
         protocol: 'mapnik:',
         xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
         base: './test/raster/data/',
         metatile: 2
-      }
-
-      rasterRendererFactory(uri, (err, _source) => {
-        if (err) {
-          return done(err)
-        }
-
-        source = _source
-        done()
       })
     })
 
     scenario.forEach(({ coords, metatileCacheHeader }) => {
       it(`Carto-Metatile-Cache for tile ${coords.join(',')} should be equal to ${metatileCacheHeader}`, function (done) {
         const [ z, x, y ] = coords
-        source.getTile('png', z, x, y, (err, tile, headers, stats) => {
+        renderer.getTile('png', z, x, y, (err, tile, headers, stats) => {
           if (err) {
             return done(err)
           }

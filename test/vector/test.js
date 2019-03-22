@@ -20,52 +20,39 @@ const xml = {
   carmen_a: fs.readFileSync(path.resolve(path.join(__dirname, '/test-carmenprops-a.xml')), 'utf8')
 }
 
-it('should fail without xml', function (done) {
-  vectorRendererFactory({}, function (err) {
-    assert.strictEqual(err.message, 'No XML provided')
+it('should fail without xml', function () {
+  assert.throws(() => vectorRendererFactory({}), { message: 'No XML provided' })
+})
+
+it('should fail with invalid xml', function (done) {
+  const renderer = vectorRendererFactory({ xml: 'bogus' })
+  renderer.getTile('mvt', 0, 0, 0, function (err) {
+    assert.strictEqual(err.message, 'expected < at line 1')
     done()
   })
 })
-it('should fail with invalid xml', function (done) {
-  vectorRendererFactory({ xml: 'bogus' }, function (err, source) {
-    assert.ifError(err)
-    source.getTile('mvt', 0, 0, 0, function (err) {
-      assert.strictEqual(err.message, 'expected < at line 1')
-      done()
-    })
-  })
-})
 it('should fail with invalid xml at map.acquire', function (done) {
-  vectorRendererFactory({ xml: '<Map></Map>' }, function (err, source) {
-    assert.ifError(err)
-    assert.ok(source)
-    // manually break the map pool to deviously trigger later error
-    // this should never happen in reality but allows us to
-    // cover this error case nevertheless
-    const uri = normalizeURI({})
-    source._mapPool = createMapPool(uri, 'bogus xml')
-    source.getTile('mvt', 0, 0, 0, function (err, buffer, headers) {
-      assert.strictEqual(err.message, 'expected < at line 1')
-      source.close(done)
-    })
+  const renderer = vectorRendererFactory({ xml: '<Map></Map>' })
+  // manually break the map pool to deviously trigger later error
+  // this should never happen in reality but allows us to
+  // cover this error case nevertheless
+  const uri = normalizeURI({})
+  renderer._mapPool = createMapPool(uri, 'bogus xml')
+  renderer.getTile('mvt', 0, 0, 0, function (err, buffer, headers) {
+    assert.strictEqual(err.message, 'expected < at line 1')
+    renderer.close(done)
   })
 })
 it('should fail with out of bounds x or y', function (done) {
-  vectorRendererFactory({ xml: xml.a, base: path.join(__dirname, '/') }, function (err, source) {
-    assert.ifError(err)
-    assert.ok(source)
-    source.getTile('mvt', 0, 0, 1, function (err, buffer, headers) {
-      assert.strictEqual(err.message, 'required parameter y is out of range of possible values based on z value')
-      done()
-    })
+  const renderer = vectorRendererFactory({ xml: xml.a, base: path.join(__dirname, '/') })
+  renderer.getTile('mvt', 0, 0, 1, function (err, buffer, headers) {
+    assert.strictEqual(err.message, 'required parameter y is out of range of possible values based on z value')
+    done()
   })
 })
 it('should load with callback', function (done) {
-  vectorRendererFactory({ xml: xml.a, base: path.join(__dirname, '/') }, function (err, source) {
-    assert.ifError(err)
-    assert.ok(source)
-    source.close(done)
-  })
+  const renderer = vectorRendererFactory({ xml: xml.a, base: path.join(__dirname, '/') })
+  renderer.close(done)
 })
 
 function compareVectorTiles (assert, filepath, vtile1, vtile2) {
@@ -108,12 +95,8 @@ var tests = {
   c: [{ key: '10.0.0', empty: true }, { key: '10.765.295' }]
 }
 Object.keys(tests).forEach(function (source) {
-  it('setup', function (done) {
-    vectorRendererFactory(sources[source], function (err, renderer) {
-      assert.ifError(err)
-      sources[source] = renderer
-      done()
-    })
+  it('setup', function () {
+    sources[source] = vectorRendererFactory(sources[source])
   })
 })
 Object.keys(tests).forEach(function (source) {

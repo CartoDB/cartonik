@@ -29,25 +29,16 @@ describe('Pool Render ', function () {
   ]
 
   describe('getTile()', function () {
-    let source
+    let renderer
 
-    before(function (done) {
-      const uri = {
+    before(function () {
+      renderer = rasterRendererFactory({
         protocol: 'mapnik:',
         metatile: 4,
         xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
         base: './test/raster/data/',
         poolSize: 1,
         poolMaxWaitingClients: 1
-      }
-
-      rasterRendererFactory(uri, (err, _source) => {
-        if (err) {
-          return done(err)
-        }
-
-        source = _source
-        done()
       })
     })
 
@@ -55,7 +46,7 @@ describe('Pool Render ', function () {
       let results = []
 
       tileCoords.forEach(([ z, x, y ]) => {
-        source.getTile('png', z, x, y, (err, tile) => {
+        renderer.getTile('png', z, x, y, (err, tile) => {
           results.push(err || tile)
 
           if (results.length === tileCoords.length) {

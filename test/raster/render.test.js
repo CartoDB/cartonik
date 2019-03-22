@@ -6,34 +6,30 @@ const mapnik = require('@carto/mapnik')
 
 describe('Render ', function () {
   it('getTile() "jpeg:quality=20" format', function (done) {
-    rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
+    const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' })
+
+    renderer.getTile('jpeg:quality=20', 0, 0, 0, function (err, tile, headers, stats) {
       assert.ifError(err)
-      assert.strictEqual(source._format, undefined) // so will default to png in getTile
-      source.getTile('jpeg:quality=20', 0, 0, 0, function (err, tile, headers, stats) {
+      assert.ok(stats)
+      assert.ok(stats.hasOwnProperty('render'))
+      assert.ok(stats.hasOwnProperty('encode'))
+      assert.strictEqual(headers['Content-Type'], 'image/jpeg')
+      assert.imageEqualsFile(tile, 'test/raster/fixture/tiles/world-jpeg20.jpeg', 0.05, 'jpeg:quality=20', function (err, similarity) {
         assert.ifError(err)
-        assert.ok(stats)
-        assert.ok(stats.hasOwnProperty('render'))
-        assert.ok(stats.hasOwnProperty('encode'))
-        assert.strictEqual(headers['Content-Type'], 'image/jpeg')
-        assert.imageEqualsFile(tile, 'test/raster/fixture/tiles/world-jpeg20.jpeg', 0.05, 'jpeg:quality=20', function (err, similarity) {
-          assert.ifError(err)
-          source.close(done)
-        })
+        renderer.close(done)
       })
     })
   })
 
   it('getTile() renders zoom>30', function (done) {
-    rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' }, function (err, source) {
-      if (err) throw err
-      source.getTile('png', 31, 0, 0, function (err, tile, headers) {
-        assert.ifError(err)
-        assert.imageEqualsFile(tile, './test/raster/fixture/tiles/zoom-31.png', function (err) {
-          if (err) throw err
-          assert.strictEqual(headers['Content-Type'], 'image/png')
-          source.close(function () {
-            done()
-          })
+    const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' })
+    renderer.getTile('png', 31, 0, 0, function (err, tile, headers) {
+      assert.ifError(err)
+      assert.imageEqualsFile(tile, './test/raster/fixture/tiles/zoom-31.png', function (err) {
+        if (err) throw err
+        assert.strictEqual(headers['Content-Type'], 'image/png')
+        renderer.close(function () {
+          done()
         })
       })
     })
@@ -69,24 +65,19 @@ describe('Render ', function () {
   })
 
   describe('getTile() ', function () {
-    var source
+    var renderer
     var completion = {}
-    before(function (done) {
-      rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' }, function (err, s) {
-        if (err) throw err
-        source = s
-        done()
-      })
+    before(function () {
+      renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' })
     })
     it('validates', function (done) {
       var count = 0
       tileCoords.forEach(function (coords, idx, array) {
-        source._format = 'png32'
-        source.getTile('png', coords[0], coords[1], coords[2],
+        renderer.getTile('png', coords[0], coords[1], coords[2],
           function (err, tile, headers) {
             if (err) throw err
             if (tile.solid) {
-              assert.strictEqual(Object.keys(source.solidCache).length, 1)
+              assert.strictEqual(Object.keys(renderer.solidCache).length, 1)
             }
             var key = coords[0] + '_' + coords[1] + '_' + coords[2]
             assert.imageEqualsFile(tile, './test/raster/fixture/tiles/transparent_' + key + '.png', function (err, similarity) {
@@ -96,7 +87,7 @@ describe('Render ', function () {
               ++count
               if (count === array.length) {
                 assert.deepStrictEqual(completion, tileCoordsCompletion)
-                source.close(done)
+                renderer.close(done)
               }
             })
           })
@@ -105,25 +96,20 @@ describe('Render ', function () {
   })
 
   describe('getTile() with XML string', function () {
-    var source
+    var renderer
     var completion = {}
-    before(function (done) {
-      rasterRendererFactory({
+    before(function () {
+      renderer = rasterRendererFactory({
         protocol: 'mapnik:',
         search: '?' + Date.now(), // prevents caching
         xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
         base: './test/raster/data/'
-      }, function (err, s) {
-        if (err) throw err
-        source = s
-        done()
       })
     })
     it('validates', function (done) {
       var count = 0
       tileCoords.forEach(function (coords, idx, array) {
-        source._format = 'png32'
-        source.getTile('png', coords[0], coords[1], coords[2],
+        renderer.getTile('png', coords[0], coords[1], coords[2],
           function (err, tile, headers) {
             if (err) throw err
             var key = coords[0] + '_' + coords[1] + '_' + coords[2]
@@ -134,7 +120,7 @@ describe('Render ', function () {
               ++count
               if (count === array.length) {
                 assert.deepStrictEqual(completion, tileCoordsCompletion)
-                source.close(done)
+                renderer.close(done)
               }
             })
           })
@@ -149,26 +135,21 @@ describe('Render ', function () {
       tileCompletion['tile_buffer_size_' + coords[0] + '_' + coords[1] + '_' + coords[2]] = true
     })
 
-    var source
+    var renderer
     var completion = {}
-    before(function (done) {
-      rasterRendererFactory({
+    before(function () {
+      renderer = rasterRendererFactory({
         protocol: 'mapnik:',
         search: '?' + Date.now(), // prevents caching
         xml: fs.readFileSync('./test/raster/data/world_labels.xml', 'utf8'),
         base: './test/raster/data/',
         bufferSize: 0
-      }, function (err, s) {
-        if (err) throw err
-        source = s
-        done()
       })
     })
     it('validates buffer-size', function (done) {
       var count = 0
       tiles.forEach(function (coords, idx, array) {
-        source._format = 'png32'
-        source.getTile('png', coords[0], coords[1], coords[2],
+        renderer.getTile('png', coords[0], coords[1], coords[2],
           function (err, tile, headers) {
             if (err) throw err
             var key = coords[0] + '_' + coords[1] + '_' + coords[2]
@@ -182,7 +163,7 @@ describe('Render ', function () {
               ++count
               if (count === array.length) {
                 assert.deepStrictEqual(completion, tileCompletion)
-                source.close(function (err) {
+                renderer.close(function (err) {
                   done(err)
                 })
               }
@@ -203,15 +184,13 @@ describe('Render ', function () {
           variables: { customColor }
         }
 
-        rasterRendererFactory(uri, function (err, source) {
+        const renderer = rasterRendererFactory(uri)
+        renderer.getTile('png', 2, 2, 2, function (err, tile, headers) {
           if (err) throw err
-          source.getTile('png', 2, 2, 2, function (err, tile, headers) {
+          assert.imageEqualsFile(tile, './test/raster/fixture/tiles/transparent_2_2_2_' + customColor + '.png', function (err, similarity) {
             if (err) throw err
-            assert.imageEqualsFile(tile, './test/raster/fixture/tiles/transparent_2_2_2_' + customColor + '.png', function (err, similarity) {
-              if (err) throw err
-              assert.strictEqual(headers['Content-Type'], 'image/png')
-              source.close(done)
-            })
+            assert.strictEqual(headers['Content-Type'], 'image/png')
+            renderer.close(done)
           })
         })
       })
@@ -227,13 +206,11 @@ describe('Render ', function () {
       metrics: true
     }
 
-    rasterRendererFactory(uri, function (err, source) {
-      if (err) throw err
-      source.getTile('png', 2, 2, 2, function (err, info, headers, stats) {
-        assert(!err)
-        assert.ok(stats.hasOwnProperty('Mapnik'))
-        source.close(done)
-      })
+    const renderer = rasterRendererFactory(uri)
+    renderer.getTile('png', 2, 2, 2, function (err, info, headers, stats) {
+      assert(!err)
+      assert.ok(stats.hasOwnProperty('Mapnik'))
+      renderer.close(done)
     })
   })
 })
@@ -247,13 +224,11 @@ describe('getTile() metrics', function () {
       metrics: true
     }
 
-    rasterRendererFactory(uri, function (err, source) {
-      if (err) throw err
-      source.getTile('png', 0, 0, 0, function (err, info, headers, stats) {
-        assert(!err)
-        assert.ok(stats.hasOwnProperty('Mapnik'))
-        source.close(done)
-      })
+    const renderer = rasterRendererFactory(uri)
+    renderer.getTile('png', 0, 0, 0, function (err, info, headers, stats) {
+      assert(!err)
+      assert.ok(stats.hasOwnProperty('Mapnik'))
+      renderer.close(done)
     })
   })
 })
