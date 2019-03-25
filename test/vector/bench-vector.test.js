@@ -43,7 +43,9 @@ suites.forEach(function ({ threadingMode, uri }) {
 
     before('setup', function (done) {
       renderer = vectorRendererFactory(uri)
-      renderer.getTile('mvt', 0, 0, 0, done)
+      renderer.getTile('mvt', 0, 0, 0)
+        .then(() => done())
+        .catch((err) => done(err))
     })
 
     it(`theading mode: ${threadingMode}`, function (done) {
@@ -51,6 +53,7 @@ suites.forEach(function ({ threadingMode, uri }) {
       var total = 0
       var empty = 0
       var q = queue(1)
+
       for (var z = 0; z < 5; z++) {
         for (var x = 0; x < Math.pow(2, z); x++) {
           for (var y = 0; y < Math.pow(2, z); y++) {
@@ -59,36 +62,43 @@ suites.forEach(function ({ threadingMode, uri }) {
           }
         }
       }
-      function getTile (z, x, y, done) {
-        renderer.getTile('mvt', z, x, y, function (err, buffer) {
-          assert.ok(!err, err)
-          if (!buffer.length) {
-            empty++
-            done(null, buffer)
-          } else {
+
+      function getTile (z, x, y, callback) {
+        renderer.getTile('mvt', z, x, y)
+          .then(({ tile: buffer }) => {
+            if (!buffer.length) {
+              empty++
+              return callback(null, buffer)
+            }
             var vtile = new mapnik.VectorTile(z, x, y)
             vtile.setData(buffer, function (err) {
               assert.ifError(err, z + '/' + x + '/' + y)
-              done(null, buffer)
+              callback(null, buffer)
             })
-          }
-        })
+          })
+          .catch((err) => callback(err))
       }
+
       q.awaitAll(function (err, res) {
-        assert.ifError(err)
-        renderer.close(function () {
-          time = +(new Date()) - time
-          rateDeferred = total / (time / 1000)
-          // only assert on rate for release builds
-          if (process.env.NPM_FLAGS && process.env.NPM_FLAGS.indexOf('--debug') > -1) {
-            console.log('Skipping rate assertion, since we are running in debug mode')
-          } else {
-            assert.strictEqual(rateDeferred > 20, true, 'render ' + total + ' tiles @ ' + rateDeferred.toFixed(1) + ' tiles/sec')
-          }
-          assert.strictEqual(total, 341)
-          assert.strictEqual(empty, 73)
-          done()
-        })
+        if (err) {
+          return done(err)
+        }
+
+        renderer.close()
+          .then(() => {
+            time = +(new Date()) - time
+            rateDeferred = total / (time / 1000)
+            // only assert on rate for release builds
+            if (process.env.NPM_FLAGS && process.env.NPM_FLAGS.indexOf('--debug') > -1) {
+              console.log('Skipping rate assertion, since we are running in debug mode')
+            } else {
+              assert.strictEqual(rateDeferred > 20, true, 'render ' + total + ' tiles @ ' + rateDeferred.toFixed(1) + ' tiles/sec')
+            }
+            assert.strictEqual(total, 341)
+            assert.strictEqual(empty, 73)
+            done()
+          })
+          .catch((err) => done(err))
       })
     })
   })

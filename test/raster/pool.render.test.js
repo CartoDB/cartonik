@@ -33,7 +33,6 @@ describe('Pool Render ', function () {
 
     before(function () {
       renderer = rasterRendererFactory({
-        protocol: 'mapnik:',
         metatile: 4,
         xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
         base: './test/raster/data/',
@@ -42,19 +41,22 @@ describe('Pool Render ', function () {
       })
     })
 
-    it('validate: max waitingClients count exceeded', function (done) {
+    it('validate: max waitingClients count exceeded', async function () {
       let results = []
 
-      tileCoords.forEach(([ z, x, y ]) => {
-        renderer.getTile('png', z, x, y, (err, tile) => {
-          results.push(err || tile)
+      // Use for each to run it in parallel
+      tileCoords.forEach(async ([ z, x, y ]) => {
+        try {
+          const { tile } = await renderer.getTile('png', z, x, y)
+          results.push(tile)
+        } catch (err) {
+          results.push(err)
+        }
 
-          if (results.length === tileCoords.length) {
-            const errs = results.filter((err) => err.message === 'max waitingClients count exceeded')
-            assert.ok(errs.length > 0)
-            done()
-          }
-        })
+        if (results.length === tileCoords.length) {
+          const errs = results.filter((err) => err.message === 'max waitingClients count exceeded')
+          assert.ok(errs.length > 0)
+        }
       })
     })
   })

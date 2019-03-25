@@ -6,74 +6,103 @@ const { describe, it } = require('mocha')
 const rasterRendererFactory = require('../../lib/raster-renderer')
 
 describe('Handling Errors ', function () {
-  it('invalid style', function (done) {
+  it('invalid style', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/invalid_style.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.getTile('png', 0, 0, 0, function (err) {
-      assert.ok(err)
-      // first message is from rapidxml, second is from libxml2
+    try {
+      await renderer.getTile('png', 0, 0, 0)
+      throw new Error('Should not throw this error')
+    } catch (err) {
       assert.ok((err.message.search('expected < at line 1') !== -1) || (err.message.search('XML document not') !== -1))
-      done()
-    })
+    }
+
+    await renderer.close()
   })
 
   // See https://github.com/mapbox/tilelive-mapnik/pull/74
-  it('invalid font, strict', function (done) {
+  it('invalid font, strict', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/invalid_font_face.xml', 'utf8'), base: './test/raster/data/', strict: true })
-    renderer.getTile('png', 0, 0, 0, function (err) {
-      assert.ok(err)
+    try {
+      await renderer.getTile('png', 0, 0, 0)
+      throw new Error('Should not throw this error')
+    } catch (err) {
       assert.ok(err.message.search('font face') !== -1, err.message)
-      done()
-    })
+    }
+
+    await renderer.close()
   })
 
   // See https://github.com/mapbox/tilelive-mapnik/pull/74
-  it('invalid font, non-strict (default)', function (done) {
+  it('invalid font, non-strict (default)', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/invalid_font_face.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.close(done)
+    await renderer.close()
   })
 
   it('missing data', function () {
     assert.throws(() => rasterRendererFactory({}), { message: 'No XML provided' })
   })
 
-  it('bad style', function (done) {
+  it('bad style', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world_bad.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.getTile('png', 0, 0, 0, function (err) {
-      assert.ok(err)
+
+    try {
+      await renderer.getTile('png', 0, 0, 0)
+      throw new Error('Should not throw this error')
+    } catch (err) {
       assert.ok((err.message.search('invalid closing tag') !== -1) || (err.message.search('XML document not well formed') !== -1))
-      done()
-    })
+    }
+
+    await renderer.close()
   })
 
-  it('invalid image format', function (done) {
+  it('invalid image format', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.getTile('this is an invalid image format', 0, 0, 0, function (err) {
+
+    try {
+      await renderer.getTile('this is an invalid image format', 0, 0, 0)
+      throw new Error('Should not throw this error')
+    } catch (err) {
       assert.strictEqual(err.message, 'unknown file type: this is an invalid image format')
-      renderer.close(done)
-    })
+    }
+
+    await renderer.close()
   })
 
-  it('invalid image format 2', function (done) {
+  it('invalid image format 2', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.getTile('png8:z=20', 0, 0, 0, function (err, tile, headers) {
+
+    try {
+      await renderer.getTile('png8:z=20', 0, 0, 0)
+      throw new Error('Should not throw this error')
+    } catch (err) {
       assert(err.message.match(/invalid compression parameter: 20 \(only -1 through (9|10) are valid\)/), 'error message mismatch: ' + err.message)
-      renderer.close(done)
-    })
+    }
+
+    await renderer.close()
   })
 
-  it('coordinates out of range: ', function (done) {
+  it('coordinates out of range: ', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.getTile('png', 0, -1, 0, function (err) {
+
+    try {
+      await renderer.getTile('png', 0, -1, 0)
+      throw new Error('Should not throw this error')
+    } catch (err) {
       assert(err.message.match(/Coordinates out of range/), 'error message mismatch: ' + err.message)
-      renderer.close(done)
-    })
+    }
+
+    await renderer.close()
   })
 
-  it('coordinates out of range, not finite', function (done) {
+  it('coordinates out of range, not finite', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.getTile('png', 1024, 0, 0, function (err) {
+
+    try {
+      await renderer.getTile('png', 1024, 0, 0)
+      throw new Error('Should not throw this error')
+    } catch (err) {
       assert(err.message.match(/Coordinates out of range/), 'error message mismatch: ' + err.message)
-      renderer.close(done)
-    })
+    }
+
+    await renderer.close()
   })
 })

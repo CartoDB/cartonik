@@ -1,10 +1,10 @@
-var fs = require('fs')
-var assert = require('assert')
+const fs = require('fs')
+const assert = require('assert')
 const { describe, it, before, after } = require('mocha')
 const rasterRendererFactory = require('../../lib/raster-renderer')
 
 describe('Render ', function () {
-  var tileCoords = [
+  const tileCoords = [
     [0, 0, 0],
     [1, 0, 0],
     [1, 0, 1],
@@ -28,82 +28,88 @@ describe('Render ', function () {
     [2, 3, 3]
   ]
 
-  var tileCoordsCompletion = {}
+  const tileCoordsCompletion = {}
+
   tileCoords.forEach(function (coords) {
     tileCoordsCompletion['grid_' + coords[0] + '_' + coords[1] + '_' + coords[2]] = true
   })
 
   describe('getGrid() ', function () {
-    var renderer
-    var completion = {}
+    let renderer
+    const completion = {}
+
     before(function () {
       renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'), base: './test/raster/data/' })
     })
-    after(function (done) {
-      renderer.close(done)
-    })
-    it('validates', function (done) {
-      var count = 0
-      tileCoords.forEach(function (coords, idx, array) {
-        renderer.getTile('utf', coords[0], coords[1], coords[2], function (err, info, headers, stats) {
-          assert.ifError(err)
-          assert.ok(stats)
-          assert.ok(stats.hasOwnProperty('render'))
-          assert.ok(stats.hasOwnProperty('encode'))
-          var key = coords[0] + '_' + coords[1] + '_' + coords[2]
-          completion['grid_' + key] = true
-          if (err) throw err
-          var expected = 'test/raster/fixture/grids/' + key + '.grid.json'
-          if (!fs.existsSync(expected) || process.env.UPDATE) {
-            fs.writeFileSync(expected, JSON.stringify(info, null, 4))
-          }
-          assert.deepStrictEqual(info, JSON.parse(fs.readFileSync('test/raster/fixture/grids/' + key + '.grid.json', 'utf8')))
-          assert.strictEqual(headers['Content-Type'], 'application/json')
-          ++count
-          if (count === array.length) {
-            assert.deepStrictEqual(completion, tileCoordsCompletion)
-            done()
-          }
-        })
-      })
+
+    after(async function () {
+      await renderer.close()
     })
 
-    it('renders for zoom>30', function (done) {
-      renderer.getTile('utf', 31, 0, 0, function (err, info, headers) {
-        if (err) throw err
-        assert.deepStrictEqual(info, JSON.parse(fs.readFileSync('test/raster/fixture/grids/empty.grid.json', 'utf8')))
+    it('validates', async function () {
+      let count = 0
+
+      for (const coords of tileCoords) {
+        const { tile, headers, stats } = await renderer.getTile('utf', coords[0], coords[1], coords[2])
+
+        assert.ok(stats)
+        assert.ok(stats.hasOwnProperty('render'))
+        assert.ok(stats.hasOwnProperty('encode'))
+
+        const key = coords[0] + '_' + coords[1] + '_' + coords[2]
+        completion['grid_' + key] = true
+
+        const expected = 'test/raster/fixture/grids/' + key + '.grid.json'
+        if (!fs.existsSync(expected) || process.env.UPDATE) {
+          fs.writeFileSync(expected, JSON.stringify(tile, null, 4))
+        }
+
+        assert.deepStrictEqual(tile, JSON.parse(fs.readFileSync('test/raster/fixture/grids/' + key + '.grid.json', 'utf8')))
         assert.strictEqual(headers['Content-Type'], 'application/json')
-        done()
-      })
+
+        ++count
+        if (count === tileCoords.length) {
+          assert.deepStrictEqual(completion, tileCoordsCompletion)
+        }
+      }
+    })
+
+    it('renders for zoom>30', async function () {
+      const { tile, headers } = await renderer.getTile('utf', 31, 0, 0)
+      assert.deepStrictEqual(tile, JSON.parse(fs.readFileSync('test/raster/fixture/grids/empty.grid.json', 'utf8')))
+      assert.strictEqual(headers['Content-Type'], 'application/json')
     })
   })
 })
 
 describe('Grid Render Errors ', function () {
-  it('invalid layer', function (done) {
+  it('invalid layer', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/invalid_interactivity_1.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.getTile('utf', 0, 0, 0, function (err, info, headers) {
-      assert.ok(err)
+
+    try {
+      await renderer.getTile('utf', 0, 0, 0)
+    } catch (err) {
       assert.strictEqual(err.message, "Layer name 'blah' not found")
-      renderer.close(done)
-    })
+    } finally {
+      await renderer.close()
+    }
   })
 })
 
 describe('Grid metrics', function () {
-  it('Gets metrics', function (done) {
-    var uri = {
-      protocol: 'mapnik:',
+  it('Gets metrics', async function () {
+    const uri = {
       xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'),
       base: './test/raster/data/',
       metrics: true
     }
 
     const renderer = rasterRendererFactory(uri)
-    renderer.getTile('utf', 0, 0, 0, function (err, info, headers, stats) {
-      assert(!err)
-      assert.ok(stats.hasOwnProperty('Mapnik'))
-      renderer.close(done)
-    })
+
+    const { stats } = await renderer.getTile('utf', 0, 0, 0)
+
+    assert.ok(stats.hasOwnProperty('Mapnik'))
+
+    await renderer.close()
   })
 })

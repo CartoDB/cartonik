@@ -29,28 +29,26 @@ Object.keys(tests).forEach(function (source) {
 
 Object.keys(tests).forEach(function (source) {
   tests[source].forEach(function (test) {
-    var coords = test.coords.split('.')
-    var timeout = test.timeout
-    var z = coords[0]
-    var x = coords[1]
-    var y = coords[2]
-    it('should timeout ' + source + ' (' + test.coords + ') using limits.render ' + timeout, function (done) {
-      sources[source].getTile('mvt', z, x, y, function (err, buffer, headers) {
-        assert.ok(err)
+    const coords = test.coords.split('.')
+    const timeout = test.timeout
+    const z = coords[0]
+    const x = coords[1]
+    const y = coords[2]
+    it('should timeout ' + source + ' (' + test.coords + ') using limits.render ' + timeout, async function () {
+      try {
+        await sources[source].getTile('mvt', z, x, y)
+        throw new Error('Should not throw this error')
+      } catch (err) {
         assert.strictEqual(err.message, 'Render timed out')
-        done()
-      })
+      }
     })
   })
 })
 
 Object.keys(tests).forEach(function (source) {
-  it('teardown', function (done) {
-    var s = sources[source]
-    assert.strictEqual(1, s._mapPool.size)
-    s.close(function () {
-      assert.strictEqual(0, s._mapPool.size)
-      done()
-    })
+  it('teardown', async function () {
+    assert.strictEqual(1, sources[source]._mapPool.size)
+    await sources[source].close()
+    assert.strictEqual(0, sources[source]._mapPool.size)
   })
 })

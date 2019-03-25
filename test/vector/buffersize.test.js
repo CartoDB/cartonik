@@ -8,6 +8,7 @@ const zlib = require('zlib')
 const UPDATE = process.env.UPDATE
 const assert = require('assert')
 const { it } = require('mocha')
+const { promisify } = require('util')
 
 function compareVectorTiles (assert, filepath, vtile1, vtile2) {
   assert.strictEqual(vtile1.tileSize, vtile2.tileSize)
@@ -65,40 +66,35 @@ Object.keys(tests).forEach(function (source) {
     var x = coords[1]
     var y = coords[2]
 
-    it('should render ' + source + ' (' + test.coords + ') using buffer-size ' + bufferSize, function (done) {
-      sources[source].getTile('mvt', z, x, y, function (err, buffer, headers) {
-        assert.ifError(err)
-        assert.strictEqual(headers['Content-Type'], 'application/x-protobuf')
-        assert.strictEqual(headers['Content-Encoding'], 'gzip')
+    it('should render ' + source + ' (' + test.coords + ') using buffer-size ' + bufferSize, async function () {
+      const { tile, headers } = await sources[source].getTile('mvt', z, x, y)
 
-        zlib.gunzip(buffer, function (err, buffer) {
-          assert.ifError(err)
+      assert.strictEqual(headers['Content-Type'], 'application/x-protobuf')
+      assert.strictEqual(headers['Content-Encoding'], 'gzip')
 
-          var filepath = path.join(__dirname, '/expected/' + source + '.' + test.coords + '.vector.buffer-size.' + bufferSize + '.pbf')
-          if (UPDATE || !fs.existsSync(filepath)) fs.writeFileSync(filepath, buffer)
-          // fs.writeFileSync(filepath, buffer)
+      const buffer = await promisify(zlib.gunzip)(tile)
 
-          var expected = fs.readFileSync(filepath)
-          var vtile1 = new mapnik.VectorTile(+z, +x, +y, { buffer_size: 16 * test.bufferSize })
-          var vtile2 = new mapnik.VectorTile(+z, +x, +y, { buffer_size: 16 * test.bufferSize })
-          vtile1.setDataSync(expected)
-          vtile2.setDataSync(buffer)
-          compareVectorTiles(assert, filepath, vtile1, vtile2)
-          assert.strictEqual(expected.length, buffer.length)
-          assert.deepStrictEqual(expected, buffer)
-          done()
-        })
-      })
+      const filepath = path.join(__dirname, '/expected/' + source + '.' + test.coords + '.vector.buffer-size.' + bufferSize + '.pbf')
+      if (UPDATE || !fs.existsSync(filepath)) fs.writeFileSync(filepath, buffer)
+
+      const expected = fs.readFileSync(filepath)
+      const vtile1 = new mapnik.VectorTile(+z, +x, +y, { buffer_size: 16 * test.bufferSize })
+      const vtile2 = new mapnik.VectorTile(+z, +x, +y, { buffer_size: 16 * test.bufferSize })
+
+      vtile1.setDataSync(expected)
+      vtile2.setDataSync(buffer)
+
+      compareVectorTiles(assert, filepath, vtile1, vtile2)
+
+      assert.strictEqual(expected.length, buffer.length)
+      assert.deepStrictEqual(expected, buffer)
     })
   })
 })
 Object.keys(tests).forEach(function (source) {
-  it('teardown', function (done) {
-    var s = sources[source]
-    assert.strictEqual(1, s._mapPool.size)
-    s.close(function () {
-      assert.strictEqual(0, s._mapPool.size)
-      done()
-    })
+  it('teardown', async function () {
+    assert.strictEqual(1, sources[source]._mapPool.size)
+    await sources[source].close()
+    assert.strictEqual(0, sources[source]._mapPool.size)
   })
 })

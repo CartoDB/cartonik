@@ -1,232 +1,394 @@
-var assert = require('assert')
+const assert = require('assert')
 const { describe, it } = require('mocha')
-var LockingCache = require('../../lib/lockingcache')
+const LockingCache = require('../../lib/lockingcache')
 
 describe('locking cache', function () {
-  it('cache works', function (done) {
-    var cache = new LockingCache(function generate (key) {
-      process.nextTick(function () {
-        cache.put(key, null, '=' + key)
-      })
-      return [key]
-    }, 50)
+  it('cache works', async function () {
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: key })
+    const cache = new LockingCache(keyGenerator, generate, 50)
 
-    cache.get(1, function (err, value) {
-      assert.ok(!err)
-      assert.strictEqual(value, '=1')
-      done()
-    })
+    const value = await cache.get(1)
+
+    assert.strictEqual(value, 1)
   })
 
-  it('multiple requests get same response', function (done) {
-    var n = 0
-    var cache = new LockingCache(function generate (key) {
-      process.nextTick(function () {
-        cache.put(key, null, '=' + n++)
-      })
-      return [key]
-    }, 50)
+  it('multiple requests get same response', async function () {
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, 50)
 
-    cache.get('key', function (err, value) {
-      assert.ok(!err)
-      assert.strictEqual(value, '=0')
-      cache.get('key', function (err, value) {
-        assert.ok(!err)
-        assert.strictEqual(value, '=0')
-        done()
-      })
-    })
-  })
-  it('errors get propagated', function (done) {
-    var cache = new LockingCache(function generate (key) {
-      process.nextTick(function () {
-        cache.put(key, new Error('hi2u'))
-      })
-      return [key]
-    }, 50)
+    const valueA = await cache.get(1)
+    const valueB = await cache.get(1)
 
-    cache.get('key', function (err, value) {
-      assert.ok(err)
-      assert.strictEqual(err.toString(), 'Error: hi2u')
-      done()
-    })
+    assert.strictEqual(valueA, 0)
+    assert.strictEqual(valueA, valueB)
   })
 
-  it('multiple error-ed requests get the same response', function (done) {
-    var n = 0
-    var cache = new LockingCache(function generate (key) {
-      process.nextTick(function () {
-        cache.put(key, new Error(`${n++}`))
-      })
-      return [key]
-    }, 50)
+  it('multiple parallel requests get same response', function () {
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, 50)
 
-    cache.get('key', function (err1, value) {
-      cache.get('key', function (err2, value) {
-        assert.strictEqual(err1.message, err2.message)
-        done()
-      })
-    })
+    return Promise.all([cache.get(1), cache.get(1)])
+      .then(results => results.forEach(value => assert.strictEqual(value, 0)))
   })
 
-  it('derived keys get the same response', function (done) {
-    var n = 0
-    var cache = new LockingCache(function generate (key) {
-      process.nextTick(function () {
-        cache.put(key, null, '=' + n)
-        cache.put(key + 'a', null, '=' + n)
-        n++
-      })
-      return [key, key + 'a']
-    }, 50)
+  it('errors get propagated', async function () {
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: new Error('Oops!') })
+    const cache = new LockingCache(keyGenerator, generate, 50)
 
-    cache.get('1', function (err, value) {
-      assert.ok(!err)
-      assert.strictEqual(value, '=0')
-      cache.get('1a', function (err, value) {
-        assert.ok(!err)
-        assert.strictEqual(value, '=0')
-        done()
-      })
-    })
+    try {
+      await cache.get(1)
+      throw new Error('Should not throw this error')
+    } catch (err) {
+      assert.strictEqual(err.toString(), 'Error: Oops!')
+    }
   })
 
-  it('.clear()', function (done) {
-    var cache = new LockingCache(function generate (key) {
-      setTimeout(function () {
-        cache.put(key, null, '=' + key)
-      }, 5)
-      return [key]
-    }, 50)
+  it('multiple error-ed requests get the same response', async function () {
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: new Error(n++) })
+    const cache = new LockingCache(keyGenerator, generate, 50)
 
-    cache.get('1', function (err, value) {
-      assert.ok(!err)
-      assert.strictEqual(value, '=1')
-      // cache.clear doesn't nuke outstanding callbacks, only timeouts
-      // which don't exist until we get a response, and then get deleted anyway
-      cache.clear()
-      done()
-    })
+    let errorA
+    let errorB
+
+    try {
+      await cache.get(1)
+      throw new Error('Should not throw this error')
+    } catch (err) {
+      errorA = err
+      assert.strictEqual(errorA.toString(), 'Error: 0')
+    }
+
+    try {
+      await cache.get(1)
+      throw new Error('Should not throw this error')
+    } catch (err) {
+      errorB = err
+      assert.strictEqual(errorB.toString(), 'Error: 0')
+    }
+
+    assert.strictEqual(errorA.toString(), errorB.toString())
   })
 
-  it('.del()', function (done) {
-    var cache = new LockingCache(function generate (key) {
-      setTimeout(function () {
-        cache.put(key, null, '=' + key)
-      }, 5)
-      return [key]
-    }, 50)
+  it('multiple paralle error-ed requests get the same response', async function () {
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: new Error(n++) })
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+    const cache = new LockingCache(keyGenerator, generate, 50)
 
-    cache.get('1', function (err, value) {
-      assert.ifError(err)
-      assert.ok(false)
+    let errorA
+    let errorB
+    let count = 0
+
+    cache.get(1).catch(err => {
+      errorA = err
+      assert.strictEqual(errorA.toString(), 'Error: 0')
+      count++
     })
+
+    cache.get(1).catch(err => {
+      errorB = err
+      assert.strictEqual(errorB.toString(), 'Error: 0')
+      count++
+    })
+
+    await sleep(100)
+
+    assert.strictEqual(errorA.toString(), errorB.toString())
+    assert.strictEqual(count, 2)
+  })
+
+  it('derived keys get the same response', async function () {
+    let n = 0
+    const keyGenerator = key => [key, `${key}a`]
+    const generate = async key => {
+      n++
+      return {
+        [key]: n,
+        [`${key}a`]: n
+      }
+    }
+    const cache = new LockingCache(keyGenerator, generate, 50)
+
+    const valueA = await cache.get('1')
+    const valueB = await cache.get('1a')
+
+    assert.strictEqual(valueA, 1)
+    assert.strictEqual(valueA, valueB)
+  })
+
+  it('.clear()', async function () {
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: key })
+    const cache = new LockingCache(keyGenerator, generate, 50)
+
+    const value = await cache.get('1')
+
+    assert.strictEqual(value, '1')
+    assert.strictEqual(Object.keys(cache.results).length, 1)
+
+    cache.clear()
+
+    assert.strictEqual(Object.keys(cache.results).length, 0)
+  })
+
+  it('.del()', async function () {
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: key })
+    const cache = new LockingCache(keyGenerator, generate, 50)
+
+    const value = await cache.get('1')
+
+    assert.strictEqual(value, '1')
+    assert.strictEqual(Object.keys(cache.results).length, 1)
+
     cache.del('1')
-    done()
+
+    assert.strictEqual(Object.keys(cache.results).length, 0)
   })
 
-  it('later requests get a cached response', function (done) {
-    var n = 0
-    var cache = new LockingCache(function generate (key) {
-      process.nextTick(function () {
-        cache.put(key, null, '=' + n++)
-      })
-      return [key]
-    }, 50)
+  it('later requests get a cached response', async function () {
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, 50)
 
-    cache.get('key', function (err, value) {
-      assert.ok(!err)
-      assert.strictEqual(value, '=0')
+    const valueA = await cache.get('1')
+    const valueB = await cache.get('1')
 
-      cache.get('key', function (err, value) {
-        assert.ok(!err)
-        assert.strictEqual(value, '=0')
-      })
+    assert.strictEqual(valueA, 0)
+    assert.strictEqual(valueA, valueB)
 
-      setTimeout(function () {
-        cache.get('key', function (err, value) {
-          assert.ok(!err)
-          assert.strictEqual(value, '=0')
-          done()
-        })
-      }, 10)
-    })
+    await sleep(10)
+
+    const valueC = await cache.get('1')
+
+    assert.strictEqual(valueA, valueC)
   })
 
-  it('test cache with timeout=0', function (done) {
-    var n = 0
-    var cache = new LockingCache(function generate (key) {
-      process.nextTick(function () {
-        cache.put(key, null, '=' + n++)
-      })
-      return [key]
-    }, 0)
+  it('test cache with timeout=0: sequencial requests', async function () {
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, 0)
 
-    cache.get('key', function (err, value) {
-      // (A) should get the first result
-      assert.ok(!err)
-      assert.strictEqual(value, '=0')
+    const valueA = await cache.get('1')
 
-      cache.get('key', function (err, value) {
-        // (C) should get the second result. The first result should be
-        // timed-out already even though we're calling it in the same tick
-        // as our cached callbacks (ie. even before B below)
-        assert.ok(!err)
-        assert.strictEqual(value, '=1')
-        done()
-      })
-    })
-    cache.get('key', function (err, value) {
-      // (B) should get the first result, because it's queued
-      assert.ok(!err)
-      assert.strictEqual(value, '=0')
-    })
+    assert.strictEqual(valueA, 0)
+
+    const valueB = await cache.get('1')
+
+    assert.strictEqual(valueB, 1)
   })
 
-  it('test deleteOnHit with timeout=20', function (done) {
-    var n = 0
-    var cache = new LockingCache(function generate (key) {
-      var extraKey = key + '_extra'
-      process.nextTick(function () {
-        cache.put(extraKey, null, '=' + n)
-        cache.put(key, null, '=' + n++)
-      })
-      return [key, extraKey]
-    }, { timeout: 20, deleteOnHit: true })
+  it('test cache with timeout=0: parallel requests', async function () {
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, 0)
 
-    cache.get('key', function (err, value) {
-      // (A) should get the first result
-      assert.ok(!err)
-      assert.strictEqual(value, '=0')
+    let count = 0
+    let valueA
+    let valueB
 
-      cache.get('key', function (err, value) {
-        // (D) should get the second result. The first result should be
-        // timed-out already even though we're calling it in the same tick
-        // as our cached callbacks (ie. even before B below)
-        assert.ok(!err)
-        assert.strictEqual(value, '=1')
+    cache.get('1').then(value => {
+      valueA = value
+      count++
+    })
+    cache.get('1').then(value => {
+      valueB = value
+      count++
+    })
 
-        setTimeout(function () {
-          // (E) should get a third result. This first result was consumed
-          // already consumed in (C) and the second one was expired due timeout
-          // so a new result will be generated
-          cache.get('key_extra', function (err, value) {
-            assert.ok(!err)
-            assert.strictEqual(value, '=2')
-            done()
-          })
-        }, 25)
-      })
+    await sleep(100)
+
+    assert.strictEqual(valueA, valueB)
+    assert.strictEqual(count, 2)
+  })
+
+  it('test cache with deleteOnHit=true: sequencial requests', async function () {
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true })
+
+    const valueA = await cache.get('1')
+
+    assert.strictEqual(valueA, 0)
+
+    const valueB = await cache.get('1')
+
+    assert.strictEqual(valueB, 1)
+  })
+
+  it('test cache with deleteOnHit=true: parallel requests', async function () {
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true })
+
+    let count = 0
+    let valueA
+    let valueB
+
+    cache.get('1').then(value => {
+      valueA = value
+      count++
     })
-    cache.get('key', function (err, value) {
-      // (B) should get the first result, because it's queued
-      assert.ok(!err)
-      assert.strictEqual(value, '=0')
+    cache.get('1').then(value => {
+      valueB = value
+      count++
     })
-    cache.get('key_extra', function (err, value) {
-      // (C) should get the first result
-      assert.ok(!err)
-      assert.strictEqual(value, '=0')
+
+    await sleep(100)
+
+    assert.strictEqual(valueA, valueB)
+    assert.strictEqual(count, 2)
+  })
+
+  it('test cache with timeout=20: sequencial requests > 20 ms', async function () {
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, 20)
+
+    const valueA = await cache.get('1')
+
+    assert.strictEqual(valueA, 0)
+
+    await sleep(25)
+
+    const valueB = await cache.get('1')
+
+    assert.strictEqual(valueB, 1)
+  })
+
+  it('test cache with timeout=20: sequencial requests < 20 ms', async function () {
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, 20)
+
+    const valueA = await cache.get('1')
+
+    assert.strictEqual(valueA, 0)
+
+    const valueB = await cache.get('1')
+
+    assert.strictEqual(valueB, 0)
+  })
+
+  it('test cache with deleteOnHit=true & timeout=20: sequencial requests', async function () {
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
+
+    const valueA = await cache.get('1')
+
+    assert.strictEqual(valueA, 0)
+
+    await sleep(25)
+
+    const valueB = await cache.get('1')
+
+    assert.strictEqual(valueB, 1)
+  })
+
+  it('test cache with deleteOnHit=true & timeout=20: parallel requests', async function () {
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+    let n = 0
+    const keyGenerator = key => [key]
+    const generate = async key => ({ [key]: n++ })
+    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
+
+    let count = 0
+    let valueA
+    let valueB
+
+    cache.get('1').then(value => {
+      valueA = value
+      count++
     })
+    cache.get('1').then(value => {
+      valueB = value
+      count++
+    })
+
+    await sleep(100)
+
+    assert.strictEqual(valueA, 0)
+    assert.strictEqual(valueA, valueB)
+    assert.strictEqual(count, 2)
+  })
+
+  it('test cache with deleteOnHit=true & timeout=20: sequencial requests to different keys', async function () {
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+    let n = 0
+    const keyGenerator = key => [key, `${key}a`]
+    const generate = async key => {
+      n++
+      return {
+        [key]: n,
+        [`${key}a`]: n
+      }
+    }
+    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
+
+    const valueA = await cache.get('1')
+
+    assert.strictEqual(valueA, 1)
+
+    await sleep(25)
+
+    const valueB = await cache.get('1a')
+
+    assert.strictEqual(valueB, 2)
+  })
+
+  it('test cache with deleteOnHit=true & timeout=20: parallel requests to different keys', async function () {
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+    let n = 0
+    const keyGenerator = key => [key, `${key}a`]
+    const generate = async key => {
+      n++
+      return {
+        [key]: n,
+        [`${key}a`]: n
+      }
+    }
+    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
+
+    let count = 0
+    let valueA
+    let valueB
+
+    cache.get('1').then(value => {
+      valueA = value
+      count++
+    })
+    cache.get('1a').then(value => {
+      valueB = value
+      count++
+    })
+
+    await sleep(100)
+
+    assert.strictEqual(valueA, 1)
+    assert.strictEqual(valueA, valueB)
+    assert.strictEqual(count, 2)
   })
 })

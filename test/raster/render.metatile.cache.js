@@ -38,7 +38,6 @@ describe('Render Metatile Cache Headers ', function () {
 
     before(function () {
       renderer = rasterRendererFactory({
-        protocol: 'mapnik:',
         xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'),
         base: './test/raster/data/',
         metatile: 2
@@ -46,16 +45,11 @@ describe('Render Metatile Cache Headers ', function () {
     })
 
     scenario.forEach(({ coords, metatileCacheHeader }) => {
-      it(`Carto-Metatile-Cache for tile ${coords.join(',')} should be equal to ${metatileCacheHeader}`, function (done) {
+      it(`Carto-Metatile-Cache for tile ${coords.join(',')} should be equal to ${metatileCacheHeader}`, async function () {
         const [ z, x, y ] = coords
-        renderer.getTile('png', z, x, y, (err, tile, headers, stats) => {
-          if (err) {
-            return done(err)
-          }
+        const { headers } = await renderer.getTile('png', z, x, y)
 
-          assert.strictEqual(headers['Carto-Metatile-Cache'], metatileCacheHeader, `Tile: ${coords.join(',')}; Expected: ${metatileCacheHeader}; Actual: ${headers['Carto-Metatile-Cache']}`)
-          done()
-        })
+        assert.strictEqual(headers['Carto-Metatile-Cache'], metatileCacheHeader, `Tile: ${coords.join(',')}; Expected: ${metatileCacheHeader}; Actual: ${headers['Carto-Metatile-Cache']}`)
       })
     })
   })

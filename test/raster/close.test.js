@@ -6,50 +6,47 @@ const { describe, it } = require('mocha')
 const rasterRendererFactory = require('../../lib/raster-renderer')
 
 describe('Closing behavior ', function () {
-  it('should close cleanly after getting the renderer', function (done) {
+  it('should close cleanly after getting the renderer', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.close(done)
+    await renderer.close()
   })
 
-  it('should close cleanly after getting one tile', function (done) {
+  it('should close cleanly after getting one tile', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.getTile('png', 0, 0, 0, function (err) {
-      assert.ifError(err)
-      renderer.close(done)
-    })
+    await renderer.getTile('png', 0, 0, 0)
+    await renderer.close()
   })
 
-  it('should throw with invalid usage (close before getTile)', function (done) {
+  it('should throw with invalid usage (close before getTile)', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' })
     // now close the source
     // now that the pool is draining further
     // access to the source is invalid and should throw
-    renderer.close(function (err) {
-      assert.ifError(err)
-      // pool will be draining...
-    })
+    renderer.close() // pool will be draining...
 
-    renderer.getTile('png', 0, 0, 0, function (err, info, headers) {
+    try {
+      await renderer.getTile('png', 0, 0, 0)
+      throw new Error('Should not throw this error')
+    } catch (err) {
       assert.strictEqual(err.message, 'pool is draining and cannot accept work')
-      done()
-    })
+    }
   })
 
-  it('should throw with invalid usage (close after getTile)', function (done) {
+  it('should throw with invalid usage (close after getTile)', async function () {
     const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/raster/data/world.xml', 'utf8'), base: './test/raster/data/' })
-    renderer.getTile('png', 0, 0, 0, function (err, info, headers) {
-      assert.ifError(err)
-      // now close the source
-      renderer.close(function (err) {
-        assert.ifError(err)
-        // pool will be draining...
-      })
+
+    await renderer.getTile('png', 0, 0, 0)
+
+    // now close the source
+    renderer.close() // pool will be draining...
+
+    try {
       // now that the pool is draining further
       // access to the source is invalid and should throw
-      renderer.getTile('png', 0, 0, 0, function (err, info, headers) {
-        assert.strictEqual(err.message, 'pool is draining and cannot accept work')
-        done()
-      })
-    })
+      await renderer.getTile('png', 0, 0, 0)
+      throw new Error('Should not throw this error')
+    } catch (err) {
+      assert.strictEqual(err.message, 'pool is draining and cannot accept work')
+    }
   })
 })

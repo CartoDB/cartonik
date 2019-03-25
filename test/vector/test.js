@@ -10,6 +10,7 @@ const createMapPool = require('../../lib/map-pool')
 const defaults = require('../../lib/defaults')
 const assert = require('assert')
 const { it } = require('mocha')
+const { promisify } = require('util')
 
 // Load fixture data.
 const xml = {
@@ -24,35 +25,50 @@ it('should fail without xml', function () {
   assert.throws(() => vectorRendererFactory({}), { message: 'No XML provided' })
 })
 
-it('should fail with invalid xml', function (done) {
+it('should fail with invalid xml', async function () {
   const renderer = vectorRendererFactory({ xml: 'bogus' })
-  renderer.getTile('mvt', 0, 0, 0, function (err) {
+  try {
+    await renderer.getTile('mvt', 0, 0, 0)
+    throw new Error('Should not throw this error')
+  } catch (err) {
     assert.strictEqual(err.message, 'expected < at line 1')
-    done()
-  })
+  } finally {
+    await renderer.close()
+  }
 })
-it('should fail with invalid xml at map.acquire', function (done) {
+
+it('should fail with invalid xml at map.acquire', async function () {
   const renderer = vectorRendererFactory({ xml: '<Map></Map>' })
   // manually break the map pool to deviously trigger later error
   // this should never happen in reality but allows us to
   // cover this error case nevertheless
   const uri = defaults({})
   renderer._mapPool = createMapPool(uri, 'bogus xml')
-  renderer.getTile('mvt', 0, 0, 0, function (err, buffer, headers) {
+  try {
+    await renderer.getTile('mvt', 0, 0, 0)
+    throw new Error('Should not throw this error')
+  } catch (err) {
     assert.strictEqual(err.message, 'expected < at line 1')
-    renderer.close(done)
-  })
+  } finally {
+    await renderer.close()
+  }
 })
-it('should fail with out of bounds x or y', function (done) {
+
+it('should fail with out of bounds x or y', async function () {
   const renderer = vectorRendererFactory({ xml: xml.a, base: path.join(__dirname, '/') })
-  renderer.getTile('mvt', 0, 0, 1, function (err, buffer, headers) {
+  try {
+    await renderer.getTile('mvt', 0, 0, 1)
+    throw new Error('Should not throw this error')
+  } catch (err) {
     assert.strictEqual(err.message, 'required parameter y is out of range of possible values based on z value')
-    done()
-  })
+  } finally {
+    await renderer.close()
+  }
 })
-it('should load with callback', function (done) {
+
+it('should load with callback', async function () {
   const renderer = vectorRendererFactory({ xml: xml.a, base: path.join(__dirname, '/') })
-  renderer.close(done)
+  await renderer.close()
 })
 
 function compareVectorTiles (assert, filepath, vtile1, vtile2) {
@@ -105,49 +121,46 @@ Object.keys(tests).forEach(function (source) {
     var z = key.split('.')[0] | 0
     var x = key.split('.')[1] | 0
     var y = key.split('.')[2] | 0
-    it('should render ' + source + ' (' + key + ')', function (done) {
-      sources[source].getTile('mvt', z, x, y, function (err, buffer, headers) {
-        // Test that empty tiles are so.
-        if (obj.empty) {
-          assert.strictEqual(buffer.length, 0)
-          assert.strictEqual(headers['x-tilelive-contains-data'], false)
-          return done()
-        }
+    it('should render ' + source + ' (' + key + ')', async function () {
+      const { tile, headers } = await sources[source].getTile('mvt', z, x, y)
+      // Test that empty tiles are so.
+      if (obj.empty) {
+        assert.strictEqual(tile.length, 0)
+        assert.strictEqual(headers['x-tilelive-contains-data'], false)
+        return
+      }
 
-        assert.ifError(err)
-        assert.strictEqual(headers['Content-Type'], 'application/x-protobuf')
-        assert.strictEqual(headers['Content-Encoding'], 'gzip')
+      assert.strictEqual(headers['Content-Type'], 'application/x-protobuf')
+      assert.strictEqual(headers['Content-Encoding'], 'gzip')
 
-        // Test solid key generation.
-        if (obj.solid) assert.strictEqual(buffer.solid, obj.solid)
+      // Test solid key generation.
+      if (obj.solid) {
+        assert.strictEqual(tile.solid, obj.solid)
+      }
 
-        zlib.gunzip(buffer, function (err, buffer) {
-          assert.ifError(err)
+      const buffer = await promisify(zlib.gunzip)(tile)
 
-          var filepath = path.join(__dirname, '/expected/' + source + '.' + key + '.vector.pbf')
-          if (UPDATE || !fs.existsSync(filepath)) fs.writeFileSync(filepath, buffer)
+      var filepath = path.join(__dirname, '/expected/' + source + '.' + key + '.vector.pbf')
+      if (UPDATE || !fs.existsSync(filepath)) fs.writeFileSync(filepath, buffer)
 
-          var expected = fs.readFileSync(filepath)
-          var vtile1 = new mapnik.VectorTile(+z, +x, +y)
-          var vtile2 = new mapnik.VectorTile(+z, +x, +y)
-          vtile1.setDataSync(expected)
-          vtile2.setDataSync(buffer)
-          compareVectorTiles(assert, filepath, vtile1, vtile2)
-          assert.strictEqual(expected.length, buffer.length)
-          assert.deepStrictEqual(expected, buffer)
-          done()
-        })
-      })
+      var expected = fs.readFileSync(filepath)
+      var vtile1 = new mapnik.VectorTile(+z, +x, +y)
+      var vtile2 = new mapnik.VectorTile(+z, +x, +y)
+
+      vtile1.setDataSync(expected)
+      vtile2.setDataSync(buffer)
+
+      compareVectorTiles(assert, filepath, vtile1, vtile2)
+      assert.strictEqual(expected.length, buffer.length)
+      assert.deepStrictEqual(expected, buffer)
     })
   })
 })
+
 Object.keys(tests).forEach(function (source) {
-  it('teardown', function (done) {
-    var s = sources[source]
-    assert.strictEqual(1, s._mapPool.size)
-    s.close(function () {
-      assert.strictEqual(0, s._mapPool.size)
-      done()
-    })
+  it('teardown', async function () {
+    assert.strictEqual(1, sources[source]._mapPool.size)
+    await sources[source].close()
+    assert.strictEqual(0, sources[source]._mapPool.size)
   })
 })
