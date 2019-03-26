@@ -158,13 +158,13 @@ describe('Render ', function () {
   describe('Works with render time variables', function () {
     TESTCOLOR.forEach(function (customColor) {
       it('Color ' + customColor, async function () {
-        const uri = {
+        const options = {
           xml: fs.readFileSync('./test/raster/data/world_variable.xml', 'utf8'),
           base: './test/raster/data/',
           variables: { customColor }
         }
 
-        const renderer = rasterRendererFactory(uri)
+        const renderer = rasterRendererFactory(options)
         const { tile, headers } = await renderer.getTile('png', 2, 2, 2)
         await assert.imageEqualsFile(tile, './test/raster/fixture/tiles/transparent_2_2_2_' + customColor + '.png')
         assert.strictEqual(headers['Content-Type'], 'image/png')
