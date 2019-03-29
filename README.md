@@ -6,7 +6,7 @@ Render maps with @carto/mapnik
 
 ## Features
 
-- Render tiles from a Mapnik XML file
+- Render tiles from a Mapnik XML
 - Support several formats: `png`, `jpeg`, `grid.json`, `mvt`, etc..
 - Support traditional mapnik datasources: `shape`, `postgis`, `gdal`, `ogr`, etc..
 - Optimized for high-performance services
@@ -30,23 +30,27 @@ const [ format, z, x, y ] = [ 'png', 0, 0, 0 ]
 const tile = renderer.getTile(format, z, x, y)
 ```
 
-## Options
+## Usage
 
 ```js
 const renderer = cartonik({ ...options })
 ```
 
-- `xml`
-- `type`
-- `strict`
-- `bufferSize`
-- `poolSize`
-- `poolMaxWaitingClients`
-- `tileSize`
-- `limits`
-- `metrics`
-- `variables`
-- `metatile` when raster renderer
-- `metatileCache` when raster renderer
-- `scale` when raster renderer
-- `gzip`  when vector renderer
+### Options
+
+- `xml`: String; [the Mapnik XML configuration](https://github.com/mapnik/mapnik/wiki/XMLConfigReference)
+- `type`: String; `raster` or `vector`. Whether the renderer aims to render Mapnik Vector Tiles or traditional raster formats
+- `strict`: Boolean;
+- `bufferSize`: Number; extra space, in pixels, surrounding the map size being rendered. This allows you to have text and symbols rendered correctly when they overlap
+the image boundary.
+- `poolSize`: Number; max number of preloaded maps available for rendering
+- `poolMaxWaitingClients`: Number; max number of waiting clients to acquire one of the preloaded maps
+- `tileSize`: Number; size of the tile in pixels
+- `limits`: Object;
+  - `render`: Number; time in milliseconds to wait for the renderer to return a tile
+- `metrics`: Boolean; configure `@carto/mapnik` to gather stats about rendering performance
+- `variables`: Object;
+- `metatile`: Number; when `type` = `raster`. The number of tiles included in a metatile. One metatile generates a group of images at once in batches before separating them into the final tiles - this improves efficiency in various ways.
+- `metatileCache` when `type` = `raster`
+- `scale`: Number; when `type` = `raster`
+- `gzip`: Bolean;  when `type` = `vector`
