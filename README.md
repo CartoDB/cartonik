@@ -15,8 +15,8 @@ Render maps with @carto/mapnik
 
 Cartonik requires Node.js 10 or higher
 
-```bash
-$ npm install cartonik
+```sh
+npm install cartonik
 ```
 
 ## Hello Cartonik
