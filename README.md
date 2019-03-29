@@ -27,7 +27,7 @@ const cartonik = require('cartonik')
 const renderer = cartonik({ xml: '<Map>...</Map>' })
 const [ format, z, x, y ] = [ 'png', 0, 0, 0 ]
 
-const tile = renderer.getTile(format, z, x, y)
+const tile = await renderer.getTile(format, z, x, y)
 ```
 
 ## Usage
