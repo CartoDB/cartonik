@@ -16,9 +16,7 @@ const { promisify } = require('util')
 const xml = {
   a: fs.readFileSync(path.resolve(path.join(__dirname, '/test-a.xml')), 'utf8'),
   b: fs.readFileSync(path.resolve(path.join(__dirname, '/test-b.xml')), 'utf8'),
-  c: fs.readFileSync(path.resolve(path.join(__dirname, '/test-c.xml')), 'utf8'),
-  itp: fs.readFileSync(path.resolve(path.join(__dirname, '/itp.xml')), 'utf8'),
-  carmen_a: fs.readFileSync(path.resolve(path.join(__dirname, '/test-carmenprops-a.xml')), 'utf8')
+  c: fs.readFileSync(path.resolve(path.join(__dirname, '/test-c.xml')), 'utf8')
 }
 
 it('should fail without xml', function () {
