@@ -19,7 +19,7 @@
 <Layer name="world" srs="+proj=merc +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs">
     <StyleName>world</StyleName>
     <Datasource>
-        <Parameter name="file">world_merc.shp</Parameter>
+        <Parameter name="file">world-borders.shp</Parameter>
         <Parameter name="type">shape</Parameter>
     </Datasource>
 </Layer>
