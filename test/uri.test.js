@@ -96,8 +96,8 @@ describe('default options', function () {
     function makeOptions (metrics) {
       const uri = {
         protocol: 'mapnik:',
-        xml: fs.readFileSync('./test/raster/data/test.xml', 'utf8'),
-        base: './test/raster/data/'
+        xml: fs.readFileSync('./test/fixtures/mmls/test.xml', 'utf8'),
+        base: './test/fixtures/datasources/shapefiles/world-borders/'
       }
 
       if (metrics !== undefined) {
