@@ -2,13 +2,14 @@
 
 const assert = require('assert')
 const { describe, it } = require('mocha')
-const LockingCache = require('../lib/lockingcache')
+const MetatileCache = require('../lib/metatile-cache')
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-describe('locking cache', function () {
+describe('metatile cache', function () {
   it('cache works', async function () {
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: key })
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     const value = await cache.get(1)
 
@@ -19,7 +20,7 @@ describe('locking cache', function () {
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     const valueA = await cache.get(1)
     const valueB = await cache.get(1)
@@ -32,7 +33,7 @@ describe('locking cache', function () {
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     return Promise.all([cache.get(1), cache.get(1)])
       .then(results => results.forEach(value => assert.strictEqual(value, 0)))
@@ -41,7 +42,7 @@ describe('locking cache', function () {
   it('errors get propagated', async function () {
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: new Error('Oops!') })
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     try {
       await cache.get(1)
@@ -55,7 +56,7 @@ describe('locking cache', function () {
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: new Error(n++) })
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     let errorA
     let errorB
@@ -83,8 +84,7 @@ describe('locking cache', function () {
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: new Error(n++) })
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     let errorA
     let errorB
@@ -118,7 +118,7 @@ describe('locking cache', function () {
         [`${key}a`]: n
       }
     }
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     const valueA = await cache.get('1')
     const valueB = await cache.get('1a')
@@ -130,7 +130,7 @@ describe('locking cache', function () {
   it('.clear()', async function () {
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: key })
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     const value = await cache.get('1')
 
@@ -145,7 +145,7 @@ describe('locking cache', function () {
   it('.del()', async function () {
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: key })
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     const value = await cache.get('1')
 
@@ -158,11 +158,10 @@ describe('locking cache', function () {
   })
 
   it('later requests get a cached response', async function () {
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, 50)
+    const cache = new MetatileCache(keyGenerator, generate, 50)
 
     const valueA = await cache.get('1')
     const valueB = await cache.get('1')
@@ -181,7 +180,7 @@ describe('locking cache', function () {
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, 0)
+    const cache = new MetatileCache(keyGenerator, generate, 0)
 
     const valueA = await cache.get('1')
 
@@ -193,11 +192,10 @@ describe('locking cache', function () {
   })
 
   it('test cache with timeout=0: parallel requests', async function () {
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, 0)
+    const cache = new MetatileCache(keyGenerator, generate, 0)
 
     let count = 0
     let valueA
@@ -222,7 +220,7 @@ describe('locking cache', function () {
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true })
+    const cache = new MetatileCache(keyGenerator, generate, { deleteOnHit: true })
 
     const valueA = await cache.get('1')
 
@@ -234,11 +232,10 @@ describe('locking cache', function () {
   })
 
   it('test cache with deleteOnHit=true: parallel requests', async function () {
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true })
+    const cache = new MetatileCache(keyGenerator, generate, { deleteOnHit: true })
 
     let count = 0
     let valueA
@@ -260,11 +257,10 @@ describe('locking cache', function () {
   })
 
   it('test cache with timeout=20: sequencial requests > 20 ms', async function () {
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, 20)
+    const cache = new MetatileCache(keyGenerator, generate, 20)
 
     const valueA = await cache.get('1')
 
@@ -281,7 +277,7 @@ describe('locking cache', function () {
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, 20)
+    const cache = new MetatileCache(keyGenerator, generate, 20)
 
     const valueA = await cache.get('1')
 
@@ -293,11 +289,10 @@ describe('locking cache', function () {
   })
 
   it('test cache with deleteOnHit=true & timeout=20: sequencial requests', async function () {
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
+    const cache = new MetatileCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
 
     const valueA = await cache.get('1')
 
@@ -311,11 +306,10 @@ describe('locking cache', function () {
   })
 
   it('test cache with deleteOnHit=true & timeout=20: parallel requests', async function () {
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
     let n = 0
     const keyGenerator = key => [key]
     const generate = async key => ({ [key]: n++ })
-    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
+    const cache = new MetatileCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
 
     let count = 0
     let valueA
@@ -338,7 +332,6 @@ describe('locking cache', function () {
   })
 
   it('test cache with deleteOnHit=true & timeout=20: sequencial requests to different keys', async function () {
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
     let n = 0
     const keyGenerator = key => [key, `${key}a`]
     const generate = async key => {
@@ -348,7 +341,7 @@ describe('locking cache', function () {
         [`${key}a`]: n
       }
     }
-    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
+    const cache = new MetatileCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
 
     const valueA = await cache.get('1')
 
@@ -362,7 +355,6 @@ describe('locking cache', function () {
   })
 
   it('test cache with deleteOnHit=true & timeout=20: parallel requests to different keys', async function () {
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
     let n = 0
     const keyGenerator = key => [key, `${key}a`]
     const generate = async key => {
@@ -372,7 +364,7 @@ describe('locking cache', function () {
         [`${key}a`]: n
       }
     }
-    const cache = new LockingCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
+    const cache = new MetatileCache(keyGenerator, generate, { deleteOnHit: true, timeout: 20 })
 
     let count = 0
     let valueA
