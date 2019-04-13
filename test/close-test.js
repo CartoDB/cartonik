@@ -9,7 +9,7 @@ describe('renderer close behaviour', function () {
   const rendererOptions = {
     type: 'raster',
     xml: fs.readFileSync('./test/fixtures/mmls/world-borders.xml', 'utf8'),
-    base: `${__dirname}/fixtures/datasources/shapefiles/world-borders/`
+    base: './test/fixtures/datasources/shapefiles/world-borders/'
   }
 
   it('should close cleanly after getting the renderer', async function () {

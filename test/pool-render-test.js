@@ -30,7 +30,7 @@ describe('pool render ', function () {
     [2, 3, 3]
   ]
 
-  describe('getTile()', function () {
+  describe('with poolSize = 1, poolMaxWaitingClients = 1', function () {
     let renderer
 
     before(function () {
@@ -44,7 +44,7 @@ describe('pool render ', function () {
       })
     })
 
-    it('validate: max waitingClients count exceeded', async function () {
+    it('should throw max waitingClients count exceeded', async function () {
       let results = []
 
       // Use for each to run it in parallel

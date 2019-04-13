@@ -11,7 +11,7 @@ const rendererOptions = {
   base: './test/fixtures/datasources/shapefiles/world-borders/'
 }
 
-describe('render rater tiles', function () {
+describe('render raster tiles', function () {
   it('"jpeg:quality=20" format, tile 0/0/0', async function () {
     const options = Object.assign({}, rendererOptions, {
       xml: fs.readFileSync('./test/fixtures/mmls/world-borders-interactivity.xml', 'utf8')

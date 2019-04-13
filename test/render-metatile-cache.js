@@ -3,7 +3,7 @@
 const fs = require('fs')
 const assert = require('./support/assert')
 const rendererFactory = require('../lib/renderer-factory')
-const { describe, it, before } = require('mocha')
+const { describe, it, before, after } = require('mocha')
 
 describe('render metatile cache-headers ', function () {
   const scenario = [
@@ -35,25 +35,27 @@ describe('render metatile cache-headers ', function () {
     { coords: [2, 3, 3], metatileCacheHeader: 'HIT' }
   ]
 
-  describe('getTile()', function () {
-    let renderer
+  let renderer
 
-    before(function () {
-      renderer = rendererFactory({
-        type: 'raster',
-        xml: fs.readFileSync('./test/fixtures/mmls/world-borders.xml', 'utf8'),
-        base: './test/fixtures/datasources/shapefiles/world-borders/',
-        metatile: 2
-      })
+  before(function () {
+    renderer = rendererFactory({
+      type: 'raster',
+      xml: fs.readFileSync('./test/fixtures/mmls/world-borders.xml', 'utf8'),
+      base: './test/fixtures/datasources/shapefiles/world-borders/',
+      metatile: 2
     })
+  })
 
-    scenario.forEach(({ coords, metatileCacheHeader }) => {
-      it(`Carto-Metatile-Cache for tile ${coords.join(',')} should be equal to ${metatileCacheHeader}`, async function () {
-        const [ z, x, y ] = coords
-        const { headers } = await renderer.getTile('png', z, x, y)
+  after(async function () {
+    await renderer.close()
+  })
 
-        assert.strictEqual(headers['Carto-Metatile-Cache'], metatileCacheHeader, `Tile: ${coords.join(',')}; Expected: ${metatileCacheHeader}; Actual: ${headers['Carto-Metatile-Cache']}`)
-      })
+  scenario.forEach(({ coords, metatileCacheHeader }) => {
+    it(`header "Carto-Metatile-Cache" for tile ${coords.join(',')} should be equal to ${metatileCacheHeader}`, async function () {
+      const [ z, x, y ] = coords
+      const { headers } = await renderer.getTile('png', z, x, y)
+
+      assert.strictEqual(headers['Carto-Metatile-Cache'], metatileCacheHeader, `Tile: ${coords.join(',')}; Expected: ${metatileCacheHeader}; Actual: ${headers['Carto-Metatile-Cache']}`)
     })
   })
 })
