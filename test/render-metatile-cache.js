@@ -1,9 +1,9 @@
 const fs = require('fs')
 const assert = require('./support/assert')
-const rasterRendererFactory = require('../lib/raster-renderer')
+const rendererFactory = require('../lib/renderer-factory')
 const { describe, it, before } = require('mocha')
 
-describe('Render Metatile Cache Headers ', function () {
+describe('render metatile cache-headers ', function () {
   const scenario = [
     { coords: [0, 0, 0], metatileCacheHeader: 'MISS' },
 
@@ -37,8 +37,9 @@ describe('Render Metatile Cache Headers ', function () {
     let renderer
 
     before(function () {
-      renderer = rasterRendererFactory({
-        xml: fs.readFileSync('./test/fixtures/mmls/world.xml', 'utf8'),
+      renderer = rendererFactory({
+        type: 'raster',
+        xml: fs.readFileSync('./test/fixtures/mmls/world-borders.xml', 'utf8'),
         base: './test/fixtures/datasources/shapefiles/world-borders/',
         metatile: 2
       })

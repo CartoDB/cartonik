@@ -1,9 +1,9 @@
 const fs = require('fs')
 const assert = require('./support/assert')
 const { describe, it, before } = require('mocha')
-const rasterRendererFactory = require('../lib/raster-renderer')
+const rendererFactory = require('../lib/renderer-factory')
 
-describe('Pool Render ', function () {
+describe('pool render ', function () {
   const tileCoords = [
     [0, 0, 0],
     [1, 0, 0],
@@ -32,9 +32,10 @@ describe('Pool Render ', function () {
     let renderer
 
     before(function () {
-      renderer = rasterRendererFactory({
+      renderer = rendererFactory({
+        type: 'raster',
         metatile: 4,
-        xml: fs.readFileSync('./test/fixtures/mmls/world.xml', 'utf8'),
+        xml: fs.readFileSync('./test/fixtures/mmls/world-borders.xml', 'utf8'),
         base: './test/fixtures/datasources/shapefiles/world-borders/',
         poolSize: 1,
         poolMaxWaitingClients: 1

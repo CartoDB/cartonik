@@ -83,43 +83,43 @@ describe('default options', function () {
 
     scenarios.forEach(function (scenario) {
       it(scenario.desc, function () {
-        const uri = defaults(makeOptions(scenario.metatileCache))
+        const options = defaults(makeOptions(scenario.metatileCache))
 
-        assert.ok(uri.metatileCache)
-        assert.strictEqual(uri.metatileCache.ttl, scenario.expected.ttl)
-        assert.strictEqual(uri.metatileCache.deleteOnHit, scenario.expected.deleteOnHit)
+        assert.ok(options.metatileCache)
+        assert.strictEqual(options.metatileCache.ttl, scenario.expected.ttl)
+        assert.strictEqual(options.metatileCache.deleteOnHit, scenario.expected.deleteOnHit)
       })
     })
   })
 
   describe('metrics', function () {
     function makeOptions (metrics) {
-      const uri = {
+      const options = {
         protocol: 'mapnik:',
-        xml: fs.readFileSync('./test/fixtures/mmls/test.xml', 'utf8'),
+        xml: fs.readFileSync('./test/fixtures/mmls/world-borders.xml', 'utf8'),
         base: './test/fixtures/datasources/shapefiles/world-borders/'
       }
 
       if (metrics !== undefined) {
-        uri.metrics = metrics
+        options.metrics = metrics
       }
 
-      return uri
+      return options
     }
 
-    it('Defaults to false', function () {
-      const uri = defaults(makeOptions())
-      assert(uri.metrics === false)
+    it('defaults to false', function () {
+      const options = defaults(makeOptions())
+      assert(options.metrics === false)
     })
 
-    it('Set to false', function () {
-      const uri = defaults(makeOptions(false))
-      assert(uri.metrics === false)
+    it('set to false', function () {
+      const options = defaults(makeOptions(false))
+      assert(options.metrics === false)
     })
 
-    it('Set to true', function () {
-      const uri = defaults(makeOptions(true))
-      assert(uri.metrics === true)
+    it('set to true', function () {
+      const options = defaults(makeOptions(true))
+      assert(options.metrics === true)
     })
   })
 })

@@ -37,7 +37,7 @@ assert.vectorEqualsFile = function compareVectorTiles (filepath, vtile1, vtile2)
   assert.strictEqual(vtile1.empty(), vtile2.empty())
   var v1 = vtile1.toJSON()
   var v2 = vtile2.toJSON()
-  assert.strictEqual(v1.length, v2.length)
+  assert.deepStrictEqual(v1.length, v2.length)
   var l1 = v1[0]
   var l2 = v2[0]
   assert.strictEqual(l1.name, l2.name)

@@ -1,41 +1,73 @@
 const fs = require('fs')
 const assert = require('./support/assert')
 const { describe, it } = require('mocha')
-const rasterRendererFactory = require('../lib/raster-renderer')
+const rendererFactory = require('../lib/renderer-factory')
 
-describe('Timeout', function () {
-  const options = {
-    xml: fs.readFileSync('./test/fixtures/mmls/world.xml', 'utf8'),
+describe('timeout', function () {
+  const baseRendererOptions = {
+    xml: fs.readFileSync('./test/fixtures/mmls/world-borders.xml', 'utf8'),
     base: './test/fixtures/datasources/shapefiles/world-borders',
     limits: {
       render: 1,
       cacheOnTimeout: true
-    },
-    strict: false
+    }
   }
 
-  it('should fire timeout', async function () {
-    const renderer = rasterRendererFactory(options)
+  describe('raster renderer', function () {
+    const rendererOptions = Object.assign({}, baseRendererOptions, { type: 'raster' })
 
-    try {
-      await renderer.getTile('png', 0, 0, 0)
-    } catch (err) {
-      assert.strictEqual('Render timed out', err.message)
-    } finally {
+    it('should fire timeout', async function () {
+      const renderer = rendererFactory(rendererOptions)
+
+      try {
+        await renderer.getTile('png', 0, 0, 0)
+        throw new Error('should not throw this error')
+      } catch (err) {
+        assert.strictEqual('Render timed out', err.message)
+      } finally {
+        await renderer.close()
+      }
+    })
+
+    it('should not fire timeout', async function () {
+      const opts = Object.assign({}, rendererOptions, { limits: { render: 0 } })
+
+      const renderer = rendererFactory(opts)
+      const { tile, headers } = await renderer.getTile('png', 0, 0, 0)
+
+      assert.ok(tile)
+      assert.ok(headers)
+
       await renderer.close()
-    }
+    })
   })
 
-  it('should not fire timeout', async function () {
-    const opts = Object.assign({}, options)
-    opts.limits.render = 0
+  describe('vector renderer', function () {
+    const rendererOptions = Object.assign({}, baseRendererOptions, { type: 'vector' })
 
-    const renderer = rasterRendererFactory(opts)
-    const { tile, headers } = await renderer.getTile('png', 0, 0, 0)
+    it('should fire timeout', async function () {
+      const renderer = rendererFactory(rendererOptions)
 
-    assert.ok(tile)
-    assert.ok(headers)
+      try {
+        await renderer.getTile('mvt', 0, 0, 0)
+        throw new Error('should not throw this error')
+      } catch (err) {
+        assert.strictEqual(err.message, 'Render timed out')
+      } finally {
+        await renderer.close()
+      }
+    })
 
-    await renderer.close()
+    it('should not fire timeout', async function () {
+      const opts = Object.assign({}, rendererOptions, { limits: { render: 0 } })
+
+      const renderer = rendererFactory(opts)
+      const { tile, headers } = await renderer.getTile('mvt', 0, 0, 0)
+
+      assert.ok(tile)
+      assert.ok(headers)
+
+      await renderer.close()
+    })
   })
 })

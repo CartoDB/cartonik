@@ -3,26 +3,31 @@
 const fs = require('fs')
 const assert = require('assert')
 const { describe, it } = require('mocha')
-const rasterRendererFactory = require('../lib/raster-renderer')
+const rendererFactory = require('../lib/renderer-factory')
 
-describe('Closing behavior ', function () {
+describe('renderer close behaviour', function () {
+  const rendererOptions = {
+    type: 'raster',
+    xml: fs.readFileSync('./test/fixtures/mmls/world-borders.xml', 'utf8'),
+    base: `${__dirname}/fixtures/datasources/shapefiles/world-borders/`
+  }
+
   it('should close cleanly after getting the renderer', async function () {
-    const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/fixtures/mmls/world.xml', 'utf8'), base: `${__dirname}/fixtures/datasources/shapefiles/world-borders/` })
+    const renderer = rendererFactory(rendererOptions)
     await renderer.close()
   })
 
   it('should close cleanly after getting one tile', async function () {
-    const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/fixtures/mmls/world.xml', 'utf8'), base: `${__dirname}/fixtures/datasources/shapefiles/world-borders/` })
+    const renderer = rendererFactory(rendererOptions)
     await renderer.getTile('png', 0, 0, 0)
     await renderer.close()
   })
 
   it('should throw with invalid usage (close before getTile)', async function () {
-    const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/fixtures/mmls/world.xml', 'utf8'), base: `${__dirname}/fixtures/datasources/shapefiles/world-borders/` })
-    // now close the source
-    // now that the pool is draining further
-    // access to the source is invalid and should throw
-    renderer.close() // pool will be draining...
+    const renderer = rendererFactory(rendererOptions)
+
+    // pool will be draining...
+    renderer.close()
 
     try {
       await renderer.getTile('png', 0, 0, 0)
@@ -33,12 +38,12 @@ describe('Closing behavior ', function () {
   })
 
   it('should throw with invalid usage (close after getTile)', async function () {
-    const renderer = rasterRendererFactory({ xml: fs.readFileSync('./test/fixtures/mmls/world.xml', 'utf8'), base: `${__dirname}/fixtures/datasources/shapefiles/world-borders/` })
+    const renderer = rendererFactory(rendererOptions)
 
     await renderer.getTile('png', 0, 0, 0)
 
-    // now close the source
-    renderer.close() // pool will be draining...
+    // pool will be draining...
+    renderer.close()
 
     try {
       // now that the pool is draining further

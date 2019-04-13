@@ -1,70 +1,65 @@
 'use strict'
 
-const vectorRendererFactory = require('../lib/vector-renderer')
+const rendererFactory = require('../lib/renderer-factory')
 const path = require('path')
 const fs = require('fs')
 const mapnik = require('@carto/mapnik')
 const zlib = require('zlib')
-const UPDATE = process.env.UPDATE
 const assert = require('assert')
 const { it } = require('mocha')
 const { promisify } = require('util')
 
-// Load fixture data.
-const xml = fs.readFileSync(path.resolve(path.join(__dirname, '/fixtures/mmls/test-c.xml')), 'utf8')
-
-var sources = {
-  a: { xml, base: path.join(__dirname, '/fixtures/datasources/shapefiles/world-borders/'), bufferSize: 0 },
-  b: { xml, base: path.join(__dirname, '/fixtures/datasources/shapefiles/world-borders/'), bufferSize: 64 }
+const baseRendererOptions = {
+  type: 'vector',
+  xml: fs.readFileSync(path.join(__dirname, '/fixtures/mmls/world-borders-with-labels.xml'), 'utf8'),
+  base: path.join(__dirname, '/fixtures/datasources/shapefiles/world-borders/')
 }
 
-var tests = {
-  a: [{ coords: '1.0.0', bufferSize: 0 }, { coords: '2.1.1', bufferSize: 0 }],
-  b: [{ coords: '1.0.0', bufferSize: 64 }, { coords: '2.1.1', bufferSize: 64 }]
-}
+const scenarios = [
+  {
+    rendererOptions: Object.assign({ bufferSize: 0 }, baseRendererOptions),
+    coords: [ 1, 0, 0 ]
+  },
+  {
+    rendererOptions: Object.assign({ bufferSize: 0 }, baseRendererOptions),
+    coords: [ 2, 1, 1 ]
+  },
+  {
+    rendererOptions: Object.assign({ bufferSize: 64 }, baseRendererOptions),
+    coords: [ 1, 0, 0 ]
+  },
+  {
+    rendererOptions: Object.assign({ bufferSize: 64 }, baseRendererOptions),
+    coords: [ 2, 1, 1 ]
+  }
+]
 
-Object.keys(tests).forEach(function (source) {
-  it('setup', function () {
-    const renderer = vectorRendererFactory(sources[source])
-    sources[source] = renderer
-  })
-})
-Object.keys(tests).forEach(function (source) {
-  tests[source].forEach(function (test) {
-    var coords = test.coords.split('.')
-    var bufferSize = test.bufferSize
-    var z = coords[0]
-    var x = coords[1]
-    var y = coords[2]
+scenarios.forEach(function ({ rendererOptions, coords }) {
+  const renderer = rendererFactory(rendererOptions)
+  const [ z, x, y ] = coords
 
-    it('should render ' + source + ' (' + test.coords + ') using buffer-size ' + bufferSize, async function () {
-      const { tile, headers } = await sources[source].getTile('mvt', z, x, y)
+  it(`should render vector tiles ${coords.join('/')} with buffer-size ${rendererOptions.bufferSize}`, async function () {
+    const { tile, headers } = await renderer.getTile('mvt', z, x, y)
 
-      assert.strictEqual(headers['Content-Type'], 'application/x-protobuf')
-      assert.strictEqual(headers['Content-Encoding'], 'gzip')
+    assert.strictEqual(headers['Content-Type'], 'application/x-protobuf')
+    assert.strictEqual(headers['Content-Encoding'], 'gzip')
 
-      const buffer = await promisify(zlib.gunzip)(tile)
+    const buffer = await promisify(zlib.gunzip)(tile)
 
-      const filepath = path.join(__dirname, '/fixtures/output/' + source + '.' + test.coords + '.vector.buffer-size.' + bufferSize + '.pbf')
-      if (UPDATE || !fs.existsSync(filepath)) fs.writeFileSync(filepath, buffer)
+    const filepath = path.join(`./test/fixtures/output/pbfs/world-borders-${coords.join('.')}-buffersize-${rendererOptions.bufferSize}.pbf`)
+    const expected = fs.readFileSync(filepath)
+    const vtile1 = new mapnik.VectorTile(z, x, y, { buffer_size: 16 * rendererOptions.bufferSize })
+    const vtile2 = new mapnik.VectorTile(z, x, y, { buffer_size: 16 * rendererOptions.bufferSize })
 
-      const expected = fs.readFileSync(filepath)
-      const vtile1 = new mapnik.VectorTile(+z, +x, +y, { buffer_size: 16 * test.bufferSize })
-      const vtile2 = new mapnik.VectorTile(+z, +x, +y, { buffer_size: 16 * test.bufferSize })
+    vtile1.setDataSync(expected)
+    vtile2.setDataSync(buffer)
 
-      vtile1.setDataSync(expected)
-      vtile2.setDataSync(buffer)
+    assert.vectorEqualsFile(filepath, vtile1, vtile2)
+    assert.strictEqual(expected.length, buffer.length)
+    assert.deepStrictEqual(expected, buffer)
 
-      assert.vectorEqualsFile(filepath, vtile1, vtile2)
-      assert.strictEqual(expected.length, buffer.length)
-      assert.deepStrictEqual(expected, buffer)
-    })
-  })
-})
-Object.keys(tests).forEach(function (source) {
-  it('teardown', async function () {
-    assert.strictEqual(1, sources[source]._mapPool.size)
-    await sources[source].close()
-    assert.strictEqual(0, sources[source]._mapPool.size)
+    assert.strictEqual(1, renderer._mapPool.size)
+    await renderer.close()
+    assert.strictEqual(0, renderer._mapPool.size)
   })
 })

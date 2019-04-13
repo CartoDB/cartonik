@@ -2,7 +2,7 @@ const { describe, it } = require('mocha')
 const rendererFactory = require('../lib/renderer-factory')
 const assert = require('assert')
 
-describe('Renderer factory', function () {
+describe('renderer factory', function () {
   it('should get a raster renderer instance', function () {
     const renderer = rendererFactory({ type: 'raster', xml: '<Map></Map>' })
     assert.strictEqual(renderer.constructor.name, 'RasterRenderer')

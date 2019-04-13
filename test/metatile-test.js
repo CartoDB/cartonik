@@ -1,17 +1,15 @@
-var assert = require('assert')
+const assert = require('assert')
 const { describe, it } = require('mocha')
-var calculateMetatile = require('../lib/metatile')
+const calculateMetatile = require('../lib/metatile')
 
-var FULL = 20037508.342789244
-var HALF = 0
-var QUAD = 10018754.171394622
-var QUADX = 10018754.17139462
+const FULL = 20037508.342789244
+const HALF = 0
+const QUAD = 10018754.171394622
+const QUADX = 10018754.17139462
 
 describe('metatile', function () {
-  let tile
-
-  it('test metatile calculation at z=0', function (done) {
-    tile = {
+  it('metatile calculation at z=0', function () {
+    const tile = {
       width: 256,
       height: 256,
       tiles: [ [0, 0, 0] ],
@@ -24,10 +22,9 @@ describe('metatile', function () {
     assert.deepStrictEqual(calculateMetatile({ z: 0, x: 0, y: 0, metatile: 3, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 0, x: 0, y: 0, metatile: 4, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 0, x: 0, y: 0, metatile: 13, tileSize: 256 }), tile)
-    done()
   })
 
-  it('test metatile calculation at z=1', function (done) {
+  it('metatile calculation at z=1', function () {
     // metatile: 1
     assert.deepStrictEqual(calculateMetatile({ z: 1, x: 0, y: 0, metatile: 1, tileSize: 256 }), {
       width: 256,
@@ -62,7 +59,7 @@ describe('metatile', function () {
       y: 1
     })
 
-    tile = {
+    const tile = {
       width: 512,
       height: 512,
       tiles: [ [1, 0, 0], [1, 0, 1], [1, 1, 0], [1, 1, 1] ],
@@ -94,11 +91,9 @@ describe('metatile', function () {
     assert.deepStrictEqual(calculateMetatile({ z: 1, x: 0, y: 1, metatile: 13, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 1, x: 1, y: 0, metatile: 13, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 1, x: 1, y: 1, metatile: 13, tileSize: 256 }), tile)
-
-    done()
   })
 
-  it('test metatile calculation at z=2', function (done) {
+  it('metatile calculation at z=2', function () {
     // metatile: 1
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 0, y: 0, metatile: 1, tileSize: 256 }), {
       width: 256,
@@ -231,9 +226,10 @@ describe('metatile', function () {
       x: 3,
       y: 3
     })
+  })
 
-    // metatile: 2
-    tile = {
+  it('metatile = 2', function () {
+    let tile = {
       width: 512,
       height: 512,
       tiles: [ [2, 0, 0], [2, 0, 1], [2, 1, 0], [2, 1, 1] ],
@@ -284,9 +280,10 @@ describe('metatile', function () {
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 2, y: 3, metatile: 2, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 2, metatile: 2, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 3, metatile: 2, tileSize: 256 }), tile)
+  })
 
-    // metatile: 3
-    tile = {
+  it('metatile = 3', function () {
+    let tile = {
       width: 768,
       height: 768,
       tiles: [ [2, 0, 0], [2, 0, 1], [2, 0, 2], [2, 1, 0], [2, 1, 1], [2, 1, 2], [2, 2, 0], [2, 2, 1], [2, 2, 2] ],
@@ -336,9 +333,10 @@ describe('metatile', function () {
       x: 3,
       y: 3
     })
+  })
 
-    // metatile: 4
-    tile = {
+  it('metatile = 4', function () {
+    const tile = {
       width: 1024,
       height: 1024,
       tiles: [ [2, 0, 0], [2, 0, 1], [2, 0, 2], [2, 0, 3], [2, 1, 0], [2, 1, 1], [2, 1, 2], [2, 1, 3], [2, 2, 0], [2, 2, 1], [2, 2, 2], [2, 2, 3], [2, 3, 0], [2, 3, 1], [2, 3, 2], [2, 3, 3] ],
@@ -362,9 +360,10 @@ describe('metatile', function () {
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 1, metatile: 4, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 2, metatile: 4, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 3, metatile: 4, tileSize: 256 }), tile)
+  })
 
-    // metatile: 5
-    tile = {
+  it('metatile = 5', function () {
+    const tile = {
       width: 1024,
       height: 1024,
       tiles: [ [2, 0, 0], [2, 0, 1], [2, 0, 2], [2, 0, 3], [2, 1, 0], [2, 1, 1], [2, 1, 2], [2, 1, 3], [2, 2, 0], [2, 2, 1], [2, 2, 2], [2, 2, 3], [2, 3, 0], [2, 3, 1], [2, 3, 2], [2, 3, 3] ],
@@ -388,9 +387,10 @@ describe('metatile', function () {
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 1, metatile: 5, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 2, metatile: 5, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 3, metatile: 5, tileSize: 256 }), tile)
+  })
 
-    // metatile: 13
-    tile = {
+  it('metatile = 13', function () {
+    const tile = {
       width: 1024,
       height: 1024,
       tiles: [ [2, 0, 0], [2, 0, 1], [2, 0, 2], [2, 0, 3], [2, 1, 0], [2, 1, 1], [2, 1, 2], [2, 1, 3], [2, 2, 0], [2, 2, 1], [2, 2, 2], [2, 2, 3], [2, 3, 0], [2, 3, 1], [2, 3, 2], [2, 3, 3] ],
@@ -414,7 +414,5 @@ describe('metatile', function () {
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 1, metatile: 13, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 2, metatile: 13, tileSize: 256 }), tile)
     assert.deepStrictEqual(calculateMetatile({ z: 2, x: 3, y: 3, metatile: 13, tileSize: 256 }), tile)
-
-    done()
   })
 })
