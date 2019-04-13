@@ -48,7 +48,7 @@ const renderer = cartonik({ ...options })
 - `poolSize`: `number` (default `os.cpus().length`). Max number of preloaded maps available for rendering
 - `poolMaxWaitingClients`: `number` (default `32`). Max number of waiting clients to acquire one of the preloaded maps.
 - `tileSize`: `number` (default `256`). Size of the tile in pixels
-- `limits`: Object;
+- `limits`: `object`;
   - `render`: `number` (default `0` = disabled). Time in milliseconds to wait for the renderer to return a tile
 - `metrics`: `boolean` (default `false`). Configure `@carto/mapnik` to gather statistics about rendering performance
 - `variables`: `object`. A key-value dictionary to customize map configuration at render-time. Placeholders defined in `xml` (e.g. `<PolygonSymbolizer fill="@water"/>`) will be replaced with the values defined here (e.g. `{ water: 'blue' }`).
