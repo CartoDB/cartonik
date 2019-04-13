@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/CartoDB/cartonik.svg?style=svg)](https://circleci.com/gh/CartoDB/cartonik)
 
-Render maps with @`carto/mapnik`
+Render maps with `@carto/mapnik`
 
 ## Features
 
