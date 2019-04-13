@@ -35,7 +35,6 @@
   },
   "devDependencies": {
     "mocha": "^6.0.2",
-    "queue-async": "^1.2.1",
     "standard": "^12.0.1"
   }
 }
