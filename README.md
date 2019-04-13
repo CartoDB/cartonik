@@ -41,7 +41,7 @@ const renderer = cartonik({ ...options })
 ### Generic options
 
 - `type`: `string` (either `raster` or `vector`, default `raster`). Whether the renderer aims to render Mapnik Vector Tiles or traditional raster formats (`png`, `utf`).
-- `xml`*: `string`. The [Mapnik XML](https://github.com/mapnik/mapnik/wiki/XMLConfigReference) configuration.
+- `xml`: `string` (*required*). The [Mapnik XML](https://github.com/mapnik/mapnik/wiki/XMLConfigReference) configuration.
 - `base`: `string`. Path to the folder where the datasources files are (e.g. shapefiles).
 - `strict`: `boolean` (default `false`). Enables mapnik strict mode.
 - `bufferSize`: `number` (default `256`). Extra space, in pixels, surrounding the map size being rendered. This allows you to have text and symbols rendered correctly when they overlap the image boundary.
