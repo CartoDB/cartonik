@@ -1,3 +1,5 @@
+'use strict'
+
 const assert = require('assert')
 const { describe, it } = require('mocha')
 const calculateMetatile = require('../lib/metatile')

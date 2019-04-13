@@ -1,3 +1,5 @@
+'use strict'
+
 const fs = require('fs')
 const assert = require('assert')
 const { describe, it, before, after } = require('mocha')

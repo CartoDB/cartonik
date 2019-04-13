@@ -1,3 +1,5 @@
+'use strict'
+
 const fs = require('fs')
 const assert = require('./support/assert')
 const rendererFactory = require('../lib/renderer-factory')
