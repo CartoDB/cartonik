@@ -60,7 +60,7 @@ const renderer = cartonik({ ...options })
   - `timeout`: `number` (default 1 minute). When the timeout fires, it removes the cached tiles.
   - `deleteOnHit`: `boolean` (default `false`). Removes the cached tile after delivered
 - `scale`: `number` (default `1`). Multiplier to scale up size-related properties of symbolizers.
-- `resolution`: `number` (default `4`). When `fomat` = `utf`, the factor to scale down the tile size.
+- `resolution`: `number` (default `4`). When `format` = `utf`, the factor to scale down the tile size.
 
 ### Vector options (`type` = `vector`)
 
