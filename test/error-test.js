@@ -3,7 +3,7 @@
 const fs = require('fs')
 const assert = require('./support/assert')
 const { describe, it } = require('mocha')
-const rasterRendererFactory = require('../lib/raster-renderer')
+const rendererFactory = require('../lib/renderer-factory')
 
 const invalidXML = fs.readFileSync('./test/fixtures/mmls/invalid.xml', 'utf8')
 const invalidFontFaceXML = fs.readFileSync('./test/fixtures/mmls/world-borders-invalid-font-face.xml', 'utf8')
@@ -14,7 +14,7 @@ const base = 'test/fixtures/datasources/shapefiles/world-borders/'
 
 describe('error handling', function () {
   it('should throw syntax error', async function () {
-    const renderer = rasterRendererFactory({ xml: invalidXML, base })
+    const renderer = rendererFactory({ type: 'raster', xml: invalidXML, base })
 
     try {
       await renderer.getTile('png', 0, 0, 0)
@@ -27,13 +27,13 @@ describe('error handling', function () {
   })
 
   it('strict: false (default), should not throw error when invalid font', async function () {
-    const renderer = rasterRendererFactory({ xml: invalidFontFaceXML, base })
+    const renderer = rendererFactory({ type: 'raster', xml: invalidFontFaceXML, base })
     await renderer.getTile('png', 0, 0, 0)
     await renderer.close()
   })
 
   it('strict: true, should throw error', async function () {
-    const renderer = rasterRendererFactory({ xml: invalidFontFaceXML, base, strict: true })
+    const renderer = rendererFactory({ type: 'raster', xml: invalidFontFaceXML, base, strict: true })
 
     try {
       await renderer.getTile('png', 0, 0, 0)
@@ -46,11 +46,11 @@ describe('error handling', function () {
   })
 
   it('should throw missing XML error', function () {
-    assert.throws(() => rasterRendererFactory({}), { message: 'No XML provided' })
+    assert.throws(() => rendererFactory({ type: 'raster' }), { message: 'No XML provided' })
   })
 
   it('should throw invalid closing tag error', async function () {
-    const renderer = rasterRendererFactory({ xml: worldBordersBadXML, base })
+    const renderer = rendererFactory({ type: 'raster', xml: worldBordersBadXML, base })
 
     try {
       await renderer.getTile('png', 0, 0, 0)
@@ -63,7 +63,7 @@ describe('error handling', function () {
   })
 
   it('should throw unknown file type error', async function () {
-    const renderer = rasterRendererFactory({ xml: worldBordersInteractivityXML, base })
+    const renderer = rendererFactory({ type: 'raster', xml: worldBordersInteractivityXML, base })
 
     try {
       await renderer.getTile('this is an invalid image format', 0, 0, 0)
@@ -76,7 +76,7 @@ describe('error handling', function () {
   })
 
   it('should throw compression parameter error', async function () {
-    const renderer = rasterRendererFactory({ xml: worldBordersInteractivityXML, base })
+    const renderer = rendererFactory({ type: 'raster', xml: worldBordersInteractivityXML, base })
 
     try {
       await renderer.getTile('png8:z=20', 0, 0, 0)
@@ -89,7 +89,7 @@ describe('error handling', function () {
   })
 
   it('should throw coordinates out of range error: 0, -1, 0', async function () {
-    const renderer = rasterRendererFactory({ xml: worldBordersInteractivityXML, base })
+    const renderer = rendererFactory({ type: 'raster', xml: worldBordersInteractivityXML, base })
 
     try {
       await renderer.getTile('png', 0, -1, 0)
@@ -102,7 +102,7 @@ describe('error handling', function () {
   })
 
   it('should throw coordinates out of range: 1024/0/0', async function () {
-    const renderer = rasterRendererFactory({ xml: worldBordersInteractivityXML, base })
+    const renderer = rendererFactory({ type: 'raster', xml: worldBordersInteractivityXML, base })
 
     try {
       await renderer.getTile('png', 1024, 0, 0)
@@ -112,5 +112,21 @@ describe('error handling', function () {
     }
 
     await renderer.close()
+  })
+
+  it('should throw error layer not found', async function () {
+    const renderer = rendererFactory({
+      type: 'raster',
+      xml: fs.readFileSync('./test/fixtures/mmls/world-borders-invalid-interactivity.xml', 'utf8'),
+      base: './test/fixtures/datasources/shapefiles/world-borders/'
+    })
+
+    try {
+      await renderer.getTile('utf', 0, 0, 0)
+    } catch (err) {
+      assert.strictEqual(err.message, "Layer name 'blah' not found")
+    } finally {
+      await renderer.close()
+    }
   })
 })

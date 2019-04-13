@@ -2,26 +2,32 @@
 
 const fs = require('fs')
 const assert = require('./support/assert')
-const { describe, it } = require('mocha')
+const { describe, it, before, after } = require('mocha')
 const rendererFactory = require('../lib/renderer-factory')
 
 const rendererOptions = {
   type: 'raster',
-  xml: fs.readFileSync('./test/fixtures/mmls/world-borders.xml', 'utf8'),
-  base: './test/fixtures/datasources/shapefiles/world-borders/'
+  xml: fs.readFileSync('./test/fixtures/mmls/world-borders-interactivity.xml', 'utf8'),
+  base: './test/fixtures/datasources/shapefiles/world-borders/',
+  metrics: true
 }
 
 describe('metrics', function () {
-  it('tile 0/0/0', async function () {
-    const options = Object.assign({}, rendererOptions, {
-      metrics: true
-    })
+  let renderer
 
-    const renderer = rendererFactory(options)
+  before(function () {
+    renderer = rendererFactory(rendererOptions)
+  })
 
-    const { stats } = await renderer.getTile('png', 0, 0, 0)
-
-    assert.ok(stats.hasOwnProperty('Mapnik'))
+  after(async function () {
     await renderer.close()
   })
+
+  for (const format of [ 'png', 'utf' ]) {
+    it('tile 0/0/0 has stats', async function () {
+      const { stats } = await renderer.getTile(format, 0, 0, 0)
+
+      assert.ok(stats.hasOwnProperty('Mapnik'))
+    })
+  }
 })

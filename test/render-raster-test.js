@@ -30,7 +30,7 @@ describe('render rater tiles', function () {
     await renderer.close()
   })
 
-  it('tile 30/0/0', async function () {
+  it('tile 31/0/0, format png', async function () {
     const options = Object.assign({}, rendererOptions, {
       xml: fs.readFileSync('./test/fixtures/mmls/world-borders-interactivity.xml', 'utf8')
     })
@@ -41,6 +41,21 @@ describe('render rater tiles', function () {
 
     assert.strictEqual(headers['Content-Type'], 'image/png')
     await assert.imageEqualsFile(tile, './test/fixtures/output/pngs/zoom-31.png')
+
+    await renderer.close()
+  })
+
+  it('tile 31/0/0 format grid.json', async function () {
+    const renderer = rendererFactory({
+      type: 'raster',
+      xml: fs.readFileSync('./test/fixtures/mmls/world-borders-interactivity.xml', 'utf8'),
+      base: './test/fixtures/datasources/shapefiles/world-borders/'
+    })
+
+    const { tile, headers } = await renderer.getTile('utf', 31, 0, 0)
+
+    assert.deepStrictEqual(tile, JSON.parse(fs.readFileSync('./test/fixtures/output/grids/world-borders-interactivity-31.0.0.grid.json', 'utf8')))
+    assert.strictEqual(headers['Content-Type'], 'application/json')
 
     await renderer.close()
   })
@@ -116,6 +131,37 @@ describe('render rater tiles', function () {
 
         const filepath = `./test/fixtures/output/pngs/world-borders-with-labels-${coords.join('.')}-buffersize.png`
         await assert.imageEqualsFile(tile, filepath)
+      })
+    }
+  })
+
+  describe('world borders interactivity', function () {
+    let renderer
+
+    before(function () {
+      renderer = rendererFactory({
+        type: 'raster',
+        xml: fs.readFileSync('./test/fixtures/mmls/world-borders-interactivity.xml', 'utf8'),
+        base: './test/fixtures/datasources/shapefiles/world-borders/'
+      })
+    })
+
+    after(async function () {
+      await renderer.close()
+    })
+
+    for (const coords of tileCoords) {
+      it(`tile ${coords.join('.')}, format: grid.json`, async function () {
+        const { tile, headers, stats } = await renderer.getTile('utf', ...coords)
+
+        assert.ok(stats)
+        assert.ok(stats.hasOwnProperty('render'))
+        assert.ok(stats.hasOwnProperty('encode'))
+
+        const expected = `./test/fixtures/output/grids/world-borders-interactivity-${coords.join('.')}.grid.json`
+
+        assert.deepStrictEqual(tile, JSON.parse(fs.readFileSync(expected, 'utf8')))
+        assert.strictEqual(headers['Content-Type'], 'application/json')
       })
     }
   })
