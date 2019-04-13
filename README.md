@@ -40,7 +40,7 @@ const renderer = cartonik({ ...options })
 
 ### Generic options
 
-- `type`: `string` (either `raster` or `vector`, default `raster`). Whether the renderer aims to render Mapnik Vector Tiles or traditional raster formats (`png`, `utf`).
+- `type`: `string` (either `raster` or `vector`, default `raster`). Whether the renderer aims to render Mapnik Vector Tiles or traditional raster formats (`png`, `utf`).
 - `xml`*: `string`. The [Mapnik XML](https://github.com/mapnik/mapnik/wiki/XMLConfigReference) configuration.
 - `base`: `string`. Path to the folder where the datasources files are (e.g. shapefiles).
 - `strict`: `boolean` (default `false`). Enables mapnik strict mode.
@@ -49,18 +49,18 @@ const renderer = cartonik({ ...options })
 - `poolMaxWaitingClients`: `number` (default `32`). Max number of waiting clients to acquire one of the preloaded maps.
 - `tileSize`: `number` (default `256`). Size of the tile in pixels.
 - `limits`: `object`.
-  - `render`: `number` (default `0` = disabled). Time in milliseconds to wait for the renderer to return a tile.
-- `metrics`: `boolean` (default `false`). Configure `@carto/mapnik` to gather statistics about rendering performance.
-- `variables`: `object`. A key-value dictionary to customize map configuration at render-time. Placeholders defined in `xml` (e.g. `<PolygonSymbolizer fill="@water"/>`) will be replaced with the values defined here (e.g. `{ water: 'blue' }`).
+  - `render`: `number` (default `0` = disabled). Time in milliseconds to wait for the renderer to return a tile.
+- `metrics`: `boolean` (default `false`). Configure `@carto/mapnik` to gather statistics about rendering performance.
+- `variables`: `object`. A key-value dictionary to customize map configuration at render-time. Placeholders defined in `xml` (e.g. `<PolygonSymbolizer fill="@water"/>`) will be replaced with the values defined here (e.g. `{ water: 'blue' }`).
 
 ### Raster options (`type` = `raster`)
 
-- `metatile`: `number` (default `2`). The number of tiles included in a metatile. One metatile generates a group of images at once in batches before separating them into the final tiles - this improves efficiency in various ways.
+- `metatile`: `number` (default `2`). The number of tiles included in a metatile. One metatile generates a group of images at once in batches before separating them into the final tiles - this improves efficiency in various ways.
 - `metatileCache`: `object`.
-  - `timeout`: `number` (default 1 minute). When the timeout fires, it removes the cached tiles.
+  - `timeout`: `number` (default 1 minute). When the timeout fires, it removes the cached tiles.
   - `deleteOnHit`: `boolean` (default `false`). Removes the cached tile after delivered.
 - `scale`: `number` (default `1`). Multiplier to scale up size-related properties of symbolizers.
-- `resolution`: `number` (default `4`). When `format` = `utf`, the factor to scale down the tile size.
+- `resolution`: `number` (default `4`). When `format` = `utf`, the factor to scale down the tile size.
 
 ### Vector options (`type` = `vector`)
 
