@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/CartoDB/cartonik.svg?style=svg)](https://circleci.com/gh/CartoDB/cartonik)
 
-Render maps with @carto/mapnik
+Render maps with @`carto/mapnik`
 
 ## Features
 
@@ -36,21 +36,32 @@ const tile = await renderer.getTile(format, z, x, y)
 const renderer = cartonik({ ...options })
 ```
 
-### Options
+## Options
 
-- `xml`: String; [the Mapnik XML configuration](https://github.com/mapnik/mapnik/wiki/XMLConfigReference)
-- `type`: String; `raster` or `vector`. Whether the renderer aims to render Mapnik Vector Tiles or traditional raster formats
-- `strict`: Boolean;
-- `bufferSize`: Number; extra space, in pixels, surrounding the map size being rendered. This allows you to have text and symbols rendered correctly when they overlap
-the image boundary.
-- `poolSize`: Number; max number of preloaded maps available for rendering
-- `poolMaxWaitingClients`: Number; max number of waiting clients to acquire one of the preloaded maps
-- `tileSize`: Number; size of the tile in pixels
+### Generic options
+
+- `type`: `string` (either `raster` or `vector`, default `raster`). Whether the renderer aims to render Mapnik Vector Tiles or traditional raster formats (`png`, `utf`)
+- `xml`*: `string`. The [Mapnik XML](https://github.com/mapnik/mapnik/wiki/XMLConfigReference) configuration
+- `base`: `string`. Path to the folder where the datasources files are (e.g. shapefiles)
+- `strict`: `boolean` (default `false`). Enables mapnik strict mode
+- `bufferSize`: `number` (default `256`). Extra space, in pixels, surrounding the map size being rendered. This allows you to have text and symbols rendered correctly when they overlap the image boundary.
+- `poolSize`: `number` (default `os.cpus().length`). Max number of preloaded maps available for rendering
+- `poolMaxWaitingClients`: `number` (default `32`). Max number of waiting clients to acquire one of the preloaded maps.
+- `tileSize`: `number` (default `256`). Size of the tile in pixels
 - `limits`: Object;
-  - `render`: Number; time in milliseconds to wait for the renderer to return a tile
-- `metrics`: Boolean; configure `@carto/mapnik` to gather stats about rendering performance
-- `variables`: Object;
-- `metatile`: Number; when `type` = `raster`. The number of tiles included in a metatile. One metatile generates a group of images at once in batches before separating them into the final tiles - this improves efficiency in various ways.
-- `metatileCache` when `type` = `raster`
-- `scale`: Number; when `type` = `raster`
-- `gzip`: Bolean;  when `type` = `vector`
+  - `render`: `number` (default `0` = disabled). Time in milliseconds to wait for the renderer to return a tile
+- `metrics`: `boolean` (default `false`). Configure `@carto/mapnik` to gather statistics about rendering performance
+- `variables`: `object`. A key-value dictionary to customize map configuration at render-time. Placeholders defined in `xml` (e.g. `<PolygonSymbolizer fill="@water"/>`) will be replaced with the values defined here (e.g. `{ water: 'blue' }`).
+
+### Raster options (`type` = `raster`)
+
+- `metatile`: `number` (default `2`). The number of tiles included in a metatile. One metatile generates a group of images at once in batches before separating them into the final tiles - this improves efficiency in various ways.
+- `metatileCache`: `object`.
+  - `timeout`: `number` (default 1 minute). When the timeout fires, it removes the cached tiles.
+  - `deleteOnHit`: `boolean` (default `false`). Removes the cached tile after delivered
+- `scale`: `number` (default `1`). Multiplier to scale up size-related properties of symbolizers.
+- `resolution`: `number` (default `4`). When `fomat` = `utf`, the factor to scale down the tile size.
+
+### Vector options (`type` = `vector`)
+
+- `gzip`: `boolean` (default `true`). Compression method used to encoding a vector tile.
