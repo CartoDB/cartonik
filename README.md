@@ -65,3 +65,15 @@ const renderer = cartonik({ ...options })
 ### Vector options (`type` = `vector`)
 
 - `gzip`: `boolean` (default `true`). Compression method used to encoding a vector tile.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/cartodb/cartonik/tags).
+
+## Authors
+
+- [Daniel García Aubert](https://github.com/dgaubert)
+
+## License
+
+This project is licensed under the BSD 3-clause "New" or "Revised" License - see the [LICENSE](LICENSE) file for details.
