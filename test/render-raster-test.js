@@ -151,7 +151,7 @@ describe('render raster tiles', function () {
     })
 
     for (const coords of tileCoords) {
-      it(`tile ${coords.join('.')}, format: grid.json`, async function () {
+      it(`tile ${coords.join('/')}, format: grid.json`, async function () {
         const { tile, headers, stats } = await renderer.getTile('utf', ...coords)
 
         assert.ok(stats)
