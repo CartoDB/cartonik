@@ -4,6 +4,7 @@ const fs = require('fs')
 const assert = require('./support/assert')
 const { describe, it, before, after } = require('mocha')
 const rendererFactory = require('../lib/renderer-factory')
+const mapnik = require('@carto/mapnik')
 
 const rendererOptions = {
   type: 'raster',
@@ -111,9 +112,11 @@ describe('render raster tiles', function () {
     let renderer
 
     before(function () {
+      mapnik.register_default_fonts()
+
       const options = Object.assign({}, rendererOptions, {
         xml: fs.readFileSync('./test/fixtures/mmls/world-borders-with-labels.xml', 'utf8'),
-        bufferSize: 0
+        bufferSize: 64
       })
 
       renderer = rendererFactory(options)

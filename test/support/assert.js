@@ -6,7 +6,7 @@ const assert = module.exports = exports = require('assert')
 assert.imageEqualsFile = async function (buffer, file, meanError = 0.05, format = 'png32') {
   const resultImage = mapnik.Image.fromBytesSync(buffer)
 
-  if (!fs.existsSync(file) || process.env.UPDATE) {
+  if (process.env.UPDATE) {
     resultImage.save(file, format)
   }
 
