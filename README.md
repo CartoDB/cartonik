@@ -30,10 +30,11 @@ const [ format, z, x, y ] = [ 'png', 0, 0, 0 ]
 const tile = await renderer.getTile(format, z, x, y)
 ```
 
-## Usage
+## Usage: catonik(options)
 
 ```js
-const renderer = cartonik({ ...options })
+const options = { ... }
+const renderer = cartonik(options)
 ```
 
 ## Options
