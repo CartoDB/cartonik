@@ -29,7 +29,7 @@
     "test:watch": "npm run test -- -w"
   },
   "dependencies": {
-    "@carto/mapnik": "^3.6.2-carto.11",
+    "@carto/mapnik": "^3.6.2-carto.13",
     "generic-pool": "^3.6.1",
     "mime": "^2.4.0"
   },
