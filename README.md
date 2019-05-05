@@ -1,17 +1,17 @@
-# Cartonik
+# Cartonik :earth_africa:
 
 [![CircleCI](https://circleci.com/gh/CartoDB/cartonik.svg?style=svg)](https://circleci.com/gh/CartoDB/cartonik)
 
 Render maps with `@carto/mapnik`
 
-## Features
+## :rocket: Features
 
 - Render tiles from a Mapnik XML
 - Support several formats: `png`, `jpeg`, `grid.json`, `mvt`, etc..
 - Support traditional mapnik datasources: `shape`, `postgis`, `gdal`, `ogr`, etc..
 - Optimized for high-performance services
 
-## Installation
+## :package: Installation
 
 Cartonik requires Node.js 10 or higher
 
@@ -19,7 +19,7 @@ Cartonik requires Node.js 10 or higher
 npm install cartonik
 ```
 
-## Hello Cartonik
+## :wave: Hello Cartonik
 
 ```js
 const cartonik = require('cartonik')
@@ -30,14 +30,14 @@ const [ format, z, x, y ] = [ 'png', 0, 0, 0 ]
 const tile = await renderer.getTile(format, z, x, y)
 ```
 
-## Usage: cartonik(options)
+## :computer: Usage: cartonik(options)
 
 ```js
 const options = { ... }
 const renderer = cartonik(options)
 ```
 
-## Options
+## :triangular_ruler: Options
 
 ### Generic options
 
@@ -67,14 +67,14 @@ const renderer = cartonik(options)
 
 - `gzip`: `boolean` (default `true`). Compression method used to encoding a vector tile.
 
-## Versioning
+## :1234: Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/cartodb/cartonik/tags).
 
-## Authors
+## :busts_in_silhouette: Authors
 
 - [Daniel García Aubert](https://github.com/dgaubert)
 
-## License
+## :page_with_curl: License
 
 This project is licensed under the BSD 3-clause "New" or "Revised" License - see the [LICENSE](LICENSE) file for details.
