@@ -1,5 +1,9 @@
 # Cartonik ChangeLog
 
+## v0.5.1 (2019-05-20)
+
+- Upgrade @carto/mapnik to version 3.6.2-carto.15
+
 ## v0.5.0 (2019-04-29)
 
 - Upgrade @carto/mapnik to version 3.6.2-carto.13
