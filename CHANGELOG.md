@@ -1,5 +1,9 @@
 # Cartonik ChangeLog
 
+## v0.6.0 (2019-mm-dd)
+
+- Implement `getPreview` method to to create static maps from tiles based on center (long, lat) coordinates and bounding box.
+
 ## v0.5.1 (2019-05-21)
 
 - Upgrade @carto/mapnik to version 3.6.2-carto.15
