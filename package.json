@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@carto/mapnik": "^3.6.2-carto.15",
+    "@mapbox/sphericalmercator": "^1.1.0",
     "generic-pool": "^3.6.1",
     "mime": "^2.4.0"
   },
