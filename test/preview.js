@@ -237,26 +237,6 @@ describe('preview', function () {
 
       assert.deepStrictEqual(coords, expectedCoords)
     })
-
-    it('should return a valid offset object when image is smaller than world', function () {
-      const zoom = 1
-      const scale = 1
-      const width = 256
-      const height = 256
-      const center = { x: 256, y: 256 }
-      const dimensions = { width, height }
-
-      const expectedOffset = [
-        { x: -128, y: -128 },
-        { x: -128, y: 128 },
-        { x: 128, y: -128 },
-        { x: 128, y: 128 }
-      ]
-
-      const offsets = getOffsetList({ zoom, scale, center, dimensions, tileSize })
-
-      assert.deepStrictEqual(offsets, expectedOffset)
-    })
   })
 
   describe('offsets', function () {
@@ -348,6 +328,26 @@ describe('preview', function () {
       const offsets = getOffsetList({ zoom, scale, center, dimensions, tileSize })
 
       assert.deepStrictEqual(offsets, expectedOffsets)
+    })
+
+    it('should return a valid offset object when image is smaller than world', function () {
+      const zoom = 1
+      const scale = 1
+      const width = 256
+      const height = 256
+      const center = { x: 256, y: 256 }
+      const dimensions = { width, height }
+
+      const expectedOffset = [
+        { x: -128, y: -128 },
+        { x: -128, y: 128 },
+        { x: 128, y: -128 },
+        { x: 128, y: 128 }
+      ]
+
+      const offsets = getOffsetList({ zoom, scale, center, dimensions, tileSize })
+
+      assert.deepStrictEqual(offsets, expectedOffset)
     })
   })
 
