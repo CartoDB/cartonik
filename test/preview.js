@@ -385,7 +385,7 @@ describe('preview', function () {
       it(`should stitch tiles together using size = ${size}`, async function () {
         const { image } = await blend({ coordinates: coords, offsets, dimensions: center, format, quality, getTile: getTileTest })
 
-        await writeFile('./test/fixtures/output/pngs/preview-expected.' + size + '.png', image)
+        await writeFile(`./test/fixtures/output/pngs/preview-expected.${size}.png`, image)
 
         await assert.imageEqualsFile(image, `./test/fixtures/preview/expected/expected.${size}.png`)
       })
@@ -424,7 +424,7 @@ describe('preview', function () {
 
         const { image } = await preview(params)
 
-        await writeFile('./test/fixtures/output/pngs/preview-center.' + size + '.png', image)
+        await writeFile(`./test/fixtures/output/pngs/preview-center.${size}.png`, image)
 
         await assert.imageEqualsFile(image, `./test/fixtures/preview/expected/center.${size}.png`)
       })
@@ -442,7 +442,7 @@ describe('preview', function () {
 
         const { image } = await preview(params)
 
-        writeFile('./test/fixtures/output/pngs/preview-bbox.' + size + '.png', image)
+        writeFile(`./test/fixtures/output/pngs/preview-bbox.${size}.png`, image)
 
         await assert.imageEqualsFile(image, `./test/fixtures/preview/expected/bbox.${size}.png`)
       })
