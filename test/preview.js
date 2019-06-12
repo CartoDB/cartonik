@@ -13,7 +13,6 @@ const getOffsetList = require('../lib/preview/offsets')
 const blend = require('../lib/preview/blend')
 
 const readFile = promisify(fs.readFile)
-const writeFile = promisify(fs.writeFile)
 const readDir = promisify(fs.readdir)
 
 // defaults
@@ -29,12 +28,12 @@ const tileSize = 256
 // fixtures
 async function getFixtureTiles () {
   const tiles = {}
-  const filenames = await readDir('./test/fixtures/preview/tiles/')
+  const filenames = await readDir('./test/fixtures/output/pngs/preview-tiles/')
 
   for (const filename of filenames) {
     const key = filename.split('.').slice(0, 4).join('.')
 
-    tiles[key] = await readFile(`./test/fixtures/preview/tiles/${filename}`)
+    tiles[key] = await readFile(`./test/fixtures/output/pngs/preview-tiles/${filename}`)
   }
 
   return tiles
@@ -394,9 +393,7 @@ describe('preview', function () {
           getTile: getTileFixture({ tiles, size })
         })
 
-        await writeFile(`./test/fixtures/output/pngs/preview-expected.${size}.png`, image)
-
-        await assert.imageEqualsFile(image, `./test/fixtures/preview/expected/expected.${size}.png`)
+        await assert.imageEqualsFile(image, `./test/fixtures/output/pngs/world-preview-${size}.png`)
       })
     })
   })
@@ -425,9 +422,7 @@ describe('preview', function () {
 
         const { image } = await preview(params)
 
-        await writeFile(`./test/fixtures/output/pngs/preview-center.${size}.png`, image)
-
-        await assert.imageEqualsFile(image, `./test/fixtures/preview/expected/center.${size}.png`)
+        await assert.imageEqualsFile(image, `./test/fixtures/output/pngs/world-preview-center-${size}.png`)
       })
 
       it(`should stitch images using a bounding box (wsen) and tile size = ${size}`, async function () {
@@ -443,9 +438,7 @@ describe('preview', function () {
 
         const { image } = await preview(params)
 
-        writeFile(`./test/fixtures/output/pngs/preview-bbox.${size}.png`, image)
-
-        await assert.imageEqualsFile(image, `./test/fixtures/preview/expected/bbox.${size}.png`)
+        await assert.imageEqualsFile(image, `./test/fixtures/output/pngs/world-preview-bbox-${size}.png`)
       })
     })
 
@@ -473,9 +466,7 @@ describe('preview', function () {
 
       const { image } = await renderer.getPreview(params)
 
-      writeFile('./test/fixtures/output/pngs/acceptance-preview-bbox.256.png', image)
-
-      await assert.imageEqualsFile(image, './test/fixtures/preview/expected/acceptance-preview-bbox.256.png')
+      await assert.imageEqualsFile(image, './test/fixtures/output/pngs/world-borders-preview-bbox-256.png')
 
       await renderer.close()
     })
@@ -501,9 +492,7 @@ describe('preview', function () {
 
       const { image } = await renderer.getPreview(params)
 
-      writeFile('./test/fixtures/output/pngs/acceptance-preview-center.256.png', image)
-
-      await assert.imageEqualsFile(image, './test/fixtures/preview/expected/acceptance-preview-center.256.png')
+      await assert.imageEqualsFile(image, './test/fixtures/output/pngs/world-borders-preview-center-256.png')
 
       await renderer.close()
     })
