@@ -384,7 +384,7 @@ describe('preview', function () {
         height: size * 2
       }
 
-      it(`should stitch tiles together using size = ${size}`, async function () {
+      it(`should stitch tiles together using tile size = ${size}`, async function () {
         const { image } = await blend({
           coordinates: coords,
           offsets,
@@ -405,7 +405,7 @@ describe('preview', function () {
     const sizes = [256, 512, 1024]
 
     sizes.forEach(function (size) {
-      it('should stitch images using center coordinate', async function () {
+      it(`should stitch images using center coordinate and tile size = ${size}`, async function () {
         const params = {
           zoom: 1,
           scale: 1,
@@ -430,7 +430,7 @@ describe('preview', function () {
         await assert.imageEqualsFile(image, `./test/fixtures/preview/expected/center.${size}.png`)
       })
 
-      it('should stitch images using a bounding box (wsen)', async function () {
+      it(`should stitch images using a bounding box (wsen) and tile size = ${size}`, async function () {
         const params = {
           zoom: 1,
           scale: 1,
