@@ -40,12 +40,12 @@ async function getFixtureTiles () {
 }
 
 function getTileFixture ({ tiles, size }) {
-  return function getTile (format, z, x, y) {
+  return function getTile (z, x, y, callback) {
     const key = [z, x, y, size].join('.')
 
     return !tiles[key]
-      ? Promise.reject(new Error('Tile does not exist'))
-      : Promise.resolve({ tile: tiles[key] })
+      ? callback(new Error(`Tile ${key} does not exist`))
+      : callback(null, tiles[key])
   }
 }
 
@@ -462,7 +462,11 @@ describe('preview', function () {
         format: 'png',
         quality: 50,
         tileSize: 256,
-        getTile: renderer.getTile.bind(renderer)
+        getTile: function (z, x, y, callback) {
+          renderer.getTile('png', z, x, y)
+            .then(({ tile }) => callback(null, tile))
+            .catch((err) => callback(err))
+        }
       }
 
       const { image } = await preview(params)
@@ -489,7 +493,11 @@ describe('preview', function () {
         format: 'png',
         quality: 50,
         tileSize: 256,
-        getTile: renderer.getTile.bind(renderer)
+        getTile: function (z, x, y, callback) {
+          renderer.getTile('png', z, x, y)
+            .then(({ tile }) => callback(null, tile))
+            .catch((err) => callback(err))
+        }
       }
 
       const { image } = await preview(params)
