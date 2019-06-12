@@ -40,6 +40,16 @@ async function getFixtureTiles () {
   return tiles
 }
 
+function getTileFixture ({ tiles, size }) {
+  return function getTile (format, z, x, y) {
+    const key = [z, x, y, size].join('.')
+
+    return !tiles[key]
+      ? Promise.reject(new Error('Tile does not exist'))
+      : Promise.resolve({ tile: tiles[key] })
+  }
+}
+
 describe('preview', function () {
   let tiles
 
@@ -355,14 +365,6 @@ describe('preview', function () {
     const sizes = [256, 512, 1024]
 
     sizes.forEach((size) => {
-      function getTileTest (format, z, x, y) {
-        const key = [z, x, y, size].join('.')
-
-        return !tiles[key]
-          ? Promise.reject(new Error('Tile does not exist'))
-          : Promise.resolve({ tile: tiles[key] })
-      }
-
       const coords = [
         { z: 1, x: 0, y: 0 },
         { z: 1, x: 0, y: 1 },
@@ -383,7 +385,14 @@ describe('preview', function () {
       }
 
       it(`should stitch tiles together using size = ${size}`, async function () {
-        const { image } = await blend({ coordinates: coords, offsets, dimensions: center, format, quality, getTile: getTileTest })
+        const { image } = await blend({
+          coordinates: coords,
+          offsets,
+          dimensions: center,
+          format,
+          quality,
+          getTile: getTileFixture({ tiles, size })
+        })
 
         await writeFile(`./test/fixtures/output/pngs/preview-expected.${size}.png`, image)
 
@@ -396,14 +405,6 @@ describe('preview', function () {
     const sizes = [256, 512, 1024]
 
     sizes.forEach(function (size) {
-      function getTileTest (format, z, x, y) {
-        const key = [z, x, y, size].join('.')
-
-        return !tiles[key]
-          ? Promise.reject(new Error('Tile does not exist'))
-          : Promise.resolve({ tile: tiles[key] })
-      }
-
       it('should stitch images using center coordinate', async function () {
         const params = {
           zoom: 1,
@@ -419,7 +420,7 @@ describe('preview', function () {
           format: 'png',
           quality: 50,
           tileSize: size,
-          getTile: getTileTest
+          getTile: getTileFixture({ tiles, size })
         }
 
         const { image } = await preview(params)
@@ -437,7 +438,7 @@ describe('preview', function () {
           format: 'png',
           quality: 50,
           tileSize: size,
-          getTile: getTileTest
+          getTile: getTileFixture({ tiles, size })
         }
 
         const { image } = await preview(params)
