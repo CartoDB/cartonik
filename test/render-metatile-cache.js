@@ -2,7 +2,7 @@
 
 const fs = require('fs')
 const assert = require('./support/assert')
-const rendererFactory = require('../lib/renderer-factory')
+const rendererFactory = require('../lib/renderer/renderer-factory')
 const { describe, it, before, after } = require('mocha')
 
 describe('render metatile cache-headers ', function () {

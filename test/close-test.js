@@ -3,7 +3,7 @@
 const fs = require('fs')
 const assert = require('assert')
 const { describe, it } = require('mocha')
-const rendererFactory = require('../lib/renderer-factory')
+const rendererFactory = require('../lib/renderer/renderer-factory')
 
 describe('renderer close behaviour', function () {
   const rendererOptions = {

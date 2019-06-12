@@ -2,7 +2,7 @@
 
 const assert = require('assert')
 const { describe, it } = require('mocha')
-const defaults = require('../lib/defaults')
+const defaults = require('../lib/renderer/defaults')
 const fs = require('fs')
 
 describe('default options', function () {

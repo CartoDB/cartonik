@@ -3,7 +3,7 @@
 const fs = require('fs')
 const assert = require('./support/assert')
 const { describe, it } = require('mocha')
-const rendererFactory = require('../lib/renderer-factory')
+const rendererFactory = require('../lib/renderer/renderer-factory')
 
 const invalidXML = fs.readFileSync('./test/fixtures/mmls/invalid.xml', 'utf8')
 const invalidFontFaceXML = fs.readFileSync('./test/fixtures/mmls/world-borders-invalid-font-face.xml', 'utf8')

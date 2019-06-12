@@ -2,7 +2,7 @@
 
 const assert = require('assert')
 const { describe, it } = require('mocha')
-const MetatileCache = require('../lib/metatile-cache')
+const MetatileCache = require('../lib/renderer/metatile-cache')
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 describe('metatile cache', function () {

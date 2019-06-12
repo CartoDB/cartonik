@@ -4,7 +4,7 @@ const fs = require('fs')
 const { promisify } = require('util')
 const { describe, it, before } = require('mocha')
 const assert = require('./support/assert')
-const rendererFactory = require('../lib/renderer-factory')
+const rendererFactory = require('../lib/renderer/renderer-factory')
 const preview = require('../lib/preview')
 const getCenterInPixels = require('../lib/preview/center')
 const getDimensions = require('../lib/preview/dimensions')
@@ -452,7 +452,7 @@ describe('preview', function () {
       xml: fs.readFileSync('./test/fixtures/mmls/world-borders-interactivity.xml', 'utf8')
     })
 
-    it('should use cartonik\'s getTile method to fetch tiles and stich them using bbox', async function () {
+    it('should use raster renderer\'s getTile method to fetch tiles and stich them using bbox', async function () {
       const renderer = rendererFactory(options)
 
       const params = {
@@ -461,17 +461,18 @@ describe('preview', function () {
         bbox: [-140, -80, 140, 80],
         format: 'png',
         quality: 50,
-        tileSize: 256
+        tileSize: 256,
+        getTile: renderer.getTile.bind(renderer)
       }
 
-      const { image } = await renderer.getPreview(params)
+      const { image } = await preview(params)
 
       await assert.imageEqualsFile(image, './test/fixtures/output/pngs/world-borders-preview-bbox-256.png')
 
       await renderer.close()
     })
 
-    it('should use cartonik\'s getTile method to fetch tiles and stich them using center', async function () {
+    it('should use raster renderer\'s getTile method to fetch tiles and stich them using center', async function () {
       const renderer = rendererFactory(options)
 
       const params = {
@@ -487,10 +488,11 @@ describe('preview', function () {
         },
         format: 'png',
         quality: 50,
-        tileSize: 256
+        tileSize: 256,
+        getTile: renderer.getTile.bind(renderer)
       }
 
-      const { image } = await renderer.getPreview(params)
+      const { image } = await preview(params)
 
       await assert.imageEqualsFile(image, './test/fixtures/output/pngs/world-borders-preview-center-256.png')
 

@@ -2,7 +2,7 @@
 
 const assert = require('assert')
 const { describe, it } = require('mocha')
-const calculateMetatile = require('../lib/metatile')
+const calculateMetatile = require('../lib/renderer/metatile')
 
 const FULL = 20037508.342789244
 const HALF = 0
