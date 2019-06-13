@@ -1,11 +1,11 @@
 'use strict'
 
-const rendererFactory = require('../lib/renderer-factory')
+const rendererFactory = require('../lib/renderer/renderer-factory')
 const fs = require('fs')
 const mapnik = require('@carto/mapnik')
 const zlib = require('zlib')
-const createMapPool = require('../lib/map-pool')
-const defaults = require('../lib/defaults')
+const createMapPool = require('../lib/renderer/map-pool')
+const defaults = require('../lib/renderer/defaults')
 const assert = require('assert')
 const { describe, it } = require('mocha')
 const { promisify } = require('util')

@@ -3,7 +3,7 @@
 const fs = require('fs')
 const assert = require('./support/assert')
 const { describe, it, before } = require('mocha')
-const rendererFactory = require('../lib/renderer-factory')
+const rendererFactory = require('../lib/renderer/renderer-factory')
 
 describe('pool render ', function () {
   const tileCoords = [
