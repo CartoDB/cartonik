@@ -31,16 +31,14 @@ const [ format, z, x, y ] = [ 'png', 0, 0, 0 ]
 const tile = await renderer.getTile(format, z, x, y)
 ```
 
-## :computer: Usage: cartonik(options)
+## :computer: Usage: rendererFactory(options)
 
 ```js
 const options = { ... }
 const renderer = rendererFactory(options)
 ```
 
-## :triangular_ruler: Options
-
-### Renderer options
+## :triangular_ruler: Renderer options
 
 - `type`: `string` (either `raster` or `vector`, default `raster`). Whether the renderer aims to render Mapnik Vector Tiles or traditional raster formats (`png`, `utf`).
 - `xml`: `string` (*required*). The [Mapnik XML](https://github.com/mapnik/mapnik/wiki/XMLConfigReference) configuration.
@@ -90,6 +88,13 @@ const { image } = await preview({
             .catch((err) => callback(err))
     }
 })
+```
+
+## :computer: Usage: preview(options)
+
+```js
+const options = { ... }
+const renderer = preview(options)
 ```
 
 *Note*: Preview implementes old getTile interface: `renderer.getTile(z, x, y, callback)`; this is going to change soon. The new interface is: `const tile = await renderer.getTile(format, z, x, y)`
