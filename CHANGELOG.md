@@ -2,7 +2,7 @@
 
 ## v0.6.0 (2019-mm-dd)
 
-- Implement `getPreview` method to to create static maps from tiles based on center (long, lat) coordinates and bounding box.
+- Implements `preview` method to to create static maps from tiles based on center (lng, lat) coordinates or bounding box area.
 
 ## v0.5.1 (2019-05-21)
 
