@@ -31,7 +31,7 @@ const [ format, z, x, y ] = [ 'png', 0, 0, 0 ]
 const tile = await renderer.getTile(format, z, x, y)
 ```
 
-## :computer: Usage: rendererFactory(options)
+## :computer: Usage: `rendererFactory(options)`
 
 ```js
 const options = { ... }
@@ -90,7 +90,7 @@ const { image } = await preview({
 })
 ```
 
-## :computer: Usage: preview(options)
+## :computer: Usage: `preview(options)`
 
 ```js
 const options = { ... }
@@ -99,7 +99,7 @@ const renderer = preview(options)
 
 *Note*: Preview implementes old getTile interface: `renderer.getTile(z, x, y, callback)`; this is going to change soon. The new interface is: `const tile = await renderer.getTile(format, z, x, y)`
 
-### Preview options
+## :triangular_ruler: Preview options
 
 - `getTile`: `function` (*required*). Function to retrive the required tiles to build the preview image.
 - `bbox`: `array of numbers`. The bounding box for the west (`lat`), south (`lng`), east (`lat`), north (`lng`) of the requested area.
