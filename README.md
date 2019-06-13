@@ -90,14 +90,14 @@ const { image } = await preview({
 })
 ```
 
+**Note**: Preview implementes old getTile interface: `renderer.getTile(z, x, y, callback)`; this is going to change soon. The new interface is: `const tile = await renderer.getTile(format, z, x, y)`
+
 ## :computer: Usage: `preview(options)`
 
 ```js
 const options = { ... }
 const renderer = preview(options)
 ```
-
-*Note*: Preview implementes old getTile interface: `renderer.getTile(z, x, y, callback)`; this is going to change soon. The new interface is: `const tile = await renderer.getTile(format, z, x, y)`
 
 ## :triangular_ruler: Preview options
 
