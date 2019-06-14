@@ -102,7 +102,7 @@ const renderer = preview(options)
 ## :triangular_ruler: Preview options
 
 - `getTile`: `function` (*required*). Function to retrive the required tiles to build the preview image.
-- `bbox`: `object`. The bounding box for the west, south, east, north of the requested area.
+- `bbox`: `object`. The bounding box for the west, south, east, and north coordinates of the requested area.
   - `west`: `number`. Longitude coordinate.
   - `south`: `number`. Latitude coordinate.
   - `east`: `number`. Longitude coordinate.
