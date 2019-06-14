@@ -64,7 +64,7 @@ describe('preview', function () {
     })
 
     it('should should fail if dimensions is not defined', function () {
-      const bbox = [-60, -60, 60, 60]
+      const bbox = { west: -60, south: -60, east: 60, north: 60 }
       assert.throws(() => getZoomFromBbox({ bbox, scale, tileSize }), /Missing dimensions/)
     })
   })
@@ -76,12 +76,12 @@ describe('preview', function () {
     })
 
     it('should fail if (x1, y1) and (x2, y2) are equal', function () {
-      const bbox = [0, 0, 0, 0]
+      const bbox = { west: 0, south: 0, east: 0, north: 0 }
       assert.throws(() => getDimensions({ bbox, zoom, scale, tileSize, limit }), /Incorrect coordinates/)
     })
 
     it('should fail if the image is too large', function () {
-      const bbox = [-60, -60, 60, 60]
+      const bbox = { west: -60, south: -60, east: 60, north: 60 }
       const zoom = 7
       const scale = 2
 
@@ -89,7 +89,7 @@ describe('preview', function () {
     })
 
     it('should return valid dimensions', function () {
-      const bbox = [-60, -60, 60, 60]
+      const bbox = { west: -60, south: -60, east: 60, north: 60 }
       const scale = 1
 
       const dimensions = getDimensions({ bbox, zoom, scale, tileSize, limit })
@@ -103,8 +103,8 @@ describe('preview', function () {
     it('should return a valid center point in pixels', function () {
       const scale = 1
       let center = {
-        x: 0,
-        y: 20
+        lng: 0,
+        lat: 20
       }
       center = getCenterInPixels({ center, zoom, scale, tileSize })
 
@@ -116,8 +116,8 @@ describe('preview', function () {
       const scale = 1
       const zoom = 2
       let center = {
-        x: 39,
-        y: -14
+        lng: 39,
+        lat: -14
       }
 
       center = getCenterInPixels({ center, zoom, scale, tileSize })
@@ -127,7 +127,7 @@ describe('preview', function () {
     })
 
     it('should return center in pixels from bbox', function () {
-      const bbox = [-60, -60, 60, 60]
+      const bbox = { west: -60, south: -60, east: 60, north: 60 }
       const scale = 1
 
       const center = getCenterInPixels({ bbox, zoom, scale, tileSize })
@@ -420,8 +420,8 @@ describe('preview', function () {
           zoom: 1,
           scale: 1,
           center: {
-            x: 0,
-            y: 0
+            lng: 0,
+            lat: 0
           },
           dimensions: {
             width: 200,
@@ -442,7 +442,7 @@ describe('preview', function () {
         const params = {
           zoom: 1,
           scale: 1,
-          bbox: [ -140, -80, 140, 80 ],
+          bbox: { west: -140, south: -80, east: 140, north: 80 },
           format: 'png',
           quality: 50,
           tileSize: size,
@@ -471,7 +471,7 @@ describe('preview', function () {
       const params = {
         zoom: 1,
         scale: 1,
-        bbox: [-140, -80, 140, 80],
+        bbox: { west: -140, south: -80, east: 140, north: 80 },
         format: 'png',
         quality: 50,
         tileSize: 256,
@@ -496,8 +496,8 @@ describe('preview', function () {
         zoom: 1,
         scale: 1,
         center: {
-          x: 0,
-          y: 0
+          lng: 0,
+          lat: 0
         },
         dimensions: {
           width: 200,
@@ -525,7 +525,7 @@ describe('preview', function () {
 
       const params = {
         scale: 1,
-        bbox: [-140, -80, 140, 80],
+        bbox: { west: -140, south: -80, east: 140, north: 80 },
         dimensions: {
           width: 200,
           height: 200
