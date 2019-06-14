@@ -75,8 +75,8 @@ const renderer = rendererFactory({ xml: '<Map>...</Map>' })
 
 const { image } = await preview({
     center: {
-        x: -3.68529754,
-        y: 40.40197212
+        lng: -3.68529754,
+        lat: 40.40197212
     },
     dimensions: {
         width: 200,
