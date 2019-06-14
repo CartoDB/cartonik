@@ -6,6 +6,7 @@ const { describe, it, before } = require('mocha')
 const assert = require('./support/assert')
 const rendererFactory = require('../lib/renderer/renderer-factory')
 const preview = require('../lib/preview')
+const getZoomFromBbox = require('../lib/preview/zoom')
 const getCenterInPixels = require('../lib/preview/center')
 const getDimensions = require('../lib/preview/dimensions')
 const getTileList = require('../lib/preview/tiles')
@@ -54,6 +55,18 @@ describe('preview', function () {
 
   before(async function () {
     tiles = await getFixtureTiles()
+  })
+
+  describe('zoom', function () {
+    it('should should fail if bounding box is not defined', function () {
+      const dimensions = { width: 4752, height: 4752 }
+      assert.throws(() => getZoomFromBbox({ dimensions, scale, tileSize }), /Missing bounding box/)
+    })
+
+    it('should should fail if dimensions is not defined', function () {
+      const bbox = [-60, -60, 60, 60]
+      assert.throws(() => getZoomFromBbox({ bbox, scale, tileSize }), /Missing dimensions/)
+    })
   })
 
   describe('dimensions', function () {
@@ -503,6 +516,33 @@ describe('preview', function () {
       const { image } = await preview(params)
 
       await assert.imageEqualsFile(image, './test/fixtures/output/pngs/world-borders-preview-center-256.png')
+
+      await renderer.close()
+    })
+
+    it('should calculated the zoom when no provided', async function () {
+      const renderer = rendererFactory(options)
+
+      const params = {
+        scale: 1,
+        bbox: [-140, -80, 140, 80],
+        dimensions: {
+          width: 200,
+          height: 200
+        },
+        format: 'png',
+        quality: 50,
+        tileSize: 256,
+        getTile: function (z, x, y, callback) {
+          renderer.getTile('png', z, x, y)
+            .then(({ tile }) => callback(null, tile))
+            .catch((err) => callback(err))
+        }
+      }
+
+      const { image } = await preview(params)
+
+      await assert.imageEqualsFile(image, './test/fixtures/output/pngs/world-borders-preview-bbox-no-zoom-256.png')
 
       await renderer.close()
     })
