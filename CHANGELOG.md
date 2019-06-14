@@ -3,6 +3,7 @@
 ## v0.6.0 (2019-mm-dd)
 
 - Implements `preview` method to to create static maps from tiles based on center (lng, lat) coordinates or bounding box area.
+- Calculate zoom based on bounding box parameter as default value
 
 ## v0.5.1 (2019-05-21)
 
