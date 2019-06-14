@@ -102,10 +102,14 @@ const renderer = preview(options)
 ## :triangular_ruler: Preview options
 
 - `getTile`: `function` (*required*). Function to retrive the required tiles to build the preview image.
-- `bbox`: `array of numbers`. The bounding box for the west (`lat`), south (`lng`), east (`lat`), north (`lng`) of the requested area.
+- `bbox`: `object`. The bounding box for the west, south, east, north of the requested area.
+  - `west`: `number`. Longitude coordinate.
+  - `south`: `number`. Latitude coordinate.
+  - `east`: `number`. Longitude coordinate.
+  - `north`: `number`. Latitude coordinate.
 - `center`: `object`. Point where the preview is centered. This option must be used along `dimensions` option.
-  - `x`: `number`. Long coordinate.
-  - `y`: `number`. Latitude coordinate.
+  - `lng`: `number`. Long coordinate.
+  - `lat`: `number`. Latitude coordinate.
 - `dimensions`: `object`. Preview's size in pixels. This options must be defined along `center` option and will be multiplied by scale to keep the resolution.
   - `width`: `number`.
   - `heigth`: `number`.
