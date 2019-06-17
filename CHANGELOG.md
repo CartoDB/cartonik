@@ -1,5 +1,7 @@
 # Cartonik ChangeLog
 
+## v0.6.1 (2019-mm-dd)
+
 ## v0.6.0 (2019-06-17)
 
 - Implements `preview` method to to create static maps from tiles based on center (lng, lat) coordinates or bounding box area.
