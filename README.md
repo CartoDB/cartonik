@@ -17,7 +17,7 @@ Render maps with `@carto/mapnik`
 Cartonik requires Node.js 10 or higher
 
 ```sh
-npm install cartonik
+npm install @carto/cartonik
 ```
 
 ## :globe_with_meridians: Render tiles
