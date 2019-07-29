@@ -374,7 +374,7 @@ describe('preview', function () {
   })
 
   describe('blend', function () {
-    const sizes = [256, 512, 1024]
+    const sizes = [ 256, 512, 1024 ]
 
     sizes.forEach((size) => {
       const coords = [
@@ -403,10 +403,50 @@ describe('preview', function () {
           dimensions: center,
           format,
           quality,
-          getTile: getTileFixture({ tiles, size })
+          getTile: getTileFixture({ tiles, size }),
+          concurrency: 32
         })
 
         await assert.imageEqualsFile(image, `./test/fixtures/output/pngs/world-preview-${size}.png`)
+      })
+    })
+
+    const concurrencies = [ 1, 2, 4 ]
+
+    concurrencies.forEach((concurrency) => {
+      const tileSize = 256
+
+      const coords = [
+        { z: 1, x: 0, y: 0 },
+        { z: 1, x: 0, y: 1 },
+        { z: 1, x: 1, y: 0 },
+        { z: 1, x: 1, y: 1 }
+      ]
+
+      const offsets = [
+        { x: 0, y: 0 },
+        { x: 0, y: tileSize },
+        { x: tileSize, y: 0 },
+        { x: tileSize, y: tileSize }
+      ]
+
+      const center = {
+        width: tileSize * 2,
+        height: tileSize * 2
+      }
+
+      it(`should stitch tiles together using concurrency = ${concurrency}`, async function () {
+        const { image } = await blend({
+          coordinates: coords,
+          offsets,
+          dimensions: center,
+          format,
+          quality,
+          getTile: getTileFixture({ tiles, size: tileSize }),
+          concurrency
+        })
+
+        await assert.imageEqualsFile(image, `./test/fixtures/output/pngs/world-preview-${tileSize}.png`)
       })
     })
   })
