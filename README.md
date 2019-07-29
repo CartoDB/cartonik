@@ -119,7 +119,7 @@ const renderer = preview(options)
 - `quality`: `number`. When used with `jpg` format, accepts `1-100` and defaults to `80`. When used with `png` format, accepts `2-256` (# of colors to reduce the image to) and defaults to `null`.
 - `limit`: `number` default `19008`. Max width or height of requested image in pixels. Default is 19008.
 - `tileSize`: `number` default `256`. Size of tiles used in `getTile` function.
-- `concurrency`: `number` default `32`. Number of concurrent calls to getTile. Useful to avoid map-pool exhaustion.
+- `concurrency`: `number` default `32`. Number of concurrent calls to getTile. Useful to avoid map-pool exhaustion. Ideally, should match with `poolSize` (`os.cpus().length`) + `poolMaxWaitingClients` (`32`).
 
 ## :1234: Versioning
 
