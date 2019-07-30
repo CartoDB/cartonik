@@ -1,12 +1,16 @@
 # Cartonik ChangeLog
 
+## v0.7.0 (2019-mm-dd)
+
+- Preview: add option `concurrency` to avoid map-pool exhaustion in renderer
+
 ## v0.6.1 (2019-07-10)
 
 - Upgrade @carto/mapnik to version 3.6.2-carto.16
 
 ## v0.6.0 (2019-06-17)
 
-- Implements `preview` method to to create static maps from tiles based on center (lng, lat) coordinates or bounding box area.
+- Implements `preview` method to to create static maps from tiles based on center (lng, lat) coordinates or bounding box area
 - Calculate zoom based on bounding box parameter as default value
 - Now bouding box is an object ({ west, south, east, north })
 - Now center uses a lng, lat nomeclature
