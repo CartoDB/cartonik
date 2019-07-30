@@ -1,6 +1,6 @@
 # Cartonik ChangeLog
 
-## v0.7.0 (2019-mm-dd)
+## v0.7.0 (2019-07-30)
 
 - Preview: add option `concurrency` to avoid map-pool exhaustion in renderer
 
