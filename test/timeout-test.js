@@ -35,7 +35,7 @@ describe('timeout', function () {
       const opts = Object.assign({}, rendererOptions, { limits: { render: 0 } })
 
       const renderer = rendererFactory(opts)
-      const { tile, headers } = await renderer.getTile('png', 0, 0, 0)
+      const { buffer: tile, headers } = await renderer.getTile('png', 0, 0, 0)
 
       assert.ok(tile)
       assert.ok(headers)
@@ -64,7 +64,7 @@ describe('timeout', function () {
       const opts = Object.assign({}, rendererOptions, { limits: { render: 0 } })
 
       const renderer = rendererFactory(opts)
-      const { tile, headers } = await renderer.getTile('mvt', 0, 0, 0)
+      const { buffer: tile, headers } = await renderer.getTile('mvt', 0, 0, 0)
 
       assert.ok(tile)
       assert.ok(headers)

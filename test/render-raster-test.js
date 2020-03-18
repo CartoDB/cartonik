@@ -20,7 +20,7 @@ describe('render raster tiles', function () {
 
     const renderer = rendererFactory(options)
 
-    const { tile, headers, stats } = await renderer.getTile('jpeg:quality=20', 0, 0, 0)
+    const { buffer: tile, headers, stats } = await renderer.getTile('jpeg:quality=20', 0, 0, 0)
 
     assert.ok(stats)
     assert.ok(stats.hasOwnProperty('render'))
@@ -38,7 +38,7 @@ describe('render raster tiles', function () {
 
     const renderer = rendererFactory(options)
 
-    const { tile, headers } = await renderer.getTile('png', 31, 0, 0)
+    const { buffer: tile, headers } = await renderer.getTile('png', 31, 0, 0)
 
     assert.strictEqual(headers['Content-Type'], 'image/png')
     await assert.imageEqualsFile(tile, './test/fixtures/output/pngs/zoom-31.png')
@@ -53,7 +53,7 @@ describe('render raster tiles', function () {
       base: './test/fixtures/datasources/shapefiles/world-borders/'
     })
 
-    const { tile, headers } = await renderer.getTile('utf', 31, 0, 0)
+    const { buffer: tile, headers } = await renderer.getTile('utf', 31, 0, 0)
 
     assert.deepStrictEqual(tile, JSON.parse(fs.readFileSync('./test/fixtures/output/grids/world-borders-interactivity-31.0.0.grid.json', 'utf8')))
     assert.strictEqual(headers['Content-Type'], 'application/json')
@@ -98,7 +98,7 @@ describe('render raster tiles', function () {
 
     for (const coords of tileCoords) {
       it(`tile ${coords.join('/')}`, async function () {
-        const { tile, headers } = await renderer.getTile('png', ...coords)
+        const { buffer: tile, headers } = await renderer.getTile('png', ...coords)
 
         const filepath = `./test/fixtures/output/pngs/world-borders-${coords.join('.')}.png`
         await assert.imageEqualsFile(tile, filepath)
@@ -128,7 +128,7 @@ describe('render raster tiles', function () {
 
     for (const coords of tileCoords) {
       it(`tile ${coords.join('/')}`, async function () {
-        const { tile, headers } = await renderer.getTile('png', ...coords)
+        const { buffer: tile, headers } = await renderer.getTile('png', ...coords)
 
         assert.strictEqual(headers['Content-Type'], 'image/png')
 
@@ -155,7 +155,7 @@ describe('render raster tiles', function () {
 
     for (const coords of tileCoords) {
       it(`tile ${coords.join('/')}, format: grid.json`, async function () {
-        const { tile, headers, stats } = await renderer.getTile('utf', ...coords)
+        const { buffer: tile, headers, stats } = await renderer.getTile('utf', ...coords)
 
         assert.ok(stats)
         assert.ok(stats.hasOwnProperty('render'))
@@ -181,7 +181,7 @@ describe('render raster tiles', function () {
 
         const renderer = rendererFactory(options)
 
-        const { tile, headers } = await renderer.getTile('png', 2, 2, 2)
+        const { buffer: tile, headers } = await renderer.getTile('png', 2, 2, 2)
         await assert.imageEqualsFile(tile, `./test/fixtures/output/pngs/world-borders-custom-color-2.2.2-${customColor}.png`)
 
         assert.strictEqual(headers['Content-Type'], 'image/png')

@@ -48,7 +48,7 @@ function getTileFixture ({ tiles, size }) {
       throw new Error(`Tile ${key} does not exist`)
     }
 
-    return { tile: tiles[key] }
+    return { buffer: tiles[key] }
   }
 }
 

@@ -1,5 +1,9 @@
 # Cartonik ChangeLog
 
+## v0.8.0 (2020-mm-dd)
+
+- Normalize getTile(), now returns an object with buffer property, it renames `tile` by `buffer`
+
 ## v0.7.0 (2019-07-30)
 
 - Preview: add option `concurrency` to avoid map-pool exhaustion in renderer

@@ -168,7 +168,7 @@ describe('render vector tiles', function () {
 
     it(description, async function () {
       const [ z, x, y ] = coords
-      const { tile, headers } = await renderer.getTile('mvt', ...coords)
+      const { buffer: tile, headers } = await renderer.getTile('mvt', ...coords)
 
       if (empty) {
         assert.strictEqual(tile.length, 0)
