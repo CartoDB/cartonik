@@ -82,15 +82,12 @@ const { image } = await preview({
         width: 200,
         height: 200
     },
-    getTile: function (x, y, z, callback) {
-        renderer.getTile('png', z, x, y)
-            .then(({ tile }) => callback(null, tile))
-            .catch((err) => callback(err))
+    getTile: async function (format, x, y, z) {
+        const { buffer } = await renderer.getTile(format, z, x, y)
+        return { buffer }
     }
 })
 ```
-
-**Note**: Preview implementes old getTile interface: `renderer.getTile(z, x, y, callback)`; this is going to change soon. The new interface is: `const tile = await renderer.getTile(format, z, x, y)`
 
 ## :computer: Usage: `preview(options)`
 
