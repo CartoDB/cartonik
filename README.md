@@ -38,6 +38,19 @@ const options = { ... }
 const renderer = rendererFactory(options)
 ```
 
+## :mag: Get information about the renderer
+
+```js
+const { rendererFactory } = require('cartonik')
+
+const renderer = rendererFactory({ xml: '<Map>...</Map>' })
+
+const stats = renderer.getStats()
+
+console.log(stats)
+//  Map { 'cache.png' => 1, 'pool.count' => 2, 'pool.used' => 1, 'pool.unused' => 1, 'pool.waiting' => 0 }
+```
+
 ## :triangular_ruler: Renderer options
 
 - `type`: `string` (either `raster` or `vector`, default `raster`). Whether the renderer aims to render Mapnik Vector Tiles or traditional raster formats (`png`, `utf`).

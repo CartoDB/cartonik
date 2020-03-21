@@ -2,7 +2,8 @@
 
 ## v0.8.0 (2020-mm-dd)
 
-- Normalize getTile(), now returns an object with buffer property, it renames `tile` by `buffer`
+- Normalize `renderer.getTile()`, now returns an object with buffer property, it renames `tile` by `buffer`
+- Add `renderer.getStats()` to get information about the renderer's performance
 
 ## v0.7.0 (2019-07-30)
 
