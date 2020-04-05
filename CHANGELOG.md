@@ -1,10 +1,11 @@
 # Cartonik ChangeLog
 
-## v0.8.0 (2020-mm-dd)
+## v0.8.0 (2020-04-05)
 
 - Normalize `renderer.getTile()`, now returns an object with buffer property, it renames `tile` by `buffer`
 - Add `renderer.getStats()` to get information about the renderer's performance
 - Add new metric: remaining renderers to be acquired by the internal pool
+- Bumps `acorn` from `6.2.0` to `6.4.1`
 
 ## v0.7.0 (2019-07-30)
 
