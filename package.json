@@ -1,6 +1,6 @@
 {
   "name": "@carto/cartonik",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Render maps with @carto/mapnik",
   "publishConfig": {
     "access": "public"
@@ -8,7 +8,8 @@
   "main": "lib/cartonik.js",
   "author": "CARTO (https://carto.com/)",
   "contributors": [
-    "Daniel García Aubert <dgaubert@carto.com>"
+    "Daniel García Aubert <dgaubert@carto.com>",
+    "Raúl Marín <rmrodriguez@carto.com>"
   ],
   "license": "BSD-3-Clause",
   "repository": {
