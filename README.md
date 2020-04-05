@@ -23,7 +23,7 @@ npm install @carto/cartonik
 ## :globe_with_meridians: Render tiles
 
 ```js
-const { rendererFactory } = require('cartonik')
+const { rendererFactory } = require('@carto/cartonik')
 
 const renderer = rendererFactory({ xml: '<Map>...</Map>' })
 const [ format, z, x, y ] = [ 'png', 0, 0, 0 ]
@@ -42,7 +42,7 @@ const renderer = rendererFactory(options)
 
 - `type`: `string` (either `raster` or `vector`, default `raster`). Whether the renderer aims to render Mapnik Vector Tiles or traditional raster formats (`png`, `utf`).
 - `xml`: `string` (*required*). The [Mapnik XML](https://github.com/mapnik/mapnik/wiki/XMLConfigReference) configuration.
-- `base`: `string`. Path to the folder where the datasources files are (e.g. shapefiles).
+- `base`: `string`. Path to the folder where the datasource files are (e.g. shapefiles).
 - `strict`: `boolean` (default `false`). Enables mapnik strict mode.
 - `bufferSize`: `number` (default `256`). Extra space, in pixels, surrounding the map size being rendered. This allows you to have text and symbols rendered correctly when they overlap the image boundary.
 - `poolSize`: `number` (default `os.cpus().length`). Max number of preloaded maps available for rendering.
@@ -66,10 +66,23 @@ const renderer = rendererFactory(options)
 
 - `gzip`: `boolean` (default `true`). Compression method used to encoding a vector tile.
 
+## :mag: Get information about the renderer
+
+```js
+const { rendererFactory } = require('@carto/cartonik')
+
+const renderer = rendererFactory({ xml: '<Map>...</Map>' })
+
+const stats = renderer.getStats()
+
+console.log(stats)
+//  Map { 'cache.png' => 1, 'pool.count' => 2, 'pool.used' => 1, 'pool.unused' => 1, 'pool.waiting' => 0 }
+```
+
 ## :fireworks: Static images (previews)
 
 ```js
-const { preview, rendererFactory } = require('cartonik')
+const { preview, rendererFactory } = require('@carto/cartonik')
 
 const renderer = rendererFactory({ xml: '<Map>...</Map>' })
 
@@ -82,15 +95,12 @@ const { image } = await preview({
         width: 200,
         height: 200
     },
-    getTile: function (x, y, z, callback) {
-        renderer.getTile('png', z, x, y)
-            .then(({ tile }) => callback(null, tile))
-            .catch((err) => callback(err))
+    getTile: async function (format, x, y, z) {
+        const { buffer } = await renderer.getTile(format, z, x, y)
+        return { buffer }
     }
 })
 ```
-
-**Note**: Preview implementes old getTile interface: `renderer.getTile(z, x, y, callback)`; this is going to change soon. The new interface is: `const tile = await renderer.getTile(format, z, x, y)`
 
 ## :computer: Usage: `preview(options)`
 
@@ -125,9 +135,10 @@ const renderer = preview(options)
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/cartodb/cartonik/tags).
 
-## :busts_in_silhouette: Authors
+## :busts_in_silhouette: Contributors
 
 - [Daniel García Aubert](https://github.com/dgaubert)
+- [Raúl Marín](https://github.com/Algunenano)
 
 ## :page_with_curl: License
 

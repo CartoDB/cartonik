@@ -20,7 +20,7 @@ describe('render raster tiles', function () {
 
     const renderer = rendererFactory(options)
 
-    const { tile, headers, stats } = await renderer.getTile('jpeg:quality=20', 0, 0, 0)
+    const { buffer: tile, headers, stats } = await renderer.getTile('jpeg:quality=20', 0, 0, 0)
 
     assert.ok(stats)
     assert.ok(stats.hasOwnProperty('render'))
@@ -38,7 +38,7 @@ describe('render raster tiles', function () {
 
     const renderer = rendererFactory(options)
 
-    const { tile, headers } = await renderer.getTile('png', 31, 0, 0)
+    const { buffer: tile, headers } = await renderer.getTile('png', 31, 0, 0)
 
     assert.strictEqual(headers['Content-Type'], 'image/png')
     await assert.imageEqualsFile(tile, './test/fixtures/output/pngs/zoom-31.png')
@@ -53,7 +53,7 @@ describe('render raster tiles', function () {
       base: './test/fixtures/datasources/shapefiles/world-borders/'
     })
 
-    const { tile, headers } = await renderer.getTile('utf', 31, 0, 0)
+    const { buffer: tile, headers } = await renderer.getTile('utf', 31, 0, 0)
 
     assert.deepStrictEqual(tile, JSON.parse(fs.readFileSync('./test/fixtures/output/grids/world-borders-interactivity-31.0.0.grid.json', 'utf8')))
     assert.strictEqual(headers['Content-Type'], 'application/json')
@@ -93,12 +93,14 @@ describe('render raster tiles', function () {
     })
 
     after(async function () {
+      assert.strictEqual(1, renderer.getStats().get('pool.count'))
       await renderer.close()
+      assert.strictEqual(0, renderer.getStats().get('pool.count'))
     })
 
     for (const coords of tileCoords) {
       it(`tile ${coords.join('/')}`, async function () {
-        const { tile, headers } = await renderer.getTile('png', ...coords)
+        const { buffer: tile, headers } = await renderer.getTile('png', ...coords)
 
         const filepath = `./test/fixtures/output/pngs/world-borders-${coords.join('.')}.png`
         await assert.imageEqualsFile(tile, filepath)
@@ -128,7 +130,7 @@ describe('render raster tiles', function () {
 
     for (const coords of tileCoords) {
       it(`tile ${coords.join('/')}`, async function () {
-        const { tile, headers } = await renderer.getTile('png', ...coords)
+        const { buffer: tile, headers } = await renderer.getTile('png', ...coords)
 
         assert.strictEqual(headers['Content-Type'], 'image/png')
 
@@ -155,7 +157,7 @@ describe('render raster tiles', function () {
 
     for (const coords of tileCoords) {
       it(`tile ${coords.join('/')}, format: grid.json`, async function () {
-        const { tile, headers, stats } = await renderer.getTile('utf', ...coords)
+        const { buffer: tile, headers, stats } = await renderer.getTile('utf', ...coords)
 
         assert.ok(stats)
         assert.ok(stats.hasOwnProperty('render'))
@@ -181,7 +183,7 @@ describe('render raster tiles', function () {
 
         const renderer = rendererFactory(options)
 
-        const { tile, headers } = await renderer.getTile('png', 2, 2, 2)
+        const { buffer: tile, headers } = await renderer.getTile('png', 2, 2, 2)
         await assert.imageEqualsFile(tile, `./test/fixtures/output/pngs/world-borders-custom-color-2.2.2-${customColor}.png`)
 
         assert.strictEqual(headers['Content-Type'], 'image/png')
@@ -191,17 +193,90 @@ describe('render raster tiles', function () {
     })
   })
 
-  it('works with metatiles, tile 2/2/2', async function () {
-    const options = Object.assign({}, rendererOptions, {
-      metatile: 4,
-      metrics: true
+  describe('metatiling', function () {
+    const metatileConfig = [
+      {
+        coords: [2, 2, 2],
+        config: {
+          metatile: 4, // at zoom 2 it will query all tiles: 2,0,0 => 2,3,3 (4^2 = 16 tiles)
+          metrics: true,
+          metatileCache: {
+            ttl: 1000,
+            deleteOnHit: false
+          }
+        },
+        deleteOnHit: false, // ttl: 1000, deleteOnHit: false
+        expects: {
+          'pool.count': 1,
+          'cache.png': 16 // deleteOnHit: false
+        }
+      },
+      {
+        coords: [2, 0, 0],
+        config: {
+          metatile: 2,
+          metrics: true,
+          metatileCache: {
+            ttl: 1000,
+            deleteOnHit: false
+          }
+        },
+        deleteOnHit: false,
+        expects: {
+          'pool.count': 1,
+          'cache.png': 4 // ttl: 1000, deleteOnHit: false
+        }
+      },
+      {
+        coords: [2, 0, 2],
+        config: {
+          metatile: 4, // at zoom 2 it will query all tiles: 2,0,0 => 2,3,3 (4^2 = 16 tiles)
+          metrics: true,
+          metatileCache: {
+            ttl: 0,
+            deleteOnHit: false
+          }
+        },
+        deleteOnHit: true, // ttl: 0 (no ttl), deleteOnHit: false
+        expects: {
+          'pool.count': 1,
+          'cache.png': 15 // deleteOnHit: true
+        }
+      },
+      {
+        coords: [2, 1, 0],
+        config: {
+          metatile: 2,
+          metrics: true,
+          metatileCache: {
+            ttl: 1000,
+            deleteOnHit: true
+          }
+        },
+        deleteOnHit: true,
+        expects: {
+          'pool.count': 1,
+          'cache.png': 3 // ttl: 1000, deleteOnHit: true
+        }
+      }
+
+    ]
+
+    metatileConfig.forEach(function ({ coords, config, expects, deleteOnHit }) {
+      it(`should get tile ${coords.join('/')} along ${Math.pow(config.metatile, 2)} metatiles and deleteOnHit ${deleteOnHit ? 'activated' : 'deactivated'}`, async function () {
+        const options = Object.assign({}, rendererOptions, config)
+
+        const renderer = rendererFactory(options)
+        const { stats } = await renderer.getTile('png', 2, 2, 2)
+
+        assert.ok(stats.hasOwnProperty('Mapnik'))
+
+        assert.strictEqual(expects['pool.count'], renderer.getStats().get('pool.count'))
+        assert.strictEqual(expects['cache.png'], renderer.getStats().get('cache.png'))
+        await renderer.close()
+        assert.strictEqual(0, renderer.getStats().get('pool.count'))
+        assert.strictEqual(undefined, renderer.getStats().get('cache.png'))
+      })
     })
-
-    const renderer = rendererFactory(options)
-    const { stats } = await renderer.getTile('png', 2, 2, 2)
-
-    assert.ok(stats.hasOwnProperty('Mapnik'))
-
-    await renderer.close()
   })
 })

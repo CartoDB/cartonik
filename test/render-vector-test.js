@@ -168,7 +168,7 @@ describe('render vector tiles', function () {
 
     it(description, async function () {
       const [ z, x, y ] = coords
-      const { tile, headers } = await renderer.getTile('mvt', ...coords)
+      const { buffer: tile, headers } = await renderer.getTile('mvt', ...coords)
 
       if (empty) {
         assert.strictEqual(tile.length, 0)
@@ -192,9 +192,9 @@ describe('render vector tiles', function () {
       assert.strictEqual(expectedBuffer.length, buffer.length)
       assert.deepStrictEqual(expectedBuffer, buffer)
 
-      assert.strictEqual(1, renderer._mapPool.size)
+      assert.strictEqual(1, renderer.getStats().get('pool.count'))
       await renderer.close()
-      assert.strictEqual(0, renderer._mapPool.size)
+      assert.strictEqual(0, renderer.getStats().get('pool.count'))
     })
   })
 })

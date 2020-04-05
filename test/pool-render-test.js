@@ -57,7 +57,7 @@ describe('pool render ', function () {
         }
 
         if (results.length === tileCoords.length) {
-          const errs = results.filter((err) => err.message === 'max waitingClients count exceeded')
+          const errs = results.filter((err) => err && err.message === 'max waitingClients count exceeded')
           assert.ok(errs.length > 0)
         }
       })

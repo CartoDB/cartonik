@@ -1,5 +1,11 @@
 # Cartonik ChangeLog
 
+## v0.8.0 (2020-mm-dd)
+
+- Normalize `renderer.getTile()`, now returns an object with buffer property, it renames `tile` by `buffer`
+- Add `renderer.getStats()` to get information about the renderer's performance
+- Add new metric: remaining renderers to be acquired by the internal pool
+
 ## v0.7.0 (2019-07-30)
 
 - Preview: add option `concurrency` to avoid map-pool exhaustion in renderer
