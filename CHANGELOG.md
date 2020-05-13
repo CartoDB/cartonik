@@ -1,5 +1,10 @@
 # Cartonik ChangeLog
 
+## v0.9.0 (2020-mm-dd)
+
+- Supports Node.js 12 LTS
+- Drop support for Node.js 10 LTS
+
 ## v0.8.0 (2020-04-05)
 
 - Normalize `renderer.getTile()`, now returns an object with buffer property, it renames `tile` by `buffer`
