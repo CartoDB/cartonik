@@ -1,6 +1,6 @@
 # Cartonik ChangeLog
 
-## v0.9.0 (2020-mm-dd)
+## v0.9.0 (2020-05-13)
 
 - Supports Node.js 12 LTS
 - Drop support for Node.js 10 LTS
