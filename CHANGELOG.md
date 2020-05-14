@@ -1,5 +1,9 @@
 # Cartonik ChangeLog
 
+## v0.9.1 (2020-05-14)
+
+- Fix `engines` section in package.json
+
 ## v0.9.0 (2020-05-13)
 
 - Supports Node.js 12 LTS
