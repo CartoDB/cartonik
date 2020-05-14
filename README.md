@@ -14,7 +14,7 @@ Render maps with `@carto/mapnik`
 
 ## :package: Installation
 
-Cartonik requires Node.js 10 or higher
+Cartonik requires Node.js 12
 
 ```sh
 npm install @carto/cartonik
